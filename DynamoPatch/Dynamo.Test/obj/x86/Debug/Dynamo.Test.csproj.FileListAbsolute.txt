@@ -1,0 +1,1 @@
+C:\dev\DynamoPatch\Dynamo.Test\obj\x86\Debug\Dynamo.Test.csprojResolveAssemblyReference.cache

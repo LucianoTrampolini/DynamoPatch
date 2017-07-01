@@ -1,0 +1,528 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{FB6F1C2E-5116-4EF1-BF5D-A3E636DE9DD0}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Dynamo.Boekingssysteem</RootNamespace>
+    <AssemblyName>Dynamo.Boekingssysteem</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <PublishUrl>ftp://trampolinisoftware.nl/public_html/install/boekingssysteem/</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Web</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <InstallUrl>http://trampolinisoftware.nl/install/boekingssysteem/</InstallUrl>
+    <ProductName>Dynamo Boekingssyteem</ProductName>
+    <PublisherName>Trampolini Software</PublisherName>
+    <SuiteName>Dynamo Boekingssyteem</SuiteName>
+    <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
+    <WebPage>publish.htm</WebPage>
+    <ApplicationRevision>42</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <CreateDesktopShortcut>true</CreateDesktopShortcut>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>Dynamo.Boekingssysteem.App</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetZone>LocalIntranet</TargetZone>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>5310A259C64E18DF97C3C41B598B1524EA749888</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>Dynamo.Boekingssysteem_2_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>true</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Dynamo3.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Hardcodet.Wpf.TaskbarNotification">
+      <HintPath>..\WPF Toolkit\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.3\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.FtpClient">
+      <HintPath>..\packages\System.Net.FtpClient.1.0.5281.14359\lib\net40\System.Net.FtpClient.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Windows.Controls.Input.Toolkit, Version=3.5.40128.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="UIAutomationTypes" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="WPFToolkit, Version=3.5.40128.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Reference Include="WPFToolkit.Extended">
+      <HintPath>..\WPF Toolkit\WPFToolkit.Extended.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="Controls\AnimatedPanel.cs" />
+    <Compile Include="Controls\AutoCompleteFocusableBox.cs" />
+    <Compile Include="Controls\BooleanVisibilityValueConverter.cs" />
+    <Compile Include="Controls\BoolToFontWeightConverter.cs" />
+    <Compile Include="Controls\DecimalTextBox.cs" />
+    <Compile Include="Controls\FocusExtension.cs" />
+    <Compile Include="Controls\IntegerTextBox.cs" />
+    <Compile Include="Controls\Melding\IMeldingHandler.cs" />
+    <Compile Include="Controls\Melding\MeldingHandler.cs" />
+    <Compile Include="Controls\MyDataTemplateSelector.cs" />
+    <Compile Include="Controls\SelectorDoubleClickCommandBehavior.cs" />
+    <Compile Include="Helper.cs" />
+    <Compile Include="ViewModel\Band\BandBetalenViewModel.cs" />
+    <Compile Include="ViewModel\Band\BandBoekingOverzichtViewModel.cs" />
+    <Compile Include="ViewModel\Band\EditBandViewModel.cs" />
+    <Compile Include="ViewModel\Band\EditIncidenteleBandViewModel.cs" />
+    <Compile Include="ViewModel\Band\NieuweBetalingViewModel.cs" />
+    <Compile Include="ViewModel\Band\NieuweRekeningViewModel.cs" />
+    <Compile Include="ViewModel\Band\OntdubbelViewModel.cs" />
+    <Compile Include="ViewModel\Band\WijzigBetalingViewModel.cs" />
+    <Compile Include="ViewModel\Beheerder\InstellingenViewModel.cs" />
+    <Compile Include="ViewModel\Beheerder\SchermkleurenViewModel.cs" />
+    <Compile Include="ViewModel\Bericht\BerichtOverzichtViewModel.cs" />
+    <Compile Include="ViewModel\Bericht\BerichtViewModel.cs" />
+    <Compile Include="ViewModel\Bericht\EditBerichtViewModel.cs" />
+    <Compile Include="ViewModel\Bericht\EditMemoViewModel.cs" />
+    <Compile Include="ViewModel\ChangeLog\ChangeLogOverzichtViewModel.cs" />
+    <Compile Include="ViewModel\ChangeLog\ChangeLogViewModel.cs" />
+    <Compile Include="ViewModel\Bericht\MemoOverzichtViewModel.cs" />
+    <Compile Include="ViewModel\Planning\BandAanmeldenViewModel.cs" />
+    <Compile Include="ViewModel\Planning\BandAfmeldenViewModel.cs" />
+    <Compile Include="ViewModel\Planning\BoekingViewModel.cs" />
+    <Compile Include="ViewModel\Planning\EditGeslotenViewModel.cs" />
+    <Compile Include="ViewModel\Planning\GeslotenOverzichtViewModel.cs" />
+    <Compile Include="ViewModel\Planning\GeslotenViewModel.cs" />
+    <Compile Include="ViewModel\Planning\LogboekPlanningViewModel.cs" />
+    <Compile Include="ViewModel\Planning\LogboekViewModel.cs" />
+    <Compile Include="ViewModel\Planning\LogboekWeekOverzichtViewModel.cs" />
+    <Compile Include="ViewModel\Planning\OefenruimteViewModel.cs" />
+    <Compile Include="ViewModel\Planning\PlanningsDagViewModel.cs" />
+    <Compile Include="ViewModel\Planning\PlanningViewModel.cs" />
+    <Compile Include="ViewModel\Planning\DagOefenruimteViewModel.cs" />
+    <Compile Include="ViewModel\Planning\WorkSpaceViewModel.cs" />
+    <Compile Include="ViewModel\Band\BetalingViewModel.cs" />
+    <Compile Include="View\Band\BandBetalen.xaml.cs">
+      <DependentUpon>BandBetalen.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Band\BandBoekingOverzicht.xaml.cs">
+      <DependentUpon>BandBoekingOverzicht.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Band\EditBand.xaml.cs">
+      <DependentUpon>EditBand.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Band\EditIncidenteleBand.xaml.cs">
+      <DependentUpon>EditIncidenteleBand.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Band\EditBetaling.xaml.cs">
+      <DependentUpon>EditBetaling.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Band\Ontdubbel.xaml.cs">
+      <DependentUpon>Ontdubbel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Beheerder\Instellingen.xaml.cs">
+      <DependentUpon>Instellingen.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Beheerder\Schermkleuren.xaml.cs">
+      <DependentUpon>Schermkleuren.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Bericht\EditMemo.xaml.cs">
+      <DependentUpon>EditMemo.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Bericht\GeadresseerdenToevoegen.xaml.cs">
+      <DependentUpon>GeadresseerdenToevoegen.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Bericht\MemoOverzicht.xaml.cs">
+      <DependentUpon>MemoOverzicht.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ChangeLog\ChangeLogOverzicht.xaml.cs">
+      <DependentUpon>ChangeLogOverzicht.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\FancyBalloon.xaml.cs">
+      <DependentUpon>FancyBalloon.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Planning\BandAanmelden.xaml.cs">
+      <DependentUpon>BandAanmelden.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Planning\BandAfmelden.xaml.cs">
+      <DependentUpon>BandAfmelden.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Planning\EditGesloten.xaml.cs">
+      <DependentUpon>EditGesloten.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Planning\GeslotenOverzicht.xaml.cs">
+      <DependentUpon>GeslotenOverzicht.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Planning\Logboek.xaml.cs">
+      <DependentUpon>Logboek.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Planning\LogboekPlanning.xaml.cs">
+      <DependentUpon>LogboekPlanning.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Planning\LogboekWeekOverzicht.xaml.cs">
+      <DependentUpon>LogboekWeekOverzicht.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Planning\PlanningOverzicht.xaml.cs">
+      <DependentUpon>PlanningOverzicht.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WebIntegrationHelper.cs" />
+    <Page Include="Resources\BerichtResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\ChangeLogResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\PlanningResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Band\BandBetalen.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Band\BandBoekingOverzicht.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Band\EditBand.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Band\EditIncidenteleBand.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Band\EditBetaling.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Band\Ontdubbel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Beheerder\Instellingen.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Beheerder\Schermkleuren.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Bericht\EditMemo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Bericht\GeadresseerdenToevoegen.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Bericht\MemoOverzicht.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ChangeLog\ChangeLogOverzicht.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\FancyBalloon.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Planning\BandAanmelden.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Planning\BandAfmelden.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Planning\EditGesloten.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Planning\GeslotenOverzicht.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Planning\Logboek.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Planning\LogboekPlanning.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Planning\LogboekWeekOverzicht.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Planning\PlanningOverzicht.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Resource Include="Resources\UITemplateResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Resource>
+    <Page Include="Resources\BandResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Band\BandOverzicht.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Band\IncidenteleBandOverzicht.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Beheerder\Aanmelden.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\BeheerderResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\MainResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Beheerder\BeheerderOverzicht.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Beheerder\EditBeheerder.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Beheerder\VergoedingOverzicht.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\HoofdScherm.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ViewModel\Band\BandOverzichtViewModel.cs" />
+    <Compile Include="ViewModel\Band\BandViewModel.cs" />
+    <Compile Include="ViewModel\Band\IncidenteleBandOverzichtViewModel.cs" />
+    <Compile Include="ViewModel\Base\CommandViewModel.cs" />
+    <Compile Include="ViewModel\Base\EntityViewModel.cs" />
+    <Compile Include="ViewModel\Base\RelayCommand.cs" />
+    <Compile Include="ViewModel\Base\StamgegevenViewModel.cs" />
+    <Compile Include="ViewModel\Base\SubItemViewModel.cs" />
+    <Compile Include="ViewModel\Base\ViewModelBase.cs" />
+    <Compile Include="ViewModel\Base\WorkSpaceViewModel.cs" />
+    <Compile Include="ViewModel\Beheerder\AanmeldenViewModel.cs" />
+    <Compile Include="ViewModel\Beheerder\EditBeheerderViewModel.cs" />
+    <Compile Include="ViewModel\Beheerder\VergoedingOverzichtViewModel.cs" />
+    <Compile Include="ViewModel\Beheerder\VergoedingViewModel.cs" />
+    <Compile Include="ViewModel\HoofdSchermViewModel.cs" />
+    <Compile Include="ViewModel\Planning\DatumViewModel.cs" />
+    <Compile Include="ViewModel\Planning\PlanningOverzichtViewModel.cs" />
+    <Compile Include="View\Band\BandOverzicht.xaml.cs">
+      <DependentUpon>BandOverzicht.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Band\IncidenteleBandOverzicht.xaml.cs">
+      <DependentUpon>IncidenteleBandOverzicht.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Beheerder\Aanmelden.xaml.cs">
+      <DependentUpon>Aanmelden.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Beheerder\BeheerderOverzicht.xaml.cs">
+      <DependentUpon>BeheerderOverzicht.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModel\Beheerder\BeheerderOverzichtViewModel.cs" />
+    <Compile Include="ViewModel\Beheerder\BeheerderViewModel.cs" />
+    <Compile Include="View\Beheerder\EditBeheerder.xaml.cs">
+      <DependentUpon>EditBeheerder.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Beheerder\VergoedingOverzicht.xaml.cs">
+      <DependentUpon>VergoedingOverzicht.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\HoofdScherm.xaml.cs">
+      <DependentUpon>HoofdScherm.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Dynamo.Boekingssysteem_1_TemporaryKey.pfx" />
+    <None Include="Dynamo.Boekingssysteem_2_TemporaryKey.pfx" />
+    <None Include="Dynamo.Boekingssysteem_TemporaryKey.pfx" />
+    <None Include="packages.config" />
+    <None Include="Properties\app.manifest" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Dynamo.BL\Dynamo.BL.csproj">
+      <Project>{A91E4B73-138D-45B0-86DA-C035B8F83F60}</Project>
+      <Name>Dynamo.BL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Dynamo.Common\Dynamo.Common.csproj">
+      <Project>{AE7A1FBA-923D-4F3A-932B-218ADCD3CCB1}</Project>
+      <Name>Dynamo.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Dynamo.Model\Dynamo.Model.csproj">
+      <Project>{2C187017-AF32-4E2E-9317-EADBEEC5D18B}</Project>
+      <Name>Dynamo.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Dynamo.Notifier\Dynamo.Notifier.csproj">
+      <Project>{4BCF05FD-606C-475E-98DB-3903768CA265}</Project>
+      <Name>Dynamo.Notifier</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Dynamo.Web\Dynamo.Web.csproj">
+      <Project>{e893663b-2669-4ef5-8da5-ab1f7dc1f970}</Project>
+      <Name>Dynamo.Web</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ViewModel\Stamgegevens\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="todo list.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 Client Profile %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Dynamo3.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Close.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Warning.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <PublishFile Include="EntityFramework">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="EasterEggs\John.wav" />
+    <EmbeddedResource Include="EasterEggs\Queenie.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\WarningBig.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

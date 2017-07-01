@@ -1,0 +1,35 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:vm="clr-namespace:Dynamo.Boekingssysteem.ViewModel.Planning"
+                    xmlns:vw="clr-namespace:Dynamo.Boekingssysteem.View.Planning">
+
+    <DataTemplate DataType="{x:Type vm:PlanningOverichtViewModel}">
+        <vw:PlanningOverzicht />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:BandAanmeldenViewModel}">
+        <vw:BandAanmelden />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:BandAfmeldenViewModel}">
+        <vw:BandAfmelden />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:LogboekViewModel}">
+        <vw:Logboek />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:LogboekPlanningViewModel}">
+        <vw:LogboekPlanning />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:LogboekWeekOverzichtViewModel}">
+        <vw:LogboekWeekOverzicht />
+    </DataTemplate>
+    
+    <DataTemplate DataType="{x:Type vm:GeslotenOverzichtViewModel}">
+        <vw:GeslotenOverzicht />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:EditGeslotenViewModel}">
+        <vw:EditGesloten />
+    </DataTemplate>
+</ResourceDictionary>

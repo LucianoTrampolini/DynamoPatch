@@ -1,0 +1,46 @@
+﻿<UserControl x:Class="Dynamo.Boekingssysteem.View.Beheerder.Schermkleuren"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:dyn="clr-namespace:Dynamo.Boekingssysteem.Controls"
+             >
+    <Border Style="{StaticResource SubItemBorder}" HorizontalAlignment="Left">
+        <dyn:AnimatedPanel Margin="5" MaxWidth="300">
+            <dyn:AnimatedPanel Orientation="Horizontal">
+                <Label Style="{StaticResource DescriptionLabel}" Content="Achtergrond" Width="230"></Label>
+                <xctk:ColorPicker SelectedColor="{Binding Path=Achtergrond}"  Width="50"> </xctk:ColorPicker>
+            </dyn:AnimatedPanel>
+            <dyn:AnimatedPanel Orientation="Horizontal">
+                <Label Style="{StaticResource DescriptionLabel}" Content="Tekst" Width="230"></Label>
+                <xctk:ColorPicker SelectedColor="{Binding Path=Tekst}"  Width="50"></xctk:ColorPicker>
+            </dyn:AnimatedPanel>
+            <dyn:AnimatedPanel Orientation="Horizontal">
+                <Label Style="{StaticResource DescriptionLabel}" Content="Achtergrond velden" Width="230"></Label>
+                <xctk:ColorPicker SelectedColor="{Binding Path=AchtergrondVelden}"  Width="50"></xctk:ColorPicker>
+            </dyn:AnimatedPanel>
+            <dyn:AnimatedPanel Orientation="Horizontal">
+                <Label Style="{StaticResource DescriptionLabel}" Content="Tekst velden" Width="230"></Label>
+                <xctk:ColorPicker SelectedColor="{Binding Path=TekstVelden }"  Width="50"></xctk:ColorPicker>
+            </dyn:AnimatedPanel>
+            <dyn:AnimatedPanel Orientation="Horizontal">
+                <Label Style="{StaticResource DescriptionLabel}" Content="Selecteren" Width="230"></Label>
+                <xctk:ColorPicker SelectedColor="{Binding Path=Selecteren}"  Width="50"></xctk:ColorPicker>
+            </dyn:AnimatedPanel>
+            <dyn:AnimatedPanel Orientation="Horizontal">
+                <Label Style="{StaticResource DescriptionLabel}" Content="Achtergrond knoppen" Width="230"></Label>
+                <xctk:ColorPicker SelectedColor="{Binding Path=AchtergrondKnoppen}"  Width="50"></xctk:ColorPicker>
+            </dyn:AnimatedPanel>
+            <dyn:AnimatedPanel Orientation="Horizontal">
+                <Label Style="{StaticResource DescriptionLabel}" Content="Tekst knoppen" Width="230"></Label>
+                <xctk:ColorPicker SelectedColor="{Binding Path=TekstKnoppen}"  Width="50"></xctk:ColorPicker>
+            </dyn:AnimatedPanel>
+            <dyn:AnimatedPanel HorizontalAlignment="Stretch">
+                <ContentControl  
+                    Content="{Binding Path=Commands}"
+                    ContentTemplate="{StaticResource CommandButtons}"
+                    HorizontalContentAlignment="Right"
+                />
+            </dyn:AnimatedPanel>
+        </dyn:AnimatedPanel>
+    </Border>
+</UserControl>

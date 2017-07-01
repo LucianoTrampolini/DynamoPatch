@@ -1,0 +1,451 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Linq;
+using System.Windows.Data;
+using Dynamo.BL;
+using Dynamo.Boekingssysteem;
+using Dynamo.Boekingssysteem.ViewModel.Band;
+using Dynamo.Boekingssysteem.ViewModel.Beheerder;
+using Dynamo.Boekingssysteem.ViewModel.Bericht;
+using Dynamo.Boekingssysteem.ViewModel.ChangeLog;
+using Dynamo.Boekingssysteem.ViewModel.Planning;
+using Dynamo.BoekingsSysteem.Base;
+using Dynamo.Common.Properties;
+using Dynamo.Notifier;
+using Dynamo.Web;
+
+namespace Dynamo.BoekingsSysteem.ViewModel
+{
+    public class HoofdSchermViewModel : WorkspaceViewModel
+    {
+        private ObservableCollection<WorkspaceViewModel> _workspaces;
+        private string _beheerder = "";
+        private NotificationPoller _notifier;
+        
+        public string HuidigeBeheerder
+        {
+            get 
+            { 
+                var beheerder = Helper.CurrentBeheerder; 
+                if(beheerder==null)
+                {
+                    return string.Empty;
+                }
+
+                if (_beheerder != beheerder.Naam && _beheerder != "")
+                {
+                    Helper.SetColors();
+                    OpenLogboek(DateTime.Today,true);
+                    ResetCommands();
+
+                    //Berichtviewmodel wegdoen, ieder zn eigen berichten
+                    BerichtOverzichtViewModel vm = _workspaces.FirstOrDefault(w => w is BerichtOverzichtViewModel) as BerichtOverzichtViewModel;
+                    if (vm != null)
+                    {
+                        _workspaces.Remove(vm);
+                    }
+
+                    _notifier.NieuweBeheerderAangemeld = true;
+                    Helper.PlayBeheerderMuziekje();
+                }
+                _beheerder = beheerder.Naam;
+                return beheerder.Naam;
+            }
+        }
+
+        public HoofdSchermViewModel()
+        {
+            Helper.CurrentBeheerder = new BeheerderRepository().CurrentBeheerder;
+            Helper.SetColors();
+            BackgroundWorker bgBijwerkenPlanningEnContracten = new BackgroundWorker();
+            bgBijwerkenPlanningEnContracten.DoWork += new DoWorkEventHandler(bgBijwerkenPlanningEnContracten_DoWork);
+            bgBijwerkenPlanningEnContracten.RunWorkerAsync();
+            OpenPlanning();
+            _notifier = new NotificationPoller();
+            _notifier.OnNotify += NotifierOnNotify;
+        }
+
+        private void NotifierOnNotify(object sender, NotificationPollerEventArgs args)
+        {
+            if (args.UpdateWebSite)
+            {
+                new WebIntegrationHelper().PushAll();
+            }
+            else
+            {
+                Helper.AddBalloonMessage(args.Message);
+            }
+        }
+
+        private void bgBijwerkenPlanningEnContracten_DoWork(object sender, DoWorkEventArgs e)
+        {
+            using (var repo = new BandRepository())
+            {
+                repo.BijwerkenContracten();
+            }
+            using (var repo = new GeslotenRepository())
+            {
+                repo.BijwerkenGeslotenDagenPlanning();
+            }
+
+            new WebIntegrationHelper().PushAll();
+        }
+
+        #region Commands
+
+        protected override List<CommandViewModel> CreateCommands()
+        {
+            if (Helper.CurrentBeheerder.IsAdministrator)
+            {
+
+                return new List<CommandViewModel>
+                {
+                    new CommandViewModel(
+                        StringResources.ButtonPlanning,
+                        new RelayCommand(param => this.OpenPlanning())),
+                    new CommandViewModel(
+                        StringResources.ButtonWeekOverzicht,
+                        new RelayCommand(param => this.OpenWeekOverzicht(false))),
+                    new CommandViewModel(
+                        StringResources.ButtonBands,
+                        new RelayCommand(param => this.OpenBands())),
+                    new CommandViewModel(
+                        StringResources.ButtonIncidenteleBands,
+                        new RelayCommand(param => this.OpenIncidenteleBands())),
+                    new CommandViewModel(
+                        StringResources.ButtonBeheerders,
+                        new RelayCommand(param => this.OpenBeheerders())),
+                    new CommandViewModel(
+                        StringResources.ButtonBerichten,
+                        new RelayCommand(param => this.OpenBerichten())),
+                    new CommandViewModel(
+                        StringResources.ButtonMemos,
+                        new RelayCommand(param => this.OpenMemos())),
+                    new CommandViewModel(
+                        StringResources.ButtonSchermkleuren,
+                        new RelayCommand(param => this.OpenSchermkleuren())),
+                    //new CommandViewModel(
+                    //    StringResources.ButtonChangeLog,
+                    //    new RelayCommand(param => this.OpenChangeLog())),
+                    new CommandViewModel(
+                        StringResources.ButtonGeslotenDagen,
+                        new RelayCommand(param => this.OpenGeslotenDagen())),
+                    new CommandViewModel(
+                        StringResources.ButtonSysteemInstellingen,
+                        new RelayCommand(param => this.OpenSysteemInstellingen())),
+                    new CommandViewModel(
+                        StringResources.ButtonSluiten,
+                        CloseCommand)
+                };
+            }
+
+            return new List<CommandViewModel>
+                {
+                    new CommandViewModel(
+                        StringResources.ButtonPlanning,
+                        new RelayCommand(param => this.OpenPlanning())),
+                    new CommandViewModel(
+                        StringResources.ButtonWeekOverzicht,
+                        new RelayCommand(param => this.OpenWeekOverzicht(false))),
+                    new CommandViewModel(
+                        StringResources.ButtonBands,
+                        new RelayCommand(param => this.OpenBands())),
+                    new CommandViewModel(
+                        StringResources.ButtonIncidenteleBands,
+                        new RelayCommand(param => this.OpenIncidenteleBands())),
+                    new CommandViewModel(
+                        StringResources.ButtonBeheerders,
+                        new RelayCommand(param => this.OpenBeheerders())),
+                    new CommandViewModel(
+                        StringResources.ButtonBerichten,
+                        new RelayCommand(param => this.OpenBerichten())),
+                    new CommandViewModel(
+                        StringResources.ButtonMemos,
+                        new RelayCommand(param => this.OpenMemos())),
+                    new CommandViewModel(
+                        StringResources.ButtonSchermkleuren,
+                        new RelayCommand(param => this.OpenSchermkleuren())),
+                    new CommandViewModel(
+                        StringResources.ButtonSluiten,
+                        CloseCommand)
+                };
+
+        }
+
+        #endregion // Commands
+
+        #region Workspaces
+
+        /// <summary>
+        /// Returns the collection of available workspaces to display.
+        /// A 'workspace' is a ViewModel that can request to be closed.
+        /// </summary>
+        public ObservableCollection<WorkspaceViewModel> Workspaces
+        {
+            get
+            {
+                if (_workspaces == null)
+                {
+                    _workspaces = new ObservableCollection<WorkspaceViewModel>();
+                    _workspaces.CollectionChanged += this.OnWorkspacesChanged;
+                }
+                return _workspaces;
+            }
+        }
+
+        void OnWorkspacesChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems != null && e.NewItems.Count != 0)
+                foreach (WorkspaceViewModel workspace in e.NewItems)
+                    workspace.RequestClose += this.OnWorkspaceRequestClose;
+
+            if (e.OldItems != null && e.OldItems.Count != 0)
+                foreach (WorkspaceViewModel workspace in e.OldItems)
+                    workspace.RequestClose -= this.OnWorkspaceRequestClose;
+        }
+
+        void OnWorkspaceRequestClose(object sender, EventArgs e)
+        {
+            WorkspaceViewModel workspace = sender as WorkspaceViewModel;
+            if (sender is LogboekWeekOverzichtViewModel)
+            {
+                //Als het planningoverzicht geladen is dan altijd na het sluiten van een tab daar naar toe gaan...
+                LogboekViewModel workspace2 =
+                this.Workspaces.FirstOrDefault(vm => vm is LogboekViewModel)
+                as LogboekViewModel;
+
+                if (workspace2 != null)
+                {
+                    this.SetActiveWorkspace(workspace2);
+                    workspace.Dispose();
+                    this.Workspaces.Remove(workspace);
+                    return;
+                }
+            }
+            workspace.Dispose();
+            this.Workspaces.Remove(workspace);
+
+            if (_beheerder != HuidigeBeheerder)
+            {
+                //Beheerder is gewijzigd, dus het opstartscherm tonen
+                //TODO
+                OnPropertyChanged("HuidigeBeheerder");
+            }
+            else
+            {
+                if (sender is SchermkleurenViewModel)
+                {
+                    Helper.SetColors();
+                }
+
+                //Als het planningoverzicht geladen is dan altijd na het sluiten van een tab daar naar toe gaan...
+                PlanningOverichtViewModel workspace2 =
+                this.Workspaces.FirstOrDefault(vm => vm is PlanningOverichtViewModel)
+                as PlanningOverichtViewModel;
+
+                if (workspace2 != null)
+                {
+                    this.SetActiveWorkspace(workspace2);
+                }
+            }
+        }
+
+        private void OpenScherm<T>() where T : WorkspaceViewModel,new()
+        {
+            T scherm = this.Workspaces.FirstOrDefault(s => s is T) as T;
+
+            if (scherm == null)
+            {
+                scherm = new T();
+                this.Workspaces.Add(scherm);
+            }
+
+            SetActiveWorkspace(scherm);
+        }
+
+        private void SetActiveWorkspace(WorkspaceViewModel workspace)
+        {
+            Debug.Assert(this.Workspaces.Contains(workspace));
+
+            ICollectionView collectionView = CollectionViewSource.GetDefaultView(this.Workspaces);
+            if (collectionView != null)
+                collectionView.MoveCurrentTo(workspace);
+        }
+
+        #endregion // Workspaces
+
+        #region Private Helpers
+
+        private void OpenGeslotenDagen()
+        {
+            OpenScherm<GeslotenOverzichtViewModel>();
+        }
+
+        private void OpenSysteemInstellingen()
+        {
+            OpenScherm<InstellingenViewModel>();
+        }
+
+        private void OpenSchermkleuren()
+        {
+            OpenScherm<SchermkleurenViewModel>();
+        }
+
+        private void OpenWeekOverzicht(bool dezeWeek)
+        {
+            LogboekWeekOverzichtViewModel workspace =
+               this.Workspaces.FirstOrDefault(vm => vm is LogboekWeekOverzichtViewModel)
+               as LogboekWeekOverzichtViewModel;
+
+            if (workspace == null)
+            {
+                workspace = new LogboekWeekOverzichtViewModel();
+                workspace.OnShowLogboek += new EventHandler<ShowLogboekEventArgs>(workspace_OnShowLogboek);
+                this.Workspaces.Add(workspace);
+            }
+            else if (dezeWeek)
+            {
+                workspace.HuidigeDatum = DateTime.Today;
+            }
+
+            this.SetActiveWorkspace(workspace);
+        }
+
+        private void OpenLogboek()
+        {
+            PlanningOverichtViewModel planning =
+                this.Workspaces.FirstOrDefault(vm => vm is PlanningOverichtViewModel)
+                as PlanningOverichtViewModel;
+
+            LogboekViewModel workspace =
+                this.Workspaces.FirstOrDefault(vm => vm is LogboekViewModel)
+                as LogboekViewModel;
+
+            if (workspace == null)
+            {
+                workspace = new LogboekViewModel(planning == null ? DateTime.Today : planning.HuidigeDatum);
+                this.Workspaces.Add(workspace);
+            }
+            else
+            {
+                workspace.HuidigeDatum = planning == null ? DateTime.Today : planning.HuidigeDatum;
+            }
+
+            this.SetActiveWorkspace(workspace);
+            
+        }
+
+        private void OpenBeheerders()
+        {
+            OpenScherm<BeheerderOverzichtViewModel>();
+        }
+
+        private void OpenMemos()
+        {
+            OpenScherm<MemoOverzichtViewModel>();
+        }
+
+        private void OpenBerichten()
+        {
+            OpenScherm<BerichtOverzichtViewModel>();
+        }
+
+        private void OpenChangeLog()
+        {
+            OpenScherm<ChangeLogOverzichtViewModel>();
+        }
+
+        private void OpenPlanning()
+        {
+            PlanningOverichtViewModel workspace =
+                this.Workspaces.FirstOrDefault(vm => vm is PlanningOverichtViewModel)
+                as PlanningOverichtViewModel;
+
+            if (workspace == null)
+            {
+                workspace = new PlanningOverichtViewModel();
+                workspace.OnShowLogboek += new EventHandler<ShowLogboekEventArgs>(workspace_OnShowLogboek);
+                this.Workspaces.Add(workspace);
+            }
+
+            this.SetActiveWorkspace(workspace);
+        }
+
+        void workspace_OnShowLogboek(object sender, ShowLogboekEventArgs e)
+        {
+            OpenLogboek(e.Datum,false);
+        }
+
+        private void OpenLogboek(DateTime datum, bool InitieelInloggen )
+        {
+            LogboekViewModel workspace =
+                    this.Workspaces.FirstOrDefault(vm => vm is LogboekViewModel)
+                    as LogboekViewModel;
+
+            if (workspace == null)
+            {
+                workspace = new LogboekViewModel(datum);
+                this.Workspaces.Add(workspace);
+            }
+            else
+            {
+                workspace.HuidigeDatum = datum;
+            }
+
+            this.SetActiveWorkspace(workspace);
+
+            if (InitieelInloggen)
+            {
+                OpenWeekOverzicht(true);
+            }
+        }
+
+        private void OpenBands()
+        {
+            OpenScherm<BandOverzichtViewModel>();
+        }
+
+        public void HomeCommand()
+        {
+            PlanningOverichtViewModel workspace =
+                this.Workspaces.FirstOrDefault(vm => vm is PlanningOverichtViewModel)
+                as PlanningOverichtViewModel;
+
+            if (workspace == null)
+            {
+                workspace = new PlanningOverichtViewModel();
+                this.Workspaces.Add(workspace);
+            }
+            else
+            {
+                workspace.DezeWeek.Command.Execute(null);
+            }
+
+            this.SetActiveWorkspace(workspace);
+        }
+
+        private void OpenIncidenteleBands()
+        {
+            OpenScherm<IncidenteleBandOverzichtViewModel>();
+        }
+
+        #endregion // Private Helpers
+
+        #region Dispose
+
+        protected override void OnDispose()
+        {
+            foreach (var item in _workspaces)
+            {
+                item.Dispose();
+            }
+            _notifier.Dispose();
+        }
+
+        #endregion
+    }
+}

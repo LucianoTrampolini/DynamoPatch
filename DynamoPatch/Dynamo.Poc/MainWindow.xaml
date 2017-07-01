@@ -1,0 +1,10 @@
+﻿<Window x:Class="Dynamo.Poc.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:sdk="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Input.Toolkit"
+        xmlns:p="clr-namespace:Dynamo.Poc"
+        Title="MainWindow" Height="350" Width="525">
+    <StackPanel>
+        <p:GeadresseerdeSelector Height="70" Width="auto"></p:GeadresseerdeSelector>
+    </StackPanel>
+</Window>

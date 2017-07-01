@@ -1,0 +1,9 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:vm="clr-namespace:Dynamo.Boekingssysteem.ViewModel.ChangeLog"
+                    xmlns:vw="clr-namespace:Dynamo.Boekingssysteem.View.ChangeLog">
+    <DataTemplate DataType="{x:Type vm:ChangeLogOverzichtViewModel}">
+        <vw:ChangeLogOverzicht />
+    </DataTemplate>
+    
+</ResourceDictionary>

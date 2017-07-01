@@ -1,0 +1,77 @@
+﻿<UserControl x:Class="Dynamo.Boekingssysteem.View.Planning.PlanningOverzicht"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:dyn="clr-namespace:Dynamo.Boekingssysteem.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="1000" d:DesignWidth="1500">
+    <Grid Height="Auto" Width="Auto" MaxHeight="1000" MaxWidth="1500" >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="180"/>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>    
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="*" />
+            
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal" Grid.ColumnSpan="2">
+            <Button Style="{StaticResource NavigateButton}" HorizontalAlignment="Left" Content="{Binding Path=VorigeWeek.DisplayName}" Command="{Binding Path=VorigeWeek.Command}" />
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Stretch" Width="80">
+                <Label Style="{StaticResource HeaderLabel}" Content="{Binding Path=HuidigeWeek}" />
+                <Label Style="{StaticResource HeaderLabel}" Content="{Binding Path=HuidigJaar}" />
+            </StackPanel>
+            <Button Style="{StaticResource NavigateButton}" HorizontalAlignment="Right" Content="{Binding Path=VolgendeWeek.DisplayName}" Command="{Binding Path=VolgendeWeek.Command}"/>
+            <Button Style="{StaticResource NavigateButton}" Width="50" HorizontalAlignment="Right" Content="{Binding Path=DezeWeek.DisplayName}" Command="{Binding Path=DezeWeek.Command}"/>
+        </StackPanel>
+        <ContentControl
+          Grid.Row="1"
+          Content="{Binding Path=Dagen}"
+          ContentTemplate="{StaticResource DagenTemplate}"
+          Style="{StaticResource PlanningColumnStyle}"
+          
+          />
+
+
+        <ContentControl
+          Grid.Row="1"
+          Grid.Column="1"
+          Content="{Binding Path=BoekingenOefenruimte1}"
+          ContentTemplate="{StaticResource PlanningTemplate}"
+          Style="{StaticResource PlanningColumnStyle}"
+          
+          />
+
+        <dyn:AnimatedPanel
+            Grid.Row="1"
+            Grid.Column="2"
+            >
+            <ContentControl 
+                Margin="0"
+                Content="{Binding Path=CurrentViewModel}" />
+        </dyn:AnimatedPanel>
+        
+        <ContentControl
+          Grid.Row="1"
+          Grid.Column="3"
+          Content="{Binding Path=BoekingenOefenruimte2}"
+          ContentTemplate="{StaticResource PlanningTemplate}"
+          Style="{StaticResource PlanningColumnStyle}"
+          
+          />
+
+        <ContentControl
+          Grid.Row="1"
+          Grid.Column="4"
+          Content="{Binding Path=BoekingenOefenruimte3}"
+          ContentTemplate="{StaticResource PlanningTemplate}"
+          Style="{StaticResource PlanningColumnStyle}"
+          
+          />
+    </Grid>
+</UserControl>

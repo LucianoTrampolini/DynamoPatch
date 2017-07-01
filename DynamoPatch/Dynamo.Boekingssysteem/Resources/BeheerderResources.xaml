@@ -1,0 +1,23 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:vm="clr-namespace:Dynamo.Boekingssysteem.ViewModel.Beheerder"
+                    xmlns:vw="clr-namespace:Dynamo.Boekingssysteem.View.Beheerder">
+    <DataTemplate DataType="{x:Type vm:BeheerderOverzichtViewModel}">
+        <vw:BeheerderOverzicht />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:AanmeldenViewModel}">
+        <vw:Aanmelden />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:VergoedingOverzichtViewModel}">
+        <vw:VergoedingOverzicht />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:EditBeheerderViewModel}">
+        <vw:EditBeheerder />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:InstellingenViewModel}">
+        <vw:Instellingen />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:SchermkleurenViewModel}">
+        <vw:Schermkleuren />
+    </DataTemplate>
+</ResourceDictionary>

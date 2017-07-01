@@ -1,0 +1,22 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:vm="clr-namespace:Dynamo.Boekingssysteem.ViewModel.Bericht"
+                    xmlns:vw="clr-namespace:Dynamo.Boekingssysteem.View.Bericht">
+
+    <DataTemplate DataType="{x:Type vm:MemoOverzichtViewModel}">
+        <vw:MemoOverzicht />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:EditMemoViewModel}">
+        <vw:EditMemo />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:BerichtOverzichtViewModel}">
+        <vw:MemoOverzicht />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:EditBerichtViewModel}">
+        <vw:EditMemo />
+    </DataTemplate>
+
+</ResourceDictionary>

@@ -1,0 +1,21 @@
+﻿<UserControl x:Class="Dynamo.Poc.GeadresseerdeSelector"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:sdk="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Input.Toolkit"
+             mc:Ignorable="d" 
+             d:DesignHeight="65" d:DesignWidth="300">
+    <StackPanel>
+        <StackPanel x:Name="Geadresseerden" MinHeight="35">
+            
+        </StackPanel>
+        
+        <sdk:AutoCompleteBox x:Name="GeadresseerdenInput" ItemsSource="{Binding Path=BeheerdersString}" Width="Auto" SelectedItem="{Binding Path=Beheerder, Mode=TwoWay}"
+                                     FilterMode="StartsWith"
+                                     MaxDropDownHeight="100"
+                                        Height="30" KeyDown="AutoCompleteBox_KeyDown">
+            
+        </sdk:AutoCompleteBox>
+    </StackPanel>
+</UserControl>

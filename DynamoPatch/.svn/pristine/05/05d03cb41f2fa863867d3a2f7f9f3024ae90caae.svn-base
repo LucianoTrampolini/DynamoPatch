@@ -1,0 +1,56 @@
+﻿<UserControl x:Class="Dynamo.Boekingssysteem.View.Planning.Logboek"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:dyn="clr-namespace:Dynamo.Boekingssysteem.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="400" d:DesignWidth="680">
+
+    <UserControl.Resources>
+        <dyn:BooleanVisibilityValueConverter x:Key="BoolToVisible"></dyn:BooleanVisibilityValueConverter>
+    </UserControl.Resources>
+    <dyn:AnimatedPanel MaxWidth="680" HorizontalAlignment="Left" Margin="2">
+        <dyn:AnimatedPanel Orientation="Horizontal" Width="300">
+            <Label Style="{StaticResource HeaderLabel}" Content="{Binding Path=Datum}" HorizontalContentAlignment="Left" Width="200"></Label>
+            <Button Style="{StaticResource NavigateButton}" Command="{Binding VorigeDag.Command}" Content="{Binding VorigeDag.DisplayName}"/>
+            <Button Style="{StaticResource NavigateButton}" Command="{Binding VolgendeDag.Command}" Content="{Binding VolgendeDag.DisplayName}"/>
+        </dyn:AnimatedPanel>
+        <dyn:AnimatedPanel Orientation="Horizontal" Width="850">
+            <TextBox Margin ="102,2,2,2" Text="{Binding Path=DagOpmerking,UpdateSourceTrigger=PropertyChanged}" dyn:FocusExtension.IsFocused="{Binding Path=InitialFocus}" Width="825" Height="80" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"></TextBox>
+        </dyn:AnimatedPanel>
+        <dyn:AnimatedPanel Orientation="Horizontal" Width="650">
+            <Label Style="{StaticResource DescriptionLabel}" Content="Middag" HorizontalContentAlignment="Left" ></Label>
+            <TextBox Text="{Binding Path=MiddagOpmerking,UpdateSourceTrigger=PropertyChanged}" Width="200" ></TextBox>
+        </dyn:AnimatedPanel>
+        <ContentControl
+            Content="{Binding Path=Oefenruimte1Middag}"
+            Visibility="{Binding Path=Oefenruimte1MiddagVisible,Converter={StaticResource BoolToVisible}}"
+          />
+        <ContentControl
+            Content="{Binding Path=Oefenruimte2Middag}"
+            Visibility="{Binding Path=Oefenruimte2MiddagVisible,Converter={StaticResource BoolToVisible}}"
+          />
+        <ContentControl
+            Content="{Binding Path=Oefenruimte3Middag}"
+            Visibility="{Binding Path=Oefenruimte3MiddagVisible,Converter={StaticResource BoolToVisible}}"
+          />
+        <dyn:AnimatedPanel Orientation="Horizontal" Width="650">
+            <Label Style="{StaticResource DescriptionLabel}" Content="Avond" HorizontalContentAlignment="Left" ></Label>
+            <TextBox Text="{Binding Path=AvondOpmerking,UpdateSourceTrigger=PropertyChanged}" Width="200" ></TextBox>
+        </dyn:AnimatedPanel>
+        <ContentControl
+            Content="{Binding Path=Oefenruimte1Avond}"
+            Visibility="{Binding Path=Oefenruimte1AvondVisible,Converter={StaticResource BoolToVisible}}"
+          />
+        <ContentControl
+            Content="{Binding Path=Oefenruimte2Avond}"
+            Visibility="{Binding Path=Oefenruimte2AvondVisible,Converter={StaticResource BoolToVisible}}"
+          />
+        <ContentControl
+            Content="{Binding Path=Oefenruimte3Avond}"
+            Visibility="{Binding Path=Oefenruimte3AvondVisible,Converter={StaticResource BoolToVisible}}"
+          />
+    </dyn:AnimatedPanel>
+    
+</UserControl>

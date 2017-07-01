@@ -1,0 +1,73 @@
+﻿<UserControl x:Class="Dynamo.Boekingssysteem.View.Beheerder.VergoedingOverzicht"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:dyn="clr-namespace:Dynamo.Boekingssysteem.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    
+    <UserControl.Resources>
+        <CollectionViewSource
+          x:Key="Vergoedingen" 
+          Source="{Binding Path=Vergoedingen}">
+        </CollectionViewSource>
+    </UserControl.Resources>
+    
+    <Grid Height="Auto" Width="Auto" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="35" MaxHeight="35" />
+            <RowDefinition Height="35" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+
+        <dyn:AnimatedPanel Orientation="Horizontal" Width="300">
+            <Button Style="{StaticResource NavigateButton}" Command="{Binding VorigeMaand.Command}" Content="{Binding VorigeMaand.DisplayName}"/>
+            <Label Content="{Binding HuidigeMaand}" Width="100"/>
+            <Button Style="{StaticResource NavigateButton}" Command="{Binding VolgendeMaand.Command}" Content="{Binding VolgendeMaand.DisplayName}"/>
+        </dyn:AnimatedPanel>
+
+        <Label Grid.Row="1" Content="{Binding DisplayName}"/>
+
+        <ListView Grid.Row="2"
+         DataContext="{StaticResource Vergoedingen}" 
+         ItemContainerStyle="{StaticResource ListViewItemStyle}"
+         ItemsSource="{Binding}"
+         >
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn 
+                        Header="Datum" 
+                        DisplayMemberBinding="{Binding Path=Datum}" 
+                        
+                    />
+                    <GridViewColumn 
+                        Header="Dag" 
+                        DisplayMemberBinding="{Binding Path=Dag}" 
+                    />
+                    <GridViewColumn 
+                        Header="Dagdeel" 
+                        DisplayMemberBinding="{Binding Path=Dagdeel}" 
+                    />
+                    <GridViewColumn 
+                        Header="Taak" 
+                        DisplayMemberBinding="{Binding Path=Taak}" 
+                    />
+                    <GridViewColumn 
+                        Header="Bedrag" 
+                        DisplayMemberBinding="{Binding Path=Bedrag}"
+                    />
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+        <ContentControl Grid.Row="3" 
+            Content="{Binding Path=Commands}"
+            ContentTemplate="{StaticResource CommandButtons}"
+            HorizontalAlignment="Stretch"
+        />
+
+    </Grid>
+    
+</UserControl>

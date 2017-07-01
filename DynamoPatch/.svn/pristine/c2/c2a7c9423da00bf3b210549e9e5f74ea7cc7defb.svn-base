@@ -1,0 +1,285 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ApplictatieNaam" xml:space="preserve">
+    <value>Dynamo Boekingssysteem</value>
+  </data>
+  <data name="Betalingen" xml:space="preserve">
+    <value>Betalingen</value>
+  </data>
+  <data name="ButtonAanmelden" xml:space="preserve">
+    <value>Aanmelden</value>
+  </data>
+  <data name="ButtonAnnuleren" xml:space="preserve">
+    <value>Annuleren</value>
+  </data>
+  <data name="ButtonBands" xml:space="preserve">
+    <value>Bands</value>
+  </data>
+  <data name="ButtonBeheerders" xml:space="preserve">
+    <value>Beheerders</value>
+  </data>
+  <data name="ButtonBerichten" xml:space="preserve">
+    <value>Berichten</value>
+  </data>
+  <data name="ButtonBetalen" xml:space="preserve">
+    <value>Betalen</value>
+  </data>
+  <data name="ButtonChangeLog" xml:space="preserve">
+    <value>Change log</value>
+  </data>
+  <data name="ButtonGeslotenDagen" xml:space="preserve">
+    <value>Gesloten dagen</value>
+  </data>
+  <data name="ButtonIncidenteleBands" xml:space="preserve">
+    <value>Incidentele bands</value>
+  </data>
+  <data name="ButtonLogboek" xml:space="preserve">
+    <value>Logboek</value>
+  </data>
+  <data name="ButtonMemos" xml:space="preserve">
+    <value>Memo's</value>
+  </data>
+  <data name="ButtonNieuw" xml:space="preserve">
+    <value>Nieuw</value>
+  </data>
+  <data name="ButtonNieuwContract" xml:space="preserve">
+    <value>Nieuw contract</value>
+  </data>
+  <data name="ButtonOk" xml:space="preserve">
+    <value>Ok</value>
+  </data>
+  <data name="ButtonOntdubbelen" xml:space="preserve">
+    <value>Samenvoegen</value>
+  </data>
+  <data name="ButtonOpslaan" xml:space="preserve">
+    <value>Opslaan</value>
+  </data>
+  <data name="ButtonPlanning" xml:space="preserve">
+    <value>Planning</value>
+  </data>
+  <data name="ButtonSchermkleuren" xml:space="preserve">
+    <value>Schermkleuren</value>
+  </data>
+  <data name="ButtonSluiten" xml:space="preserve">
+    <value>Sluiten</value>
+  </data>
+  <data name="ButtonSysteemInstellingen" xml:space="preserve">
+    <value>Systeeminstellingen</value>
+  </data>
+  <data name="ButtonVergoedingen" xml:space="preserve">
+    <value>Vergoedingen</value>
+  </data>
+  <data name="ButtonVerwijderen" xml:space="preserve">
+    <value>Verwijderen</value>
+  </data>
+  <data name="ButtonVolgende" xml:space="preserve">
+    <value>Volgende</value>
+  </data>
+  <data name="ButtonVorige" xml:space="preserve">
+    <value>Vorige</value>
+  </data>
+  <data name="ButtonWeekOverzicht" xml:space="preserve">
+    <value>Weekoverzicht</value>
+  </data>
+  <data name="ButtonWijzigen" xml:space="preserve">
+    <value>Lezen/Wijzigen</value>
+  </data>
+  <data name="DagDinsdag" xml:space="preserve">
+    <value>Dinsdag</value>
+  </data>
+  <data name="DagDonderdag" xml:space="preserve">
+    <value>Donderdag</value>
+  </data>
+  <data name="DagMaandag" xml:space="preserve">
+    <value>Maandag</value>
+  </data>
+  <data name="DagVrijdag" xml:space="preserve">
+    <value>Vrijdag</value>
+  </data>
+  <data name="DagWoensdag" xml:space="preserve">
+    <value>Woensdag</value>
+  </data>
+  <data name="DagZaterdag" xml:space="preserve">
+    <value>Zaterdag</value>
+  </data>
+  <data name="DagZondag" xml:space="preserve">
+    <value>Zondag</value>
+  </data>
+  <data name="MaandApril" xml:space="preserve">
+    <value>April</value>
+  </data>
+  <data name="MaandAugustus" xml:space="preserve">
+    <value>Augustus</value>
+  </data>
+  <data name="MaandDecember" xml:space="preserve">
+    <value>December</value>
+  </data>
+  <data name="MaandFebruari" xml:space="preserve">
+    <value>Februari</value>
+  </data>
+  <data name="MaandJanuari" xml:space="preserve">
+    <value>Januari</value>
+  </data>
+  <data name="MaandJuli" xml:space="preserve">
+    <value>Juli</value>
+  </data>
+  <data name="MaandJuni" xml:space="preserve">
+    <value>Juni</value>
+  </data>
+  <data name="MaandMaart" xml:space="preserve">
+    <value>Maart</value>
+  </data>
+  <data name="MaandMei" xml:space="preserve">
+    <value>Mei</value>
+  </data>
+  <data name="MaandNovember" xml:space="preserve">
+    <value>November</value>
+  </data>
+  <data name="MaandOktober" xml:space="preserve">
+    <value>Oktober</value>
+  </data>
+  <data name="MaandSeptember" xml:space="preserve">
+    <value>September</value>
+  </data>
+  <data name="QuestionBandVerwijderen" xml:space="preserve">
+    <value>De geselecteerde band verwijderen?</value>
+  </data>
+  <data name="QuestionBeheerderVerwijderen" xml:space="preserve">
+    <value>De geselecteerde beheerder verwijderen?</value>
+  </data>
+  <data name="QuestionBerichtVerwijderen" xml:space="preserve">
+    <value>Het geselecteerde bericht verwijderen?</value>
+  </data>
+  <data name="QuestionGeslotenVerwijderen" xml:space="preserve">
+    <value>De gesloten periode verwijderen?</value>
+  </data>
+  <data name="QuestionItemVerwijderen" xml:space="preserve">
+    <value>Het geselecteerde item verwijderen?</value>
+  </data>
+  <data name="QuestionMemoVerwijderen" xml:space="preserve">
+    <value>De geselecteerde memo verwijderen?</value>
+  </data>
+  <data name="QuestionVergoedingVerwijderen" xml:space="preserve">
+    <value>De geselecteerde vergoeding verwijderen?</value>
+  </data>
+  <data name="TotaalOpenstaand" xml:space="preserve">
+    <value>Totaal openstaand bedrag: </value>
+  </data>
+</root>

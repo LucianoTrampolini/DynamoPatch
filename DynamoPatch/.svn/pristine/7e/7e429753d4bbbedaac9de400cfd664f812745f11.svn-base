@@ -1,0 +1,71 @@
+﻿<Window x:Class="Dynamo.Boekingssysteem.View.HoofdScherm"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:hc="http://www.hardcodet.net/taskbar"
+                    xmlns:dyn="clr-namespace:Dynamo.Boekingssysteem.Controls"        
+        Title="Dynamo Operating System" Height="750" Width="1330" WindowStartupLocation="CenterScreen" MinWidth="1280" MaxHeight="900" MaxWidth="1600" Icon="/Dynamo3.ico">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="..\Resources\MainResources.xaml" />
+                <ResourceDictionary Source="..\Resources\BeheerderResources.xaml" />
+                <ResourceDictionary Source="..\Resources\BandResources.xaml" />
+                <ResourceDictionary Source="..\Resources\ChangeLogResources.xaml" />
+                <ResourceDictionary Source="..\Resources\PlanningResources.xaml" />
+                <ResourceDictionary Source="..\Resources\BerichtResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            
+        </ResourceDictionary>
+    </Window.Resources>
+
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="4" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Border 
+                Grid.Column="0" 
+                Style="{StaticResource MainBorderStyle}"
+                Width="170"
+                >
+                <HeaderedContentControl
+                  Content="{Binding Path=Commands}"
+                  ContentTemplate="{StaticResource CommandsTemplate}"
+                  Header="Control Panel"
+          
+                  Style="{StaticResource MainHCCStyle}"
+                  />
+            </Border>
+
+            <Border
+                Grid.Column="2" 
+                Style="{StaticResource MainBorderStyle}"
+                >
+                <HeaderedContentControl 
+                  Content="{Binding Path=Workspaces}"
+                  ContentTemplate="{StaticResource WorkspacesTemplate}"
+                  
+                  Header="{Binding Path=HuidigeBeheerder}"
+                  Style="{StaticResource HoofdBalk}"
+                  />
+            </Border>
+
+        <hc:TaskbarIcon x:Name="tbi"
+            IconSource="/Dynamo3.ico"
+            ToolTipText="Dynamo Operating System" 
+          >
+            
+
+        </hc:TaskbarIcon>
+           
+    </Grid>
+
+
+
+
+
+</Window>
+

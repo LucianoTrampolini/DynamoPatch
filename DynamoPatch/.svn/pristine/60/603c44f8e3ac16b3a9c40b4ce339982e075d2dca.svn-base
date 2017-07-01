@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PublishUrlHistory>ftp://trampolinisoftware.nl/public_html/install/boekingssysteem/|ftp://trampolinisoftware.nl/public_html/install/|ftp://trampolinisoftware.nl/|ftp://trampolinisoftware.nl/Install/|http://trampolinisoftware.nl/Install/</PublishUrlHistory>
+    <InstallUrlHistory>http://trampolinisoftware.nl/install/boekingssysteem/|http://trampolinisoftware.nl/install/boekingssysteem/Dynamo.Boekingssysteem.application/|http://www.trampolinisoftware.nl/install/</InstallUrlHistory>
+    <SupportUrlHistory />
+    <UpdateUrlHistory />
+    <BootstrapperUrlHistory />
+    <ErrorReportUrlHistory />
+    <FallbackCulture>en-US</FallbackCulture>
+    <VerifyUploadedFiles>false</VerifyUploadedFiles>
+    <ProjectView>ShowAllFiles</ProjectView>
+  </PropertyGroup>
+</Project>

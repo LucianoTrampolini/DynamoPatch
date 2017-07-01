@@ -1,0 +1,45 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:vm="clr-namespace:Dynamo.Boekingssysteem.ViewModel.Band"
+                    xmlns:vw="clr-namespace:Dynamo.Boekingssysteem.View.Band">
+
+    <DataTemplate DataType="{x:Type vm:BandOverzichtViewModel}">
+        <vw:BandOverzicht />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:EditBandViewModel}">
+        <vw:EditBand />
+    </DataTemplate>
+    
+    
+    <DataTemplate DataType="{x:Type vm:IncidenteleBandOverzichtViewModel}">
+        <vw:IncidenteleBandOverzicht />
+    </DataTemplate>
+    <DataTemplate DataType="{x:Type vm:EditIncidenteleBandViewModel}">
+        <vw:EditIncidenteleBand />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:BandBetalenViewModel}">
+        <vw:BandBetalen />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:NieuweBetalingViewModel}">
+        <vw:EditBetaling />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:NieuweRekeningViewModel}">
+        <vw:EditBetaling />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:WijzigBetalingViewModel}">
+        <vw:EditBetaling />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:OntdubbelViewModel}">
+        <vw:Ontdubbel />
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type vm:BandBoekingOverzichtViewModel}">
+        <vw:BandBoekingOverzicht />
+    </DataTemplate>
+
+</ResourceDictionary>

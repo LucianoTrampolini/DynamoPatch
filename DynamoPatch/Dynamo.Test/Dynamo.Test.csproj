@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{0B322844-95B6-4AC0-8FE1-47F13DD6AF9B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Dynamo.Test</RootNamespace>
+    <AssemblyName>Dynamo.Test</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
+    <Reference Include="nunit-console-runner">
+      <HintPath>NUnit\nunit-console-runner.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework, Version=2.5.10.11092, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>NUnit\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Base\BusinessRuleBaseTest.cs" />
+    <Compile Include="BL\BusinessRules\Band\BijwerkenBetalingenContractTest.cs" />
+    <Compile Include="BL\BusinessRules\Band\BijwerkenContractTest.cs" />
+    <Compile Include="BL\BusinessRules\Band\BijwerkenPlanningContractTest.cs" />
+    <Compile Include="BL\BusinessRules\Band\BijwerkenPlanningEindDatumContractTest.cs" />
+    <Compile Include="BL\BusinessRules\Band\HandleNaamChangedTest.cs" />
+    <Compile Include="BL\BusinessRules\Beheerder\KanAanmeldenTest.cs" />
+    <Compile Include="BL\Repository\BandRepositoryTest.cs" />
+    <Compile Include="BL\Repository\BeheerderRepositoryTest.cs" />
+    <Compile Include="BL\Repository\BoekingRepositoryTest.cs" />
+    <Compile Include="Boekingssysteem\ViewModel\HoofdschermViewModelTests.cs" />
+    <Compile Include="Common\CommonMethodsTests.cs" />
+    <Compile Include="Common\DateExtensionsTests.cs" />
+    <Compile Include="Common\DecimalExtensionsTests.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="NUnit\nunit-console-runner.dll" />
+    <None Include="NUnit\nunit.framework.dll" />
+    <None Include="NUnit\nunit.mocks.dll" />
+    <None Include="NUnit\nunit.util.dll" />
+    <None Include="NUnit\nunit.core.interfaces.dll" />
+    <None Include="NUnit\nunit.core.dll" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Dynamo.BL\Dynamo.BL.csproj">
+      <Project>{A91E4B73-138D-45B0-86DA-C035B8F83F60}</Project>
+      <Name>Dynamo.BL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Dynamo.Boekingssysteem\Dynamo.Boekingssysteem.csproj">
+      <Project>{FB6F1C2E-5116-4EF1-BF5D-A3E636DE9DD0}</Project>
+      <Name>Dynamo.Boekingssysteem</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Dynamo.Common\Dynamo.Common.csproj">
+      <Project>{AE7A1FBA-923D-4F3A-932B-218ADCD3CCB1}</Project>
+      <Name>Dynamo.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Dynamo.Model\Dynamo.Model.csproj">
+      <Project>{2C187017-AF32-4E2E-9317-EADBEEC5D18B}</Project>
+      <Name>Dynamo.Model</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

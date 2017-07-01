@@ -1,0 +1,49 @@
+﻿<UserControl x:Class="Dynamo.Boekingssysteem.View.Bericht.EditMemo"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:dyn="clr-namespace:Dynamo.Boekingssysteem.Controls"
+              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="500">
+
+    <UserControl.Resources>
+        <dyn:BooleanVisibilityValueCollapseConverter x:Key="BoolToVisible"></dyn:BooleanVisibilityValueCollapseConverter>
+    </UserControl.Resources>
+    
+    <Border Style="{StaticResource SubItemBorder}">
+        <dyn:AnimatedPanel Margin="5" MaxWidth="500">
+            <dyn:AnimatedPanel Orientation="Horizontal" Visibility="{Binding Path=GeadresseerdenVisible,Converter={StaticResource BoolToVisible}}">
+                    
+                <ListBox 
+                    Width="490"
+                    Height="100"
+                    Style="{StaticResource CheckBoxListStyle}"
+                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                    ItemsSource="{Binding Path=Beheerders, UpdateSourceTrigger=PropertyChanged}"
+                    ItemContainerStyle="{StaticResource ListBoxItemStyle}"
+                    SelectionMode="Multiple"
+                    >
+                    
+                </ListBox>
+            </dyn:AnimatedPanel>
+            <dyn:AnimatedPanel Orientation="Horizontal">
+                <Label Style="{StaticResource DescriptionLabel}" Content="Omschrijving"></Label>
+                <TextBox IsReadOnly="{Binding Path=IsReadOnly}" Text="{Binding Path=Titel,UpdateSourceTrigger=PropertyChanged}" dyn:FocusExtension.IsFocused="{Binding Path=InitialFocus}" Width="390"></TextBox>
+            </dyn:AnimatedPanel>
+            <dyn:AnimatedPanel Orientation="Horizontal">
+
+                <TextBox IsReadOnly="{Binding Path=IsReadOnly}" Text="{Binding Path=Tekst,UpdateSourceTrigger=PropertyChanged}" Width="490" Height="200" AcceptsReturn="True" TextWrapping="Wrap"></TextBox>
+            </dyn:AnimatedPanel>
+            
+            <dyn:AnimatedPanel HorizontalAlignment="Stretch">
+                <ContentControl  
+                    Content="{Binding Path=Commands}"
+                    ContentTemplate="{StaticResource CommandButtons}"
+                    HorizontalContentAlignment="Right"
+                />
+            </dyn:AnimatedPanel>
+        </dyn:AnimatedPanel>
+    </Border>
+</UserControl>
