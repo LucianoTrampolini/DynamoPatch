@@ -10,109 +10,109 @@
         <dyn:AnimatedPanel Margin="0" MaxWidth="620" Orientation="Horizontal">
             <dyn:AnimatedPanel Margin="5" MaxWidth="300">
                 <dyn:AnimatedPanel Orientation="Horizontal">
-                    <Label Style="{StaticResource DescriptionLabel}" Content="Naam"></Label>
-                    <TextBox Text="{Binding Path=Naam}" dyn:FocusExtension.IsFocused="{Binding Path=InitialFocus}" Width="190"></TextBox>
+                    <Label Style="{StaticResource DescriptionLabel}" Content="Naam" />
+                    <TextBox Text="{Binding Path=Naam}" dyn:FocusExtension.IsFocused="{Binding Path=InitialFocus}" Width="190" />
                 </dyn:AnimatedPanel>
                 <dyn:AnimatedPanel Orientation="Horizontal">
-                    <Label Style="{StaticResource DescriptionLabel}" Content="Contract per"></Label>
-                    <TextBox Text="{Binding Path=ContractPer}" Width="190" IsEnabled="{Binding Path=IsNieuwContract}"></TextBox>
+                    <Label Style="{StaticResource DescriptionLabel}" Content="Contract per" />
+                    <TextBox Text="{Binding Path=ContractPer}" Width="190" IsEnabled="{Binding Path=IsNieuwContract}" />
                 </dyn:AnimatedPanel>
                 <dyn:AnimatedPanel Orientation="Horizontal">
-                    <Label Style="{StaticResource DescriptionLabel}" Content="Einde contract"></Label>
-                    <TextBox Text="{Binding Path=EindeContract,UpdateSourceTrigger=PropertyChanged}" Width="190"></TextBox>
+                    <Label Style="{StaticResource DescriptionLabel}" Content="Einde contract" />
+                    <TextBox Text="{Binding Path=EindeContract,UpdateSourceTrigger=PropertyChanged}" Width="190" />
                 </dyn:AnimatedPanel>
                 <dyn:AnimatedPanel Orientation="Horizontal">
-                    <Label Style="{StaticResource DescriptionLabel}" Content="Oefendag"></Label>
+                    <Label Style="{StaticResource DescriptionLabel}" Content="Oefendag" />
                     <ComboBox ItemsSource="{Binding Path=OefenDagen}" DisplayMemberPath="Value" SelectedValuePath="Key" SelectedValue="{Binding Path=OefenDag}" Width="190" IsEnabled="{Binding Path=IsNieuwContract}"/>
                 </dyn:AnimatedPanel>
                 <dyn:AnimatedPanel Orientation="Horizontal">
-                    <Label Style="{StaticResource DescriptionLabel}" Content="Dagdeel"></Label>
+                    <Label Style="{StaticResource DescriptionLabel}" Content="Dagdeel" />
                     <ComboBox ItemsSource="{Binding Path=Dagdelen}" DisplayMemberPath="Omschrijving" SelectedValuePath="Id" SelectedValue="{Binding Path=DagdeelId}" Width="190" IsEnabled="{Binding Path=IsNieuwContract}"/>
                 </dyn:AnimatedPanel>
                 <dyn:AnimatedPanel Orientation="Horizontal">
-                    <Label Style="{StaticResource DescriptionLabel}" Content="Oefenruimte"></Label>
+                    <Label Style="{StaticResource DescriptionLabel}" Content="Oefenruimte" />
                     <ComboBox ItemsSource="{Binding Path=Oefenruimtes}" DisplayMemberPath="Naam" SelectedValuePath="Id" SelectedValue="{Binding Path=OefenruimteId}" Width="190" IsEnabled="{Binding Path=IsNieuwContract}"/>
                 </dyn:AnimatedPanel>
                 <dyn:AnimatedPanel Orientation="Horizontal">
-                    <Label Style="{StaticResource DescriptionLabel}" Content="MaandHuur"></Label>
+                    <Label Style="{StaticResource DescriptionLabel}" Content="MaandHuur" />
                     <dyn:DecimalTextBox Text="{Binding Path=MaandHuur}" Width="80" />
                 </dyn:AnimatedPanel>
                 <dyn:AnimatedPanel Orientation="Horizontal">
-                    <Label Style="{StaticResource DescriptionLabel}" Content="Borg"></Label>
+                    <Label Style="{StaticResource DescriptionLabel}" Content="Borg" />
                     <dyn:DecimalTextBox Text="{Binding Path=Borg}" Width="80" />
                 </dyn:AnimatedPanel>
                 <dyn:AnimatedPanel Orientation="Horizontal">
-                    <Label Style="{StaticResource DescriptionLabel}" Content="Backline"></Label>
+                    <Label Style="{StaticResource DescriptionLabel}" Content="Backline" />
                     <dyn:IntegerTextBox Text="{Binding Path=Backline}" Width="80" />
                 </dyn:AnimatedPanel>
                 <dyn:AnimatedPanel Orientation="Horizontal">
-                    <Label Style="{StaticResource DescriptionLabel}" Content="Kasten"></Label>
+                    <Label Style="{StaticResource DescriptionLabel}" Content="Kasten" />
                     <dyn:IntegerTextBox Text="{Binding Path=Kasten}" Width="80" />
                 </dyn:AnimatedPanel>
                 <dyn:AnimatedPanel Orientation="Horizontal">
-                    <Label Style="{StaticResource DescriptionLabel}" Content="Microfoons"></Label>
+                    <Label Style="{StaticResource DescriptionLabel}" Content="Microfoons" />
                     <dyn:IntegerTextBox Text="{Binding Path=Microfoons}" Width="80" />
                 </dyn:AnimatedPanel>
                 <dyn:AnimatedPanel Orientation="Horizontal">
-                    <Label Style="{StaticResource DescriptionLabel}" Content="Extra versterkers"></Label>
+                    <Label Style="{StaticResource DescriptionLabel}" Content="Extra versterkers" />
                     <dyn:IntegerTextBox Text="{Binding Path=ExtraVersterkers}" Width="80" />
                 </dyn:AnimatedPanel>
                 <dyn:AnimatedPanel Orientation="Horizontal">
-                    <Label Style="{StaticResource DescriptionLabel}" Content="Crash"></Label>
+                    <Label Style="{StaticResource DescriptionLabel}" Content="Crash" />
                     <CheckBox IsChecked="{Binding Path=Crash}" />
                 </dyn:AnimatedPanel>
             </dyn:AnimatedPanel>
             
             <dyn:AnimatedPanel Margin="5" MaxWidth="300">
 
-                <Label Style="{StaticResource HeaderLabel}" Content="Contactpersoon 1" Height="28" Width="250" HorizontalContentAlignment="Center" ></Label>
+                <Label Style="{StaticResource HeaderLabel}" Content="Contactpersoon 1" Height="28" Width="250" HorizontalContentAlignment="Center" />
                 <dyn:AnimatedPanel Orientation="Horizontal">
-                    <Label Style="{StaticResource DescriptionLabel}" Content="Naam"></Label>
-                    <TextBox Text="{Binding Path=Contactpersoon1Naam}" Width="190"></TextBox>
+                    <Label Style="{StaticResource DescriptionLabel}" Content="Naam" />
+                    <TextBox Text="{Binding Path=Contactpersoon1Naam}" Width="190" />
                 </dyn:AnimatedPanel>
                 <dyn:AnimatedPanel Orientation="Horizontal">
-                    <Label Style="{StaticResource DescriptionLabel}" Content="Adres"></Label>
-                    <TextBox Text="{Binding Path=Contactpersoon1Adres}" Width="190"></TextBox>
+                    <Label Style="{StaticResource DescriptionLabel}" Content="Adres" />
+                    <TextBox Text="{Binding Path=Contactpersoon1Adres}" Width="190" />
                 </dyn:AnimatedPanel>
                 <dyn:AnimatedPanel Orientation="Horizontal">
-                    <Label Style="{StaticResource DescriptionLabel}" Content="Plaats"></Label>
-                    <TextBox Text="{Binding Path=Contactpersoon1Plaats}" Width="190"></TextBox>
+                    <Label Style="{StaticResource DescriptionLabel}" Content="Plaats" />
+                    <TextBox Text="{Binding Path=Contactpersoon1Plaats}" Width="190" />
                 </dyn:AnimatedPanel>
                 <dyn:AnimatedPanel Orientation="Horizontal">
-                    <Label Style="{StaticResource DescriptionLabel}" Content="Telefoon"></Label>
-                    <TextBox Text="{Binding Path=Contactpersoon1Telefoon}" Width="190"></TextBox>
+                    <Label Style="{StaticResource DescriptionLabel}" Content="Telefoon" />
+                    <TextBox Text="{Binding Path=Contactpersoon1Telefoon}" Width="190" />
                 </dyn:AnimatedPanel>
                 <dyn:AnimatedPanel Orientation="Horizontal">
-                    <Label Style="{StaticResource DescriptionLabel}" Content="Email"></Label>
-                    <TextBox Text="{Binding Path=Contactpersoon1Email}" Width="190"></TextBox>
+                    <Label Style="{StaticResource DescriptionLabel}" Content="Email" />
+                    <TextBox Text="{Binding Path=Contactpersoon1Email}" Width="190" />
                 </dyn:AnimatedPanel>
-                <Label Style="{StaticResource HeaderLabel}" Content="Contactpersoon 2" Width="250" HorizontalContentAlignment="Center"></Label>
+                <Label Style="{StaticResource HeaderLabel}" Content="Contactpersoon 2" Width="250" HorizontalContentAlignment="Center" />
                 <dyn:AnimatedPanel Orientation="Horizontal">
-                    <Label Style="{StaticResource DescriptionLabel}" Content="Naam"></Label>
-                    <TextBox Text="{Binding Path=Contactpersoon2Naam}" Width="190"></TextBox>
-                </dyn:AnimatedPanel>
-                <dyn:AnimatedPanel Orientation="Horizontal">
-                    <Label Style="{StaticResource DescriptionLabel}" Content="Adres"></Label>
-                    <TextBox Text="{Binding Path=Contactpersoon2Adres}" Width="190"></TextBox>
+                    <Label Style="{StaticResource DescriptionLabel}" Content="Naam" />
+                    <TextBox Text="{Binding Path=Contactpersoon2Naam}" Width="190" />
                 </dyn:AnimatedPanel>
                 <dyn:AnimatedPanel Orientation="Horizontal">
-                    <Label Style="{StaticResource DescriptionLabel}" Content="Plaats"></Label>
-                    <TextBox Text="{Binding Path=Contactpersoon2Plaats}" Width="190"></TextBox>
+                    <Label Style="{StaticResource DescriptionLabel}" Content="Adres" />
+                    <TextBox Text="{Binding Path=Contactpersoon2Adres}" Width="190" />
                 </dyn:AnimatedPanel>
                 <dyn:AnimatedPanel Orientation="Horizontal">
-                    <Label Style="{StaticResource DescriptionLabel}" Content="Telefoon"></Label>
-                    <TextBox Text="{Binding Path=Contactpersoon2Telefoon}" Width="190"></TextBox>
+                    <Label Style="{StaticResource DescriptionLabel}" Content="Plaats" />
+                    <TextBox Text="{Binding Path=Contactpersoon2Plaats}" Width="190" />
                 </dyn:AnimatedPanel>
                 <dyn:AnimatedPanel Orientation="Horizontal">
-                    <Label Style="{StaticResource DescriptionLabel}" Content="Email"></Label>
-                    <TextBox Text="{Binding Path=Contactpersoon2Email}" Width="190"></TextBox>
+                    <Label Style="{StaticResource DescriptionLabel}" Content="Telefoon" />
+                    <TextBox Text="{Binding Path=Contactpersoon2Telefoon}" Width="190" />
+                </dyn:AnimatedPanel>
+                <dyn:AnimatedPanel Orientation="Horizontal">
+                    <Label Style="{StaticResource DescriptionLabel}" Content="Email" />
+                    <TextBox Text="{Binding Path=Contactpersoon2Email}" Width="190" />
                 </dyn:AnimatedPanel>
 
                 
             </dyn:AnimatedPanel>
             <dyn:AnimatedPanel Orientation="Horizontal" Margin="5">
-                <Label Style="{StaticResource DescriptionLabel}" Content="Opmerkingen"></Label>
-                <TextBox Text="{Binding Path=Opmerkingen}" Width="500" Height="100" AcceptsReturn="True" TextWrapping="Wrap"></TextBox>
+                <Label Style="{StaticResource DescriptionLabel}" Content="Opmerkingen" />
+                <TextBox Text="{Binding Path=Opmerkingen}" Width="500" Height="100" AcceptsReturn="True" TextWrapping="Wrap" />
             </dyn:AnimatedPanel>
 
             <dyn:AnimatedPanel>

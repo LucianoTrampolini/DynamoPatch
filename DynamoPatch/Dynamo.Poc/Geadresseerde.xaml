@@ -6,8 +6,6 @@
              mc:Ignorable="d" 
              d:DesignHeight="92" d:DesignWidth="210">
     <Border CornerRadius="5">
-        <TextBlock Text="">
-            
-        </TextBlock>
+        <TextBlock Text="" />
     </Border>
 </UserControl>

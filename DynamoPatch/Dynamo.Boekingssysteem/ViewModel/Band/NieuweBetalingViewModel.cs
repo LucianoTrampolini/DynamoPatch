@@ -1,44 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Dynamo.Common.Properties;
-using Dynamo.BoekingsSysteem.Base;
-using Dynamo.BoekingsSysteem;
-using Dynamo.BL;
+
 using Dynamo.BL.Repository;
+using Dynamo.BoekingsSysteem;
+using Dynamo.BoekingsSysteem.Base;
+using Dynamo.Common.Properties;
 
 namespace Dynamo.Boekingssysteem.ViewModel.Band
 {
-    public class NieuweBetalingViewModel:BetalingViewModel
+    public class NieuweBetalingViewModel : BetalingViewModel
     {
-        private BandViewModel _band;
+        #region Member fields
 
-        public string Omschrijving { get; protected set; }
+        private readonly BandViewModel _band;
 
-        public decimal Betaald
-        {
-            get
-            {
-                return _entity.Bedrag * -1;
-            }
-            set
-            {
-                if (_entity.Bedrag== value * -1)
-                    return;
-
-                _entity.Bedrag = value * -1;
-
-                OnPropertyChanged("Betaald");
-            }
-        }
+        #endregion
 
         public NieuweBetalingViewModel(BandViewModel band)
-            :base()
         {
             _band = band;
             _entity.Datum = DateTime.Today;
-            
+
             _entity.BandId = _band.Id;
             Omschrijving = "Betaald";
         }
@@ -51,22 +33,33 @@ namespace Dynamo.Boekingssysteem.ViewModel.Band
             Omschrijving = "Betaald";
         }
 
+        public decimal Betaald
+        {
+            get { return _entity.Bedrag * -1; }
+            set
+            {
+                if (_entity.Bedrag == value * -1)
+                    return;
+
+                _entity.Bedrag = value * -1;
+
+                OnPropertyChanged("Betaald");
+            }
+        }
+
+        public string Omschrijving { get; protected set; }
+
         protected override List<CommandViewModel> CreateCommands()
         {
             return new List<CommandViewModel>
             {
                 new CommandViewModel(
                     StringResources.ButtonOk,
-                    new RelayCommand(param => this.Betalen(), param=>this.KanBetalen())),
+                    new RelayCommand(param => Betalen(), param => KanBetalen())),
                 new CommandViewModel(
                     StringResources.ButtonAnnuleren,
                     CloseCommand)
             };
-        }
-
-        private bool KanBetalen()
-        {
-            return Bedrag != 0;
         }
 
         private void Betalen()
@@ -76,6 +69,11 @@ namespace Dynamo.Boekingssysteem.ViewModel.Band
                 repo.Save(_entity);
             }
             CloseCommand.Execute(null);
+        }
+
+        private bool KanBetalen()
+        {
+            return Bedrag != 0;
         }
     }
 }

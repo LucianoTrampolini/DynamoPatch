@@ -11,8 +11,7 @@
     <UserControl.Resources>
         <CollectionViewSource
           x:Key="Betalingen" 
-          Source="{Binding Path=Betalingen}">
-        </CollectionViewSource>
+          Source="{Binding Path=Betalingen}" />
     </UserControl.Resources>
     <Border Style="{StaticResource SubItemBorder}">
         <Grid Height="Auto" Width="Auto" Margin="4">

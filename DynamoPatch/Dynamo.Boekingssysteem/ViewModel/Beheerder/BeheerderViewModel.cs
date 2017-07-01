@@ -1,4 +1,5 @@
 ﻿using System;
+
 using Dynamo.Boekingssysteem.ViewModel.Base;
 
 namespace Dynamo.Boekingssysteem.ViewModel.Beheerder
@@ -8,17 +9,11 @@ namespace Dynamo.Boekingssysteem.ViewModel.Beheerder
     /// </summary>
     public class BeheerderViewModel : EntityViewModel<Model.Beheerder>
     {
-        public string Naam
+        public BeheerderViewModel(Model.Beheerder beheerder) : base(beheerder)
         {
-            get { return _entity.Naam; }
-            set
+            if (beheerder == null)
             {
-                if (value == _entity.Naam)
-                    return;
-
-                _entity.Naam = value;
-
-                base.OnPropertyChanged("Naam");
+                throw new ArgumentNullException("beheerder");
             }
         }
 
@@ -32,63 +27,7 @@ namespace Dynamo.Boekingssysteem.ViewModel.Beheerder
 
                 _entity.Adres = value;
 
-                base.OnPropertyChanged("Adres");
-            }
-        }
-
-        public string Postcode
-        {
-            get { return _entity.Postcode; }
-            set
-            {
-                if (value == _entity.Postcode)
-                    return;
-
-                _entity.Postcode = value;
-
-                base.OnPropertyChanged("Postcode");
-            }
-        }
-
-        public string Plaats
-        {
-            get { return _entity.Plaats; }
-            set
-            {
-                if (value == _entity.Plaats)
-                    return;
-
-                _entity.Plaats = value;
-
-                base.OnPropertyChanged("Plaats");
-            }
-        }
-
-        public string Telefoon
-        {
-            get { return _entity.Telefoon; }
-            set
-            {
-                if (value == _entity.Telefoon)
-                    return;
-
-                _entity.Telefoon = value;
-
-                base.OnPropertyChanged("Telefoon");
-            }
-        }
-
-        public string Mobiel
-        {
-            get { return _entity.Mobiel; }
-            set
-            {
-                if (value == _entity.Mobiel)
-                    return;
-
-                _entity.Mobiel = value;
-
-                base.OnPropertyChanged("Mobiel");
+                OnPropertyChanged("Adres");
             }
         }
 
@@ -102,21 +41,85 @@ namespace Dynamo.Boekingssysteem.ViewModel.Beheerder
 
                 _entity.Email = value;
 
-                base.OnPropertyChanged("Email");
+                OnPropertyChanged("Email");
             }
         }
 
-        public BeheerderViewModel(Model.Beheerder beheerder) :base(beheerder)
+        public string Mobiel
         {
-            if (beheerder == null)
+            get { return _entity.Mobiel; }
+            set
             {
-                throw new ArgumentNullException("beheerder");
+                if (value == _entity.Mobiel)
+                    return;
+
+                _entity.Mobiel = value;
+
+                OnPropertyChanged("Mobiel");
+            }
+        }
+
+        public string Naam
+        {
+            get { return _entity.Naam; }
+            set
+            {
+                if (value == _entity.Naam)
+                    return;
+
+                _entity.Naam = value;
+
+                OnPropertyChanged("Naam");
+            }
+        }
+
+        public string Plaats
+        {
+            get { return _entity.Plaats; }
+            set
+            {
+                if (value == _entity.Plaats)
+                    return;
+
+                _entity.Plaats = value;
+
+                OnPropertyChanged("Plaats");
+            }
+        }
+
+        public string Postcode
+        {
+            get { return _entity.Postcode; }
+            set
+            {
+                if (value == _entity.Postcode)
+                    return;
+
+                _entity.Postcode = value;
+
+                OnPropertyChanged("Postcode");
+            }
+        }
+
+        public string Telefoon
+        {
+            get { return _entity.Telefoon; }
+            set
+            {
+                if (value == _entity.Telefoon)
+                    return;
+
+                _entity.Telefoon = value;
+
+                OnPropertyChanged("Telefoon");
             }
         }
 
         public override string ToString()
         {
-            return _entity == null ? "<Error - geen entiteit>" : _entity.Naam;
+            return _entity == null
+                ? "<Error - geen entiteit>"
+                : _entity.Naam;
         }
     }
 }

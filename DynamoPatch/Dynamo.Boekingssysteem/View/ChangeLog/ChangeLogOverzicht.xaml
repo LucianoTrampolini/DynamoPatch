@@ -6,9 +6,7 @@
 
         <CollectionViewSource
           x:Key="ChangeLog" 
-          Source="{Binding Path=ChangeLog}"
-          >
-        </CollectionViewSource>
+          Source="{Binding Path=ChangeLog}" />
 
     </UserControl.Resources>
 

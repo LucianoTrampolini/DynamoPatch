@@ -2,38 +2,65 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+
 using Dynamo.BL;
 using Dynamo.Boekingssysteem.ViewModel.Band;
 using Dynamo.Boekingssysteem.ViewModel.Base;
 using Dynamo.BoekingsSysteem;
 using Dynamo.BoekingsSysteem.Base;
 using Dynamo.Common;
-using Dynamo.Common.Properties;
 using Dynamo.Common.Constants;
+using Dynamo.Common.Properties;
+using Dynamo.Model;
 
 namespace Dynamo.Boekingssysteem.ViewModel.Planning
 {
     public class BandAanmeldenViewModel : EntityViewModel<Model.Planning>
     {
-        private string _bandNaam;
-        private string _telefoon;
-        private bool _slechteErvaringVisible = false;
-        private string _bandOpmerking = "";
-        private string _opmerkingen = "Geboekt. ";
-        private int _oefenruimteId = 0;
-        private int _dagdeelId = 0;
-        public string DagdeelOefenruimte { get; private set; }
+        #region Member fields
 
-        public ObservableCollection<BandViewModel> Bands { get; private set; }
-        public ObservableCollection<string> BandsString { get; private set; }
-        
+        private string _bandNaam;
+        private string _bandOpmerking = "";
+        private readonly int _dagdeelId;
+        private readonly int _oefenruimteId;
+        private string _opmerkingen = "Geboekt. ";
+        private bool _slechteErvaringVisible;
+        private string _telefoon;
+
+        #endregion
+
+        public BandAanmeldenViewModel(Model.Planning planning, Dagdeel dagdeel, DateTime date, Oefenruimte oefenruimte)
+            : base(planning)
+        {
+            using (var repo = new PlanningRepository())
+            {
+                if (_entity == null)
+                {
+                    _entity = new Model.Planning
+                    {
+                        Datum = date,
+                        Boekingen = new List<Boeking>()
+                    };
+                }
+
+                _oefenruimteId = oefenruimte.Id;
+                _dagdeelId = dagdeel.Id;
+                DisplayName = string.Format("Boeking voor {0}, {1}", date.DagVanDeWeekVoluit(), date.GetDynamoDatum());
+                DagdeelOefenruimte = string.Format("{0}, {1}", dagdeel.Omschrijving, oefenruimte.Naam);
+
+                List<BandViewModel> all =
+                    (from band in repo.GetBands()
+                        select new BandViewModel(band)).ToList();
+                Bands = new ObservableCollection<BandViewModel>(all);
+                BandsString = new ObservableCollection<string>(all.Select(x => x.Naam));
+            }
+            OnPropertyChanged("Bands");
+        }
+
         public string BandNaam
         {
-            get
-            {
-                return _bandNaam ?? BandNaamGetypt;
-            }
-            set 
+            get { return _bandNaam ?? BandNaamGetypt; }
+            set
             {
                 if (value == _bandNaam)
                 {
@@ -48,7 +75,8 @@ namespace Dynamo.Boekingssysteem.ViewModel.Planning
                 }
                 else
                 {
-                    var band = Bands.Where(x => x.Naam.ToLower() == _bandNaam.ToLower()).FirstOrDefault();
+                    var band = Bands.Where(x => x.Naam.ToLower() == _bandNaam.ToLower())
+                        .FirstOrDefault();
                     if (band != null)
                     {
                         Telefoon = band.Telefoon;
@@ -59,7 +87,6 @@ namespace Dynamo.Boekingssysteem.ViewModel.Planning
                     {
                         _slechteErvaringVisible = false;
                     }
-
                 }
                 OnPropertyChanged("BandNaam");
                 OnPropertyChanged("SlechteErvaringVisible");
@@ -67,41 +94,20 @@ namespace Dynamo.Boekingssysteem.ViewModel.Planning
             }
         }
 
-        public bool SlechteErvaringVisible
-        {
-            get { return _slechteErvaringVisible; }
-        }
+        public string BandNaamGetypt { get; set; }
 
         public string BandOpmerking
         {
             get { return _bandOpmerking; }
         }
 
-        public string BandNaamGetypt { get; set; }
-
-        public string Telefoon
-        {
-            get
-            {
-                return _telefoon;
-            }
-            set
-            {
-                if (value == _telefoon)
-                {
-                    return;
-                }
-                _telefoon = value;
-                OnPropertyChanged("Telefoon");
-            }
-        }
+        public ObservableCollection<BandViewModel> Bands { get; }
+        public ObservableCollection<string> BandsString { get; private set; }
+        public string DagdeelOefenruimte { get; private set; }
 
         public string Opmerkingen
         {
-            get
-            {
-                return _opmerkingen;
-            }
+            get { return _opmerkingen; }
             set
             {
                 if (value == _opmerkingen)
@@ -113,28 +119,23 @@ namespace Dynamo.Boekingssysteem.ViewModel.Planning
             }
         }
 
-        public BandAanmeldenViewModel(Model.Planning planning, Model.Dagdeel dagdeel, DateTime date, Model.Oefenruimte oefenruimte)
-            : base(planning)
+        public bool SlechteErvaringVisible
         {
-            using (var repo = new PlanningRepository())
+            get { return _slechteErvaringVisible; }
+        }
+
+        public string Telefoon
+        {
+            get { return _telefoon; }
+            set
             {
-                if (_entity == null)
+                if (value == _telefoon)
                 {
-                    _entity = new Model.Planning { Datum = date, Boekingen = new List<Model.Boeking>() };
+                    return;
                 }
-
-                _oefenruimteId = oefenruimte.Id;
-                _dagdeelId = dagdeel.Id;
-                DisplayName = string.Format("Boeking voor {0}, {1}", date.DagVanDeWeekVoluit(), date.GetDynamoDatum());
-                DagdeelOefenruimte = string.Format("{0}, {1}", dagdeel.Omschrijving, oefenruimte.Naam);
-
-                List<BandViewModel> all =
-                    (from band in repo.GetBands()
-                     select new BandViewModel(band)).ToList();
-                this.Bands = new ObservableCollection<BandViewModel>(all);
-                this.BandsString = new ObservableCollection<string>(all.Select(x => x.Naam));
+                _telefoon = value;
+                OnPropertyChanged("Telefoon");
             }
-            OnPropertyChanged("Bands");
         }
 
         protected override List<CommandViewModel> CreateCommands()
@@ -143,16 +144,11 @@ namespace Dynamo.Boekingssysteem.ViewModel.Planning
             {
                 new CommandViewModel(
                     StringResources.ButtonOk,
-                    new RelayCommand(param => this.BandAanmelden(), param=>this.KanAanmelden())),
+                    new RelayCommand(param => BandAanmelden(), param => KanAanmelden())),
                 new CommandViewModel(
                     StringResources.ButtonAnnuleren,
                     CloseCommand)
             };
-        }
-
-        private bool KanAanmelden()
-        {
-            return !string.IsNullOrWhiteSpace(BandNaam);
         }
 
         private void BandAanmelden()
@@ -160,7 +156,8 @@ namespace Dynamo.Boekingssysteem.ViewModel.Planning
             using (var repo = new PlanningRepository())
             {
                 Model.Band band;
-                var bandViewModel = Bands.Where(x => x.Naam == BandNaam).FirstOrDefault();
+                var bandViewModel = Bands.Where(x => x.Naam == BandNaam)
+                    .FirstOrDefault();
                 if (bandViewModel == null)
                 {
                     band = new Model.Band
@@ -183,10 +180,15 @@ namespace Dynamo.Boekingssysteem.ViewModel.Planning
                     }
                 }
 
-                var boeking = new Model.Boeking
+                var boeking = new Boeking
                 {
                     BandNaam = BandNaam,
-                    Opmerking = string.Format("{0}{1} ", Opmerkingen, string.IsNullOrEmpty(band.Telefoon) ? "" : " " + band.Telefoon),
+                    Opmerking = string.Format(
+                        "{0}{1} ",
+                        Opmerkingen,
+                        string.IsNullOrEmpty(band.Telefoon)
+                            ? ""
+                            : " " + band.Telefoon),
                     DatumGeboekt = DateTime.Today
                 };
 
@@ -206,10 +208,15 @@ namespace Dynamo.Boekingssysteem.ViewModel.Planning
 
                 repo.Save(_entity);
             }
-            
+
             new WebIntegrationHelper().PushPlanning(_entity.Datum);
 
             CloseCommand.Execute(null);
+        }
+
+        private bool KanAanmelden()
+        {
+            return !string.IsNullOrWhiteSpace(BandNaam);
         }
     }
 }

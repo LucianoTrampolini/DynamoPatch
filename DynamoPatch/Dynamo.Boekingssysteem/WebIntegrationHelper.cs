@@ -1,28 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Dynamo.Web;
 using System.ComponentModel;
+
+using Dynamo.Web;
 
 namespace Dynamo.Boekingssysteem
 {
     public class WebIntegrationHelper
     {
-        public void PushPlanning(DateTime date)
-        {
-            var bw = new BackgroundWorker();
-            bw.DoWork += DoWork;
-            bw.RunWorkerAsync(date);
-        }
-
-        public void PushAllAsync()
-        {
-            var bw = new BackgroundWorker();
-            bw.DoWork += DoAllWork;
-            bw.RunWorkerAsync();
-        }
-
         public void PushAll()
         {
             DateTime date = DateTime.Today;
@@ -33,6 +17,20 @@ namespace Dynamo.Boekingssysteem
                 date = date.AddDays(7);
             }
             new Integration().PushLastUpdateFile();
+        }
+
+        public void PushAllAsync()
+        {
+            var bw = new BackgroundWorker();
+            bw.DoWork += DoAllWork;
+            bw.RunWorkerAsync();
+        }
+
+        public void PushPlanning(DateTime date)
+        {
+            var bw = new BackgroundWorker();
+            bw.DoWork += DoWork;
+            bw.RunWorkerAsync(date);
         }
 
         private void DoAllWork(object sender, DoWorkEventArgs e)

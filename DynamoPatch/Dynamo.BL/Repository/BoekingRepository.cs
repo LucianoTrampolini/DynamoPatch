@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Dynamo.BL.Base;
+using System.Linq.Expressions;
+
+using Dynamo.Model;
 
 namespace Dynamo.BL
 {
-    public class BoekingRepository : RepositoryBase<Model.Boeking>
+    public class BoekingRepository : RepositoryBase<Boeking>
     {
-        public override List<Model.Boeking> Load(System.Linq.Expressions.Expression<Func<Model.Boeking, bool>> expression)
+        public override List<Boeking> Load(Expression<Func<Boeking, bool>> expression)
         {
-            return currentContext.Boekingen.Where(expression).ToList();
+            return currentContext.Boekingen.Where(expression)
+                .ToList();
         }
     }
 }

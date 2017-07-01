@@ -1,21 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Dynamo.BoekingsSysteem;
-using Dynamo.Common;
+
 using Dynamo.Boekingssysteem.ViewModel.Base;
+using Dynamo.Common;
+using Dynamo.Model;
 
 namespace Dynamo.Boekingssysteem.ViewModel.Beheerder
 {
     /// <summary>
     /// Class puur om de vergoedingen te kunnen tonen
     /// </summary>
-    public class VergoedingViewModel :  EntityViewModel<Model.Vergoeding>
+    public class VergoedingViewModel : EntityViewModel<Vergoeding>
     {
-        public string Datum
+        public VergoedingViewModel(Vergoeding vergoeding) : base(vergoeding)
         {
-            get { return _entity.Datum.GetDynamoDatum(); }
+            if (vergoeding == null)
+            {
+                throw new ArgumentNullException("vergoeding");
+            }
+        }
+
+        public string Bedrag
+        {
+            get { return _entity.Bedrag.GetDynamoBedrag(); }
         }
 
         public string Dag
@@ -28,22 +34,14 @@ namespace Dynamo.Boekingssysteem.ViewModel.Beheerder
             get { return _entity.Dagdeel.Omschrijving; }
         }
 
+        public string Datum
+        {
+            get { return _entity.Datum.GetDynamoDatum(); }
+        }
+
         public string Taak
         {
             get { return _entity.Taak.Omschrijving; }
-        }
-
-        public string Bedrag
-        {
-            get { return _entity.Bedrag.GetDynamoBedrag(); }
-        }
-
-        public VergoedingViewModel(Model.Vergoeding vergoeding):base(vergoeding)
-        {
-            if (vergoeding == null)
-            {
-                throw new ArgumentNullException("vergoeding");
-            }
         }
     }
 }

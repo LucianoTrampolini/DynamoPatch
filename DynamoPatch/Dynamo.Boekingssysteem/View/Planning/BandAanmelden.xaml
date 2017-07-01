@@ -9,8 +9,7 @@
              d:DesignHeight="300" d:DesignWidth="300" 
              >
     <UserControl.Resources>
-        <dyn:BooleanVisibilityValueCollapseConverter x:Key="BoolToCollapsed">
-            </dyn:BooleanVisibilityValueCollapseConverter>
+        <dyn:BooleanVisibilityValueCollapseConverter x:Key="BoolToCollapsed" />
     </UserControl.Resources>
     
     <Border Style="{StaticResource SubItemBorder}">
@@ -29,8 +28,7 @@
                                      MaxDropDownHeight="100"
                                      TextChanged="AutoCompleteBox_TextChanged"
                                      IsTabStop="True"
-                                     dyn:FocusExtension.IsFocused="{Binding Path=BandNaamFocus}" >
-                </dyn:AutoCompleteFocusableBox>
+                                     dyn:FocusExtension.IsFocused="{Binding Path=BandNaamFocus}" />
             </dyn:AnimatedPanel>
             <dyn:AnimatedPanel Orientation="Horizontal">
                 <Label Content="Telefoon" Style="{StaticResource HeaderLabel}" HorizontalAlignment="Left" Width="100"/>

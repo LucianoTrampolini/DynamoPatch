@@ -9,35 +9,35 @@
     <Border Style="{StaticResource SubItemBorder}">
         <dyn:AnimatedPanel Margin="5" MaxWidth="300">
             <dyn:AnimatedPanel Orientation="Horizontal">
-                <Label Style="{StaticResource DescriptionLabel}" Content="Naam"></Label>
-                <TextBox Text="{Binding Path=Naam,UpdateSourceTrigger=PropertyChanged}" dyn:FocusExtension.IsFocused="{Binding Path=InitialFocus}" Width="190"></TextBox>
+                <Label Style="{StaticResource DescriptionLabel}" Content="Naam" />
+                <TextBox Text="{Binding Path=Naam,UpdateSourceTrigger=PropertyChanged}" dyn:FocusExtension.IsFocused="{Binding Path=InitialFocus}" Width="190" />
             </dyn:AnimatedPanel>
             <dyn:AnimatedPanel Orientation="Horizontal">
-                <Label Style="{StaticResource DescriptionLabel}" Content="Adres"></Label>
-                <TextBox Text="{Binding Path=Adres}" Width="190"></TextBox>
+                <Label Style="{StaticResource DescriptionLabel}" Content="Adres" />
+                <TextBox Text="{Binding Path=Adres}" Width="190" />
             </dyn:AnimatedPanel>
             <dyn:AnimatedPanel Orientation="Horizontal">
-                <Label Style="{StaticResource DescriptionLabel}" Content="Postcode"></Label>
-                <TextBox Text="{Binding Path=Postcode}" Width="190"></TextBox>
+                <Label Style="{StaticResource DescriptionLabel}" Content="Postcode" />
+                <TextBox Text="{Binding Path=Postcode}" Width="190" />
             </dyn:AnimatedPanel>
             <dyn:AnimatedPanel Orientation="Horizontal">
-                <Label Style="{StaticResource DescriptionLabel}" Content="Plaats"></Label>
-                <TextBox Text="{Binding Path=Plaats}" Width="190"></TextBox>
+                <Label Style="{StaticResource DescriptionLabel}" Content="Plaats" />
+                <TextBox Text="{Binding Path=Plaats}" Width="190" />
             </dyn:AnimatedPanel>
             <dyn:AnimatedPanel Orientation="Horizontal">
-                <Label Style="{StaticResource DescriptionLabel}" Content="Telefoon 1"></Label>
-                <TextBox Text="{Binding Path=Telefoon}" Width="190"></TextBox>
+                <Label Style="{StaticResource DescriptionLabel}" Content="Telefoon 1" />
+                <TextBox Text="{Binding Path=Telefoon}" Width="190" />
             </dyn:AnimatedPanel>
             <dyn:AnimatedPanel Orientation="Horizontal">
-                <Label Style="{StaticResource DescriptionLabel}" Content="Telefoon 2"></Label>
-                <TextBox Text="{Binding Path=Mobiel}" Width="190"></TextBox>
+                <Label Style="{StaticResource DescriptionLabel}" Content="Telefoon 2" />
+                <TextBox Text="{Binding Path=Mobiel}" Width="190" />
             </dyn:AnimatedPanel>
             <dyn:AnimatedPanel Orientation="Horizontal">
-                <Label Style="{StaticResource DescriptionLabel}" Content="Email"></Label>
-                <TextBox Text="{Binding Path=Email}" Width="190"></TextBox>
+                <Label Style="{StaticResource DescriptionLabel}" Content="Email" />
+                <TextBox Text="{Binding Path=Email}" Width="190" />
             </dyn:AnimatedPanel>
             <dyn:AnimatedPanel Orientation="Horizontal">
-                <Label Style="{StaticResource DescriptionLabel}" Content="Inactief"></Label>
+                <Label Style="{StaticResource DescriptionLabel}" Content="Inactief" />
                 <CheckBox IsChecked="{Binding Path=Verwijderd}" />
             </dyn:AnimatedPanel>
 

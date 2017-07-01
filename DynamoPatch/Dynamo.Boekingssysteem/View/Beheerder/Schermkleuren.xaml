@@ -7,32 +7,32 @@
     <Border Style="{StaticResource SubItemBorder}" HorizontalAlignment="Left">
         <dyn:AnimatedPanel Margin="5" MaxWidth="300">
             <dyn:AnimatedPanel Orientation="Horizontal">
-                <Label Style="{StaticResource DescriptionLabel}" Content="Achtergrond" Width="230"></Label>
-                <xctk:ColorPicker SelectedColor="{Binding Path=Achtergrond}"  Width="50"> </xctk:ColorPicker>
+                <Label Style="{StaticResource DescriptionLabel}" Content="Achtergrond" Width="230" />
+                <xctk:ColorPicker SelectedColor="{Binding Path=Achtergrond}"  Width="50" />
             </dyn:AnimatedPanel>
             <dyn:AnimatedPanel Orientation="Horizontal">
-                <Label Style="{StaticResource DescriptionLabel}" Content="Tekst" Width="230"></Label>
-                <xctk:ColorPicker SelectedColor="{Binding Path=Tekst}"  Width="50"></xctk:ColorPicker>
+                <Label Style="{StaticResource DescriptionLabel}" Content="Tekst" Width="230" />
+                <xctk:ColorPicker SelectedColor="{Binding Path=Tekst}"  Width="50" />
             </dyn:AnimatedPanel>
             <dyn:AnimatedPanel Orientation="Horizontal">
-                <Label Style="{StaticResource DescriptionLabel}" Content="Achtergrond velden" Width="230"></Label>
-                <xctk:ColorPicker SelectedColor="{Binding Path=AchtergrondVelden}"  Width="50"></xctk:ColorPicker>
+                <Label Style="{StaticResource DescriptionLabel}" Content="Achtergrond velden" Width="230" />
+                <xctk:ColorPicker SelectedColor="{Binding Path=AchtergrondVelden}"  Width="50" />
             </dyn:AnimatedPanel>
             <dyn:AnimatedPanel Orientation="Horizontal">
-                <Label Style="{StaticResource DescriptionLabel}" Content="Tekst velden" Width="230"></Label>
-                <xctk:ColorPicker SelectedColor="{Binding Path=TekstVelden }"  Width="50"></xctk:ColorPicker>
+                <Label Style="{StaticResource DescriptionLabel}" Content="Tekst velden" Width="230" />
+                <xctk:ColorPicker SelectedColor="{Binding Path=TekstVelden }"  Width="50" />
             </dyn:AnimatedPanel>
             <dyn:AnimatedPanel Orientation="Horizontal">
-                <Label Style="{StaticResource DescriptionLabel}" Content="Selecteren" Width="230"></Label>
-                <xctk:ColorPicker SelectedColor="{Binding Path=Selecteren}"  Width="50"></xctk:ColorPicker>
+                <Label Style="{StaticResource DescriptionLabel}" Content="Selecteren" Width="230" />
+                <xctk:ColorPicker SelectedColor="{Binding Path=Selecteren}"  Width="50" />
             </dyn:AnimatedPanel>
             <dyn:AnimatedPanel Orientation="Horizontal">
-                <Label Style="{StaticResource DescriptionLabel}" Content="Achtergrond knoppen" Width="230"></Label>
-                <xctk:ColorPicker SelectedColor="{Binding Path=AchtergrondKnoppen}"  Width="50"></xctk:ColorPicker>
+                <Label Style="{StaticResource DescriptionLabel}" Content="Achtergrond knoppen" Width="230" />
+                <xctk:ColorPicker SelectedColor="{Binding Path=AchtergrondKnoppen}"  Width="50" />
             </dyn:AnimatedPanel>
             <dyn:AnimatedPanel Orientation="Horizontal">
-                <Label Style="{StaticResource DescriptionLabel}" Content="Tekst knoppen" Width="230"></Label>
-                <xctk:ColorPicker SelectedColor="{Binding Path=TekstKnoppen}"  Width="50"></xctk:ColorPicker>
+                <Label Style="{StaticResource DescriptionLabel}" Content="Tekst knoppen" Width="230" />
+                <xctk:ColorPicker SelectedColor="{Binding Path=TekstKnoppen}"  Width="50" />
             </dyn:AnimatedPanel>
             <dyn:AnimatedPanel HorizontalAlignment="Stretch">
                 <ContentControl  

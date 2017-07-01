@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+
 using Dynamo.Model.Base;
 
 namespace Dynamo.Model
@@ -13,6 +14,7 @@ namespace Dynamo.Model
 
         [MaxLength(50)]
         public string Naam { get; set; }
+
         public virtual ICollection<Tarief> Tarieven { get; set; }
     }
 }

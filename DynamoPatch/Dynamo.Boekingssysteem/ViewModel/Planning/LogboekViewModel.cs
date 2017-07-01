@@ -1,72 +1,98 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Dynamo.BoekingsSysteem.Base;
-using Dynamo.Common;
+
 using Dynamo.BL;
 using Dynamo.BoekingsSysteem;
+using Dynamo.BoekingsSysteem.Base;
+using Dynamo.Common;
 using Dynamo.Common.Properties;
+using Dynamo.Model;
 
 namespace Dynamo.Boekingssysteem.ViewModel.Planning
 {
     public class LogboekViewModel : WorkspaceViewModel
     {
-        private PlanningsDagViewModel _planningsDag = null;
+        #region Member fields
 
-        private LogboekPlanningViewModel _oefenruimte1Middag = null;
-        private LogboekPlanningViewModel _oefenruimte2Middag = null;
-        private LogboekPlanningViewModel _oefenruimte3Middag = null;
-        private LogboekPlanningViewModel _oefenruimte1Avond = null;
-        private LogboekPlanningViewModel _oefenruimte2Avond = null;
-        private LogboekPlanningViewModel _oefenruimte3Avond = null;
+        private DateTime _huidigeDatum;
+        private LogboekPlanningViewModel _oefenruimte1Avond;
 
-        public LogboekPlanningViewModel Oefenruimte1Middag
+        private LogboekPlanningViewModel _oefenruimte1Middag;
+        private LogboekPlanningViewModel _oefenruimte2Avond;
+        private LogboekPlanningViewModel _oefenruimte2Middag;
+        private LogboekPlanningViewModel _oefenruimte3Avond;
+        private LogboekPlanningViewModel _oefenruimte3Middag;
+        private PlanningsDagViewModel _planningsDag;
+        private CommandViewModel _volgendeDag;
+        private CommandViewModel _vorigeDag;
+
+        #endregion
+
+        public LogboekViewModel(DateTime datum)
         {
-            get { return _oefenruimte1Middag; }
-            set 
-            {
-                _oefenruimte1Middag = value;
-                OnPropertyChanged("Oefenruimte1Middag");
-                OnPropertyChanged("Oefenruimte1MiddagVisible");
-            }
+            _huidigeDatum = datum;
+            DisplayName = StringResources.ButtonLogboek;
+            OnPropertyChanged("Datum");
         }
 
-        public bool Oefenruimte1MiddagVisible
+        public string AvondOpmerking
         {
-            get { return _oefenruimte1Middag.Visible; }
-        }
-
-        public LogboekPlanningViewModel Oefenruimte2Middag
-        {
-            get { return _oefenruimte2Middag; }
+            get { return _planningsDag.AvondOpmerking; }
             set
             {
-                _oefenruimte2Middag = value;
-                OnPropertyChanged("Oefenruimte2Middag");
-                OnPropertyChanged("Oefenruimte2MiddagVisible");
+                if (_planningsDag.AvondOpmerking == value)
+                {
+                    return;
+                }
+                _planningsDag.AvondOpmerking = value;
+                OnPropertyChanged("AvondOpmerking");
             }
         }
 
-        public bool Oefenruimte2MiddagVisible
+        public string DagOpmerking
         {
-            get { return _oefenruimte2Middag.Visible; }
-        }
-
-        public LogboekPlanningViewModel Oefenruimte3Middag
-        {
-            get { return _oefenruimte3Middag; }
+            get { return _planningsDag.Opmerking; }
             set
             {
-                _oefenruimte3Middag = value;
-                OnPropertyChanged("Oefenruimte3Middag");
-                OnPropertyChanged("Oefenruimte3MiddagVisible");
+                if (_planningsDag.Opmerking == value)
+                {
+                    return;
+                }
+                _planningsDag.Opmerking = value;
+                OnPropertyChanged("DagOpmerking");
             }
         }
 
-        public bool Oefenruimte3MiddagVisible
+        public string Datum
         {
-            get { return _oefenruimte3Middag.Visible; }
+            get
+            {
+                SetPlanningsDag();
+                return string.Format("{0}, {1}", _huidigeDatum.DagVanDeWeekVoluit(), _huidigeDatum.GetDynamoDatum());
+            }
+        }
+
+        public DateTime HuidigeDatum
+        {
+            set
+            {
+                _huidigeDatum = value;
+                OnPropertyChanged("Datum");
+            }
+        }
+
+        public string MiddagOpmerking
+        {
+            get { return _planningsDag.MiddagOpmerking; }
+            set
+            {
+                if (_planningsDag.MiddagOpmerking == value)
+                {
+                    return;
+                }
+                _planningsDag.MiddagOpmerking = value;
+                OnPropertyChanged("MiddagOpmerking");
+            }
         }
 
         public LogboekPlanningViewModel Oefenruimte1Avond
@@ -85,6 +111,22 @@ namespace Dynamo.Boekingssysteem.ViewModel.Planning
             get { return _oefenruimte1Avond.Visible; }
         }
 
+        public LogboekPlanningViewModel Oefenruimte1Middag
+        {
+            get { return _oefenruimte1Middag; }
+            set
+            {
+                _oefenruimte1Middag = value;
+                OnPropertyChanged("Oefenruimte1Middag");
+                OnPropertyChanged("Oefenruimte1MiddagVisible");
+            }
+        }
+
+        public bool Oefenruimte1MiddagVisible
+        {
+            get { return _oefenruimte1Middag.Visible; }
+        }
+
         public LogboekPlanningViewModel Oefenruimte2Avond
         {
             get { return _oefenruimte2Avond; }
@@ -99,6 +141,22 @@ namespace Dynamo.Boekingssysteem.ViewModel.Planning
         public bool Oefenruimte2AvondVisible
         {
             get { return _oefenruimte2Avond.Visible; }
+        }
+
+        public LogboekPlanningViewModel Oefenruimte2Middag
+        {
+            get { return _oefenruimte2Middag; }
+            set
+            {
+                _oefenruimte2Middag = value;
+                OnPropertyChanged("Oefenruimte2Middag");
+                OnPropertyChanged("Oefenruimte2MiddagVisible");
+            }
+        }
+
+        public bool Oefenruimte2MiddagVisible
+        {
+            get { return _oefenruimte2Middag.Visible; }
         }
 
         public LogboekPlanningViewModel Oefenruimte3Avond
@@ -117,16 +175,31 @@ namespace Dynamo.Boekingssysteem.ViewModel.Planning
             get { return _oefenruimte3Avond.Visible; }
         }
 
-        private DateTime _huidigeDatum;
-        private CommandViewModel _vorigeDag;
-        private CommandViewModel _volgendeDag;
-
-        public DateTime HuidigeDatum
+        public LogboekPlanningViewModel Oefenruimte3Middag
         {
+            get { return _oefenruimte3Middag; }
             set
             {
-                _huidigeDatum = value;
-                OnPropertyChanged("Datum");
+                _oefenruimte3Middag = value;
+                OnPropertyChanged("Oefenruimte3Middag");
+                OnPropertyChanged("Oefenruimte3MiddagVisible");
+            }
+        }
+
+        public bool Oefenruimte3MiddagVisible
+        {
+            get { return _oefenruimte3Middag.Visible; }
+        }
+
+        public CommandViewModel VolgendeDag
+        {
+            get
+            {
+                if (_volgendeDag == null)
+                {
+                    _volgendeDag = new CommandViewModel(">", new RelayCommand(param => VolgendeDagCommand()));
+                }
+                return _volgendeDag;
             }
         }
 
@@ -136,81 +209,10 @@ namespace Dynamo.Boekingssysteem.ViewModel.Planning
             {
                 if (_vorigeDag == null)
                 {
-                    _vorigeDag = new CommandViewModel("<", new RelayCommand(param => this.VorigeDagCommand()));
+                    _vorigeDag = new CommandViewModel("<", new RelayCommand(param => VorigeDagCommand()));
                 }
                 return _vorigeDag;
             }
-        }
-
-        public CommandViewModel VolgendeDag
-        {
-            get
-            {
-                if (_volgendeDag == null)
-                {
-                    _volgendeDag = new CommandViewModel(">", new RelayCommand(param => this.VolgendeDagCommand()));
-                }
-                return _volgendeDag;
-            }
-        }
-
-        public string Datum
-        {
-            get {
-                SetPlanningsDag();
-                return string.Format("{0}, {1}", _huidigeDatum.DagVanDeWeekVoluit(), _huidigeDatum.GetDynamoDatum());
-            }
-        }
-
-        public string DagOpmerking
-        {
-            get { return _planningsDag.Opmerking; }
-            set
-            {
-                if (_planningsDag.Opmerking== value)
-                {
-                    return;
-                }
-                _planningsDag.Opmerking = value;
-                OnPropertyChanged("DagOpmerking");
-            }
-        }
-
-        public string MiddagOpmerking
-        {
-            get { return _planningsDag.MiddagOpmerking; }
-            set
-            {
-                if (_planningsDag.MiddagOpmerking == value)
-                {
-                    return;
-                }
-                _planningsDag.MiddagOpmerking = value;
-                OnPropertyChanged("MiddagOpmerking");
-            }
-        }
-
-
-        public string AvondOpmerking
-        {
-            get { return _planningsDag.AvondOpmerking; }
-            set
-            {
-                if (_planningsDag.AvondOpmerking == value)
-                {
-                    return;
-                }
-                _planningsDag.AvondOpmerking = value;
-                OnPropertyChanged("AvondOpmerking");
-            }
-        }
-
-
-        public LogboekViewModel(DateTime datum)
-        {
-            _huidigeDatum = datum;
-            DisplayName = StringResources.ButtonLogboek;
-            OnPropertyChanged("Datum");
         }
 
         public void SetPlanningsDag()
@@ -218,46 +220,63 @@ namespace Dynamo.Boekingssysteem.ViewModel.Planning
             SavePlanningsDag();
             using (var repo = new PlanningsDagRepository())
             {
-                var planningsDag = repo.Load(pd => pd.Datum == _huidigeDatum).FirstOrDefault();
-                _planningsDag = new PlanningsDagViewModel(planningsDag ?? new Model.PlanningsDag { Datum = _huidigeDatum });
+                var planningsDag = repo.Load(pd => pd.Datum == _huidigeDatum)
+                    .FirstOrDefault();
+                _planningsDag = new PlanningsDagViewModel(
+                    planningsDag ?? new PlanningsDag
+                    {
+                        Datum = _huidigeDatum
+                    });
 
-                Oefenruimte1Middag = new LogboekPlanningViewModel(_planningsDag.GetEntity().Planningen.Where(x => x.OefenruimteId == 1 && x.DagdeelId == 2).FirstOrDefault());
-                Oefenruimte2Middag = new LogboekPlanningViewModel(_planningsDag.GetEntity().Planningen.Where(x => x.OefenruimteId == 2 && x.DagdeelId == 2).FirstOrDefault());
-                Oefenruimte3Middag = new LogboekPlanningViewModel(_planningsDag.GetEntity().Planningen.Where(x => x.OefenruimteId == 3 && x.DagdeelId == 2).FirstOrDefault());
-                Oefenruimte1Avond = new LogboekPlanningViewModel(_planningsDag.GetEntity().Planningen.Where(x => x.OefenruimteId == 1 && x.DagdeelId == 3).FirstOrDefault());
-                Oefenruimte2Avond = new LogboekPlanningViewModel(_planningsDag.GetEntity().Planningen.Where(x => x.OefenruimteId == 2 && x.DagdeelId == 3).FirstOrDefault());
-                Oefenruimte3Avond = new LogboekPlanningViewModel(_planningsDag.GetEntity().Planningen.Where(x => x.OefenruimteId == 3 && x.DagdeelId == 3).FirstOrDefault());
+                Oefenruimte1Middag = new LogboekPlanningViewModel(
+                    _planningsDag.GetEntity()
+                        .Planningen.Where(x => x.OefenruimteId == 1 && x.DagdeelId == 2)
+                        .FirstOrDefault());
+                Oefenruimte2Middag = new LogboekPlanningViewModel(
+                    _planningsDag.GetEntity()
+                        .Planningen.Where(x => x.OefenruimteId == 2 && x.DagdeelId == 2)
+                        .FirstOrDefault());
+                Oefenruimte3Middag = new LogboekPlanningViewModel(
+                    _planningsDag.GetEntity()
+                        .Planningen.Where(x => x.OefenruimteId == 3 && x.DagdeelId == 2)
+                        .FirstOrDefault());
+                Oefenruimte1Avond = new LogboekPlanningViewModel(
+                    _planningsDag.GetEntity()
+                        .Planningen.Where(x => x.OefenruimteId == 1 && x.DagdeelId == 3)
+                        .FirstOrDefault());
+                Oefenruimte2Avond = new LogboekPlanningViewModel(
+                    _planningsDag.GetEntity()
+                        .Planningen.Where(x => x.OefenruimteId == 2 && x.DagdeelId == 3)
+                        .FirstOrDefault());
+                Oefenruimte3Avond = new LogboekPlanningViewModel(
+                    _planningsDag.GetEntity()
+                        .Planningen.Where(x => x.OefenruimteId == 3 && x.DagdeelId == 3)
+                        .FirstOrDefault());
             }
-            
+
             OnPropertyChanged("DagOpmerking");
             OnPropertyChanged("MiddagOpmerking");
             OnPropertyChanged("AvondOpmerking");
         }
 
-        private void SavePlanningsDag()
+        protected override void OnDispose()
         {
-            if (_planningsDag != null)
-            {
-                using (var repo = new PlanningsDagRepository())
-                {
-                    var planningsDag = repo.Load(pd => pd.Datum == _huidigeDatum).FirstOrDefault();
-                    MergePlanningsDag(_planningsDag.GetEntity(), planningsDag);
-                    repo.Save(_planningsDag.GetEntity(), true);
-                }
-            }
+            SavePlanningsDag();
+            base.OnDispose();
         }
 
-        private void MergePlanningsDag(Model.PlanningsDag oud, Model.PlanningsDag nieuw)
+        private void MergePlanningsDag(PlanningsDag oud, PlanningsDag nieuw)
         {
-            if (nieuw == null )
+            if (nieuw == null)
             {
                 return;
             }
 
             foreach (var planning in nieuw.Planningen)
-            { 
-                var planningOud = oud.Planningen.FirstOrDefault(p=>p.Id==planning.Id);
-                if (planningOud != null && planningOud.Gewijzigd != planning.Gewijzigd)
+            {
+                var planningOud = oud.Planningen.FirstOrDefault(p => p.Id == planning.Id);
+                if (planningOud != null
+                    && planningOud.Gewijzigd != planning.Gewijzigd)
                 {
                     planningOud.Gewijzigd = planning.Gewijzigd;
                     planningOud.GewijzigdDoorId = planning.GewijzigdDoorId;
@@ -266,19 +285,35 @@ namespace Dynamo.Boekingssysteem.ViewModel.Planning
                 }
             }
 
-
-            var boekingenNieuw = nieuw.Planningen.SelectMany(planning=>planning.Boekingen);
-            var boekingenOud = oud.Planningen.SelectMany(planning=>planning.Boekingen);
+            var boekingenNieuw = nieuw.Planningen.SelectMany(planning => planning.Boekingen);
+            var boekingenOud = oud.Planningen.SelectMany(planning => planning.Boekingen);
 
             foreach (var boeking in boekingenNieuw.Where(b => b.Gewijzigd != null))
             {
                 var boekingOud = boekingenOud.FirstOrDefault(b => b.Id == boeking.Id);
-                if (boekingOud != null && (boekingOud.Gewijzigd == null ? DateTime.MinValue : boekingOud.Gewijzigd) < boeking.Gewijzigd)
+                if (boekingOud != null
+                    && (boekingOud.Gewijzigd == null
+                        ? DateTime.MinValue
+                        : boekingOud.Gewijzigd) < boeking.Gewijzigd)
                 {
                     boekingOud.DatumAfgezegd = boeking.DatumAfgezegd;
                     boekingOud.Verwijderd = boeking.Verwijderd;
                     boekingOud.Gewijzigd = boeking.Gewijzigd;
                     boekingOud.GewijzigdDoor = boeking.GewijzigdDoor;
+                }
+            }
+        }
+
+        private void SavePlanningsDag()
+        {
+            if (_planningsDag != null)
+            {
+                using (var repo = new PlanningsDagRepository())
+                {
+                    var planningsDag = repo.Load(pd => pd.Datum == _huidigeDatum)
+                        .FirstOrDefault();
+                    MergePlanningsDag(_planningsDag.GetEntity(), planningsDag);
+                    repo.Save(_planningsDag.GetEntity(), true);
                 }
             }
         }
@@ -291,14 +326,8 @@ namespace Dynamo.Boekingssysteem.ViewModel.Planning
 
         private void VorigeDagCommand()
         {
-            _huidigeDatum= _huidigeDatum.AddDays(-1);
+            _huidigeDatum = _huidigeDatum.AddDays(-1);
             OnPropertyChanged("Datum");
-        }
-
-        protected override void OnDispose()
-        {
-            SavePlanningsDag();
-            base.OnDispose();
         }
     }
 }

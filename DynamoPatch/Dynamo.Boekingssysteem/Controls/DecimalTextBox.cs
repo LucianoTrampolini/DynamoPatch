@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Controls;
-using System.Text.RegularExpressions;
 using System.Globalization;
-using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace Dynamo.Boekingssysteem.Controls
 {
     public class DecimalTextBox : TextBox
     {
-        protected override void OnPreviewTextInput(System.Windows.Input.TextCompositionEventArgs e)
+        protected override void OnPreviewTextInput(TextCompositionEventArgs e)
         {
             e.Handled = !AreAllValidNumericChars(e.Text);
 
@@ -21,13 +17,15 @@ namespace Dynamo.Boekingssysteem.Controls
         private bool AreAllValidNumericChars(string str)
         {
             bool ret = true;
-            if (str == System.Globalization.NumberFormatInfo.CurrentInfo.NegativeSign |
-                str == System.Globalization.NumberFormatInfo.CurrentInfo.NumberDecimalSeparator |
-                str == System.Globalization.NumberFormatInfo.CurrentInfo.PositiveSign)
+            if (str == NumberFormatInfo.CurrentInfo.NegativeSign |
+                str == NumberFormatInfo.CurrentInfo.NumberDecimalSeparator |
+                str == NumberFormatInfo.CurrentInfo.PositiveSign)
                 return ret;
 
             int l = str.Length;
-            for (int i = 0; i < l; i++)
+            for (int i = 0;
+                i < l;
+                i++)
             {
                 char ch = str[i];
                 ret &= Char.IsDigit(ch);
@@ -35,8 +33,9 @@ namespace Dynamo.Boekingssysteem.Controls
 
             return ret;
         }
-        //protected override void OnPreviewTextInput(System.Windows.Input.TextCompositionEventArgs e)
+
         //{
+        //protected override void OnPreviewTextInput(System.Windows.Input.TextCompositionEventArgs e)
         //    var c = CultureInfo.GetCultureInfo("NL-nl");
 
         //    e.Handled = e.Text.Contains(c.NumberFormat.CurrencyGroupSeparator);

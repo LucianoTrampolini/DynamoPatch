@@ -1,36 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
+
 using Dynamo.BL.Base;
 using Dynamo.Model;
 
 namespace Dynamo.BL.BusinessRules.Beheerder
 {
-    class VerwerkAanmelding:BusinessRuleBase<Model.Vergoeding>
+    class VerwerkAanmelding : BusinessRuleBase<Vergoeding>
     {
-        private PlanningsDagRepository _planningsDagRepository = null;
+        #region Member fields
+
+        private readonly PlanningsDagRepository _planningsDagRepository;
+
+        #endregion
 
         public VerwerkAanmelding(IDynamoContext context)
-            :base(context) 
+            : base(context)
         {
             _planningsDagRepository = new PlanningsDagRepository(context);
         }
 
-        public override bool Execute(Model.Vergoeding entity)
+        public override bool Execute(Vergoeding entity)
         {
-            var planningsDag = _planningsDagRepository.Load(x => x.Datum == entity.Datum && x.Verwijderd == false).FirstOrDefault();
+            var planningsDag = _planningsDagRepository.Load(x => x.Datum == entity.Datum && x.Verwijderd == false)
+                .FirstOrDefault();
 
             if (planningsDag == null)
             {
-                planningsDag = new Model.PlanningsDag
+                planningsDag = new PlanningsDag
                 {
                     Datum = entity.Datum
                 };
             }
 
-            planningsDag.MiddagOpmerking += entity.DagdeelId == 2 ? string.Format("{0} ", entity.Beheerder.Naam) : "";
-            planningsDag.AvondOpmerking += entity.DagdeelId == 3 ? string.Format("{0} ", entity.Beheerder.Naam) : "";
+            planningsDag.MiddagOpmerking += entity.DagdeelId == 2
+                ? string.Format("{0} ", entity.Beheerder.Naam)
+                : "";
+            planningsDag.AvondOpmerking += entity.DagdeelId == 3
+                ? string.Format("{0} ", entity.Beheerder.Naam)
+                : "";
             _planningsDagRepository.Save(planningsDag);
             return true;
         }

@@ -1,25 +1,48 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Dynamo.Boekingssysteem.ViewModel.Base;
-using Dynamo.BoekingsSysteem.Base;
-using Dynamo.Common.Properties;
-using Dynamo.BoekingsSysteem;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+
 using Dynamo.BL;
+using Dynamo.Boekingssysteem.ViewModel.Base;
+using Dynamo.BoekingsSysteem;
+using Dynamo.BoekingsSysteem.Base;
 using Dynamo.Common.Constants;
+using Dynamo.Common.Properties;
 
 namespace Dynamo.Boekingssysteem.ViewModel.Band
 {
-    public class OntdubbelViewModel:SubItemViewModel<Model.Band>
+    public class OntdubbelViewModel : SubItemViewModel<Model.Band>
     {
-        private BandViewModel _bandVan = null;
-        private BandViewModel _bandNaar = null;
-        public BandViewModel BandNaar 
+        #region Member fields
+
+        private BandViewModel _bandNaar;
+        private readonly BandViewModel _bandVan;
+
+        #endregion
+
+        public OntdubbelViewModel(BandViewModel band)
+        {
+            _bandVan = band;
+
+            using (var bandRepository = new BandRepository())
+            {
+                List<BandViewModel> all =
+                    (from bands in
+                        bandRepository.Load(
+                            x =>
+                                x.Id != _bandVan.Id && x.BandTypeId == BandTypeConsts.Incidenteel
+                                    && x.Verwijderd == false)
+                        select new BandViewModel(bands)).ToList();
+                AlleBands = new ObservableCollection<BandViewModel>(all);
+            }
+        }
+
+        public ObservableCollection<BandViewModel> AlleBands { get; private set; }
+
+        public BandViewModel BandNaar
         {
             get { return _bandNaar; }
-            set 
+            set
             {
                 if (value == _bandNaar)
                 {
@@ -31,28 +54,13 @@ namespace Dynamo.Boekingssysteem.ViewModel.Band
             }
         }
 
-        public ObservableCollection<BandViewModel> AlleBands { get; private set; }
-
-        public OntdubbelViewModel(BandViewModel band)
-        {
-            _bandVan = band;
-
-            using (var bandRepository = new BandRepository())
-            {
-                List<BandViewModel> all =
-                    (from bands in bandRepository.Load(x => x.Id != _bandVan.Id && x.BandTypeId == BandTypeConsts.Incidenteel && x.Verwijderd == false)
-                     select new BandViewModel(bands)).ToList();
-                this.AlleBands = new ObservableCollection<BandViewModel>(all);
-            }
-        }
-
         protected override List<CommandViewModel> CreateCommands()
         {
             return new List<CommandViewModel>
             {
                 new CommandViewModel(
                     StringResources.ButtonOk,
-                    new RelayCommand(param => this.Ontdubbelen(), param=>this.KanOntdubbelen())),
+                    new RelayCommand(param => Ontdubbelen(), param => KanOntdubbelen())),
                 new CommandViewModel(
                     StringResources.ButtonAnnuleren,
                     CloseCommand)
@@ -68,7 +76,8 @@ namespace Dynamo.Boekingssysteem.ViewModel.Band
         {
             using (var bandRepository = new BandRepository())
             {
-                var boekingen = bandRepository.GetBoekingen(_bandVan.GetEntity()).ToList();
+                var boekingen = bandRepository.GetBoekingen(_bandVan.GetEntity())
+                    .ToList();
                 foreach (var boeking in boekingen)
                 {
                     boeking.BandNaam = BandNaar.Naam;
@@ -76,7 +85,8 @@ namespace Dynamo.Boekingssysteem.ViewModel.Band
                     bandRepository.SaveBoeking(boeking);
                 }
 
-                _bandVan.GetEntity().Verwijderd = true;
+                _bandVan.GetEntity()
+                    .Verwijderd = true;
                 bandRepository.Save(_bandVan.GetEntity());
             }
             CloseCommand.Execute(null);

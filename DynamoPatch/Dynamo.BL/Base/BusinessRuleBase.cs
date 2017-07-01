@@ -1,31 +1,38 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
 using Dynamo.Model;
+using Dynamo.Model.Base;
 
 namespace Dynamo.BL.Base
 {
-    public abstract class BusinessRuleBase<E> : IDisposable where E : Model.Base.ModelBase 
+    public abstract class BusinessRuleBase<E> : IDisposable
+        where E : ModelBase
     {
-        private IDynamoContext _currentContext = null;
+        #region Member fields
+
+        private IDynamoContext _currentContext;
+
+        #endregion
 
         public BusinessRuleBase(IDynamoContext context)
         {
-            _currentContext = context;    
+            _currentContext = context;
         }
 
-        public virtual bool Execute(E entity)
-        {
-            throw new NotImplementedException("Implementeer in afgeleide");
-        }
+        #region IDisposable Members
 
         public void Dispose()
         {
             OnDispose();
         }
 
-        public virtual void OnDispose()
-        { }
+        #endregion
+
+        public virtual bool Execute(E entity)
+        {
+            throw new NotImplementedException("Implementeer in afgeleide");
+        }
+
+        public virtual void OnDispose() {}
     }
 }

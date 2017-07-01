@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Text.RegularExpressions;
 using System.Windows.Controls;
-using System.Text.RegularExpressions;
+using System.Windows.Input;
 
 namespace Dynamo.Boekingssysteem.Controls
 {
     public class IntegerTextBox : TextBox
     {
-        protected override void OnPreviewTextInput(System.Windows.Input.TextCompositionEventArgs e)
+        protected override void OnPreviewTextInput(TextCompositionEventArgs e)
         {
             e.Handled = !IsTextAllowed(e.Text);
             base.OnPreviewTextInput(e);

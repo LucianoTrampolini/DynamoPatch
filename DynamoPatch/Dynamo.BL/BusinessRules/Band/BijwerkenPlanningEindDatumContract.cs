@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+
 using Dynamo.BL.Base;
 using Dynamo.Common;
 using Dynamo.Model;
@@ -10,10 +9,14 @@ namespace Dynamo.BL.BusinessRules.Band
 {
     public class BijwerkenPlanningEindDatumContract : BusinessRuleBase<Model.Band>
     {
-        private PlanningRepository _planningRepository = null;
+        #region Member fields
+
+        private readonly PlanningRepository _planningRepository;
+
+        #endregion
 
         public BijwerkenPlanningEindDatumContract(IDynamoContext context)
-            :base(context) 
+            : base(context)
         {
             _planningRepository = new PlanningRepository(context);
             _planningRepository.AdminModus = true;
@@ -32,25 +35,31 @@ namespace Dynamo.BL.BusinessRules.Band
                     continue;
                 }
 
-                var eindDatum = contract.EindeContract <= DateTime.Today ? DateTime.Today : contract.EindeContract;
+                var eindDatum = contract.EindeContract <= DateTime.Today
+                    ? DateTime.Today
+                    : contract.EindeContract;
                 var bandId = entity.Id;
                 var planning = _planningRepository
-                    .Load(x => x.Verwijderd == false 
-                        && x.Beschikbaar == false 
-                        && x.Datum > eindDatum 
-                        && x.Boekingen
-                        .Any(b => b.BandId == bandId 
-                            && b.DatumAfgezegd == null 
-                            && b.AangemaaktDoorId == systeemBeheerderId)
-                            );
+                    .Load(
+                        x => x.Verwijderd == false
+                            && x.Beschikbaar == false
+                            && x.Datum > eindDatum
+                            && x.Boekingen
+                                .Any(
+                                    b => b.BandId == bandId
+                                        && b.DatumAfgezegd == null
+                                        && b.AangemaaktDoorId == systeemBeheerderId)
+                    );
                 if (planning != null)
                 {
-                    
                     foreach (var item in planning)
                     {
-                        if (item.Datum.DagVanDeWeek() == contract.Oefendag && item.DagdeelId == contract.DagdeelId && item.OefenruimteId == contract.OefenruimteId)
+                        if (item.Datum.DagVanDeWeek() == contract.Oefendag
+                            && item.DagdeelId == contract.DagdeelId
+                            && item.OefenruimteId == contract.OefenruimteId)
                         {
-                            var boeking = item.Boekingen.FirstOrDefault(x => x.BandId == bandId && x.DatumAfgezegd == null );
+                            var boeking =
+                                item.Boekingen.FirstOrDefault(x => x.BandId == bandId && x.DatumAfgezegd == null);
 
                             boeking.Verwijderd = true;
                             boeking.DatumAfgezegd = DateTime.Today;
@@ -63,16 +72,20 @@ namespace Dynamo.BL.BusinessRules.Band
             return true;
         }
 
-        private bool IsZelfdeAlsContractInDeToekomst(Model.Band band, Contract contract)
-        {
-            var test = band.Contracten.FirstOrDefault(c => c.BeginContract > contract.BeginContract && c.DagdeelId == contract.DagdeelId && c.Oefendag == contract.Oefendag && c.OefenruimteId == contract.OefenruimteId);
-
-            return test != null;
-        }
-
         public override void OnDispose()
         {
             _planningRepository.Dispose();
+        }
+
+        private bool IsZelfdeAlsContractInDeToekomst(Model.Band band, Contract contract)
+        {
+            var test =
+                band.Contracten.FirstOrDefault(
+                    c =>
+                        c.BeginContract > contract.BeginContract && c.DagdeelId == contract.DagdeelId
+                            && c.Oefendag == contract.Oefendag && c.OefenruimteId == contract.OefenruimteId);
+
+            return test != null;
         }
     }
 }

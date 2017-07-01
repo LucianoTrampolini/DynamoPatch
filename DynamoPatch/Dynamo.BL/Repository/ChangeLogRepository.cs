@@ -1,17 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Dynamo.BL.Base;
+﻿using System.Collections.Generic;
 using System.Data.Entity;
+using System.Linq;
+
+using Dynamo.Model;
 
 namespace Dynamo.BL
 {
-    public class ChangeLogRepository : RepositoryBase<Model.ChangeLog>
+    public class ChangeLogRepository : RepositoryBase<ChangeLog>
     {
-        public override List<Model.ChangeLog> Load()
+        public override List<ChangeLog> Load()
         {
-            return currentContext.ChangeLog.Include("AangemaaktDoor").OrderByDescending(x => x.Id).Take(500).ToList<Model.ChangeLog>();
+            return currentContext.ChangeLog.Include("AangemaaktDoor")
+                .OrderByDescending(x => x.Id)
+                .Take(500)
+                .ToList();
         }
     }
 }

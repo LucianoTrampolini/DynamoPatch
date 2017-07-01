@@ -43,26 +43,26 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Dynamo.BL.dll" size="45568">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Dynamo.BL.dll" size="45056">
       <assemblyIdentity name="Dynamo.BL" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>NXIHhiVifvtsZ+F3QpbRt/bG9nY=</dsig:DigestValue>
+        <dsig:DigestValue>ipZN1knp/4DOOZJ2WlGoYcjmgc4=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Dynamo.Boekingssysteem.exe" size="5881736">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="Dynamo.Boekingssysteem.exe" size="5880712">
       <assemblyIdentity name="Dynamo.Boekingssysteem" version="1.0.0.0" language="neutral" processorArchitecture="x86" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>vVuhqe2eyfmUbLPr/JRojH7pn3M=</dsig:DigestValue>
+        <dsig:DigestValue>hhOw1SzPvIIV3pVcHPAPUbvmhHY=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -74,7 +74,7 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>zqkTY+BvtjUDlGFTxiiI19QWkuo=</dsig:DigestValue>
+        <dsig:DigestValue>ruwZYAMTzH/FBAJJd3IOfTTf/YA=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -86,7 +86,7 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>lNktElKzVKp6zMl4+JGb5q9urac=</dsig:DigestValue>
+        <dsig:DigestValue>COiUHM4DAemixyJ5MaENlOlQpH8=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -98,7 +98,7 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>SnmphwU+aUA93Qq6+tZPl25skws=</dsig:DigestValue>
+        <dsig:DigestValue>OI8R2kN5QfS1fwUk6CN2YuT0fA8=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -110,7 +110,7 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>X8Rw7/+QUK8LDaXAzA0qs0qPNX4=</dsig:DigestValue>
+        <dsig:DigestValue>ppPPpfi6U6YSz37z5qWLHHEx4MI=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

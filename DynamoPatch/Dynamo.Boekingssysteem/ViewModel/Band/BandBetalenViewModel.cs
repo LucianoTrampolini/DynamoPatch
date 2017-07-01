@@ -1,27 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using Dynamo.Boekingssysteem.ViewModel.Base;
-using Dynamo.Common.Properties;
-using Dynamo.Common;
 using System.Collections.ObjectModel;
-using Dynamo.BoekingsSysteem.Base;
-using Dynamo.BoekingsSysteem;
-using System.Windows;
-using Dynamo.BL;
+using System.Linq;
+
 using Dynamo.BL.Repository;
+using Dynamo.Boekingssysteem.ViewModel.Base;
+using Dynamo.BoekingsSysteem;
+using Dynamo.BoekingsSysteem.Base;
+using Dynamo.Common;
+using Dynamo.Common.Properties;
 
 namespace Dynamo.Boekingssysteem.ViewModel.Band
 {
-    public class BandBetalenViewModel : SubItemViewModel< Model.Band>
+    public class BandBetalenViewModel : SubItemViewModel<Model.Band>
     {
-        private BandViewModel _band;
+        #region Member fields
 
-        public ObservableCollection<BetalingViewModel> Betalingen { get; private set; }
+        private readonly BandViewModel _band;
 
-        public string Openstaand { get; private set; }
+        #endregion
 
         public BandBetalenViewModel(BandViewModel band)
         {
@@ -34,8 +31,12 @@ namespace Dynamo.Boekingssysteem.ViewModel.Band
 
             CreateBetalingenCollection();
 
-            this.DisplayName = string.Format("{0} {1}", StringResources.Betalingen, _band.Naam);
+            DisplayName = string.Format("{0} {1}", StringResources.Betalingen, _band.Naam);
         }
+
+        public ObservableCollection<BetalingViewModel> Betalingen { get; private set; }
+
+        public string Openstaand { get; private set; }
 
         protected override List<CommandViewModel> CreateCommands()
         {
@@ -43,34 +44,25 @@ namespace Dynamo.Boekingssysteem.ViewModel.Band
             {
                 new CommandViewModel(
                     StringResources.ButtonBetalen,
-                    new RelayCommand(param => this.Betalen())),
+                    new RelayCommand(param => Betalen())),
                 new CommandViewModel(
                     StringResources.ButtonNieuw,
-                    new RelayCommand(param => this.NieuweRekening())),
+                    new RelayCommand(param => NieuweRekening())),
                 new CommandViewModel(
                     StringResources.ButtonWijzigen,
-                    new RelayCommand(param => this.WijzigRekening())),
+                    new RelayCommand(param => WijzigRekening())),
                 new CommandViewModel(
                     StringResources.ButtonVerwijderen,
-                    new RelayCommand(param => this.Verwijderen())),
+                    new RelayCommand(param => Verwijderen())),
                 new CommandViewModel(
                     StringResources.ButtonSluiten,
                     CloseCommand)
             };
         }
 
-        private void WijzigRekening()
+        protected override void OnSubViewModelClosed()
         {
-            var betalingViewModel = Betalingen.Where(x => x.IsSelected).FirstOrDefault();
-            if (betalingViewModel != null)
-            {
-                SwitchViewModel(new WijzigBetalingViewModel(_band, betalingViewModel));
-            }
-        }
-
-        private void NieuweRekening()
-        {
-            SwitchViewModel(new NieuweRekeningViewModel(_band));
+            CreateBetalingenCollection();
         }
 
         private void Betalen()
@@ -78,9 +70,44 @@ namespace Dynamo.Boekingssysteem.ViewModel.Band
             SwitchViewModel(new NieuweBetalingViewModel(_band));
         }
 
+        private void CreateBetalingenCollection()
+        {
+            using (var repo = new BetalingRepository())
+            {
+                List<BetalingViewModel> all =
+                    (from betaling in repo.Load(x => x.BandId == _band.Id && x.Verwijderd == false)
+                        .OrderByDescending(b => b.Datum)
+                        select new BetalingViewModel(betaling)).ToList();
+
+                Betalingen = new ObservableCollection<BetalingViewModel>(all);
+                if (Betalingen.Count > 0)
+                {
+                    foreach (var item in Betalingen)
+                    {
+                        item.IsSelected = false;
+                    }
+                    Betalingen.FirstOrDefault()
+                        .IsSelected = true;
+                }
+                Openstaand = string.Format(
+                    "{0} {1}",
+                    StringResources.TotaalOpenstaand,
+                    Betalingen.Sum(x => x.Bedrag)
+                        .GetDynamoBedrag());
+            }
+            OnPropertyChanged("Betalingen");
+            OnPropertyChanged("Openstaand");
+        }
+
+        private void NieuweRekening()
+        {
+            SwitchViewModel(new NieuweRekeningViewModel(_band));
+        }
+
         private void Verwijderen()
         {
-            var betalingViewModel = Betalingen.Where(x => x.IsSelected).FirstOrDefault();
+            var betalingViewModel = Betalingen.Where(x => x.IsSelected)
+                .FirstOrDefault();
             if (betalingViewModel != null)
             {
                 if (Helper.MeldingHandler.ShowMeldingJaNee(StringResources.QuestionItemVerwijderen))
@@ -94,30 +121,14 @@ namespace Dynamo.Boekingssysteem.ViewModel.Band
             }
         }
 
-        private void CreateBetalingenCollection()
+        private void WijzigRekening()
         {
-            using (var repo = new BetalingRepository())
+            var betalingViewModel = Betalingen.Where(x => x.IsSelected)
+                .FirstOrDefault();
+            if (betalingViewModel != null)
             {
-                List<BetalingViewModel> all = (from betaling in repo.Load(x =>x.BandId==_band.Id && x.Verwijderd == false).OrderByDescending(b=>b.Datum) select new BetalingViewModel(betaling)).ToList();
-
-                this.Betalingen = new ObservableCollection<BetalingViewModel>(all);
-                if (Betalingen.Count > 0)
-                {
-                    foreach (var item in Betalingen)
-                    {
-                        item.IsSelected = false;
-                    }
-                    Betalingen.FirstOrDefault().IsSelected = true;
-                }
-                this.Openstaand = string.Format("{0} {1}", StringResources.TotaalOpenstaand, Betalingen.Sum(x => x.Bedrag).GetDynamoBedrag());
+                SwitchViewModel(new WijzigBetalingViewModel(_band, betalingViewModel));
             }
-            OnPropertyChanged("Betalingen");
-            OnPropertyChanged("Openstaand");
-        }
-
-        protected override void OnSubViewModelClosed()
-        {
-            CreateBetalingenCollection();
         }
     }
 }

@@ -4,41 +4,51 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Data;
-using Dynamo.BL;
 
 namespace Dynamo.Boekingssysteem.ViewModel.Planning
 {
-    public class LogboekPlanningViewModel: PlanningViewModel
+    public class LogboekPlanningViewModel : PlanningViewModel
     {
-        private BoekingViewModel _huidigeBoeking = null;
-        private ICollectionView _boekingenView;
-        
-        public bool Visible
+        #region Member fields
+
+        private readonly ICollectionView _boekingenView;
+        private BoekingViewModel _huidigeBoeking;
+
+        #endregion
+
+        public LogboekPlanningViewModel(Model.Planning planning)
+            : base(planning)
         {
-            get { return _entity != null && _entity.Boekingen.Any(boeking=>!boeking.Verwijderd); }
+            OnPropertyChanged("Visible");
+            DisplayName = planning == null
+                ? ""
+                : planning.Oefenruimte.Naam;
+
+            ObservableCollection<BoekingViewModel> alleBoekingen = null;
+            if (_entity == null)
+            {
+                alleBoekingen = new ObservableCollection<BoekingViewModel>();
+            }
+            else
+            {
+                List<BoekingViewModel> all =
+                    (from boeking in _entity.Boekingen.Where(boeking => !boeking.Verwijderd)
+                        select new BoekingViewModel(boeking)).ToList();
+                alleBoekingen = new ObservableCollection<BoekingViewModel>(all);
+            }
+            _boekingenView = CollectionViewSource.GetDefaultView(alleBoekingen);
+            _boekingenView.CurrentChanged += OnCurrentChanged;
+            if (alleBoekingen.Count != 0)
+            {
+                alleBoekingen.Last()
+                    .IsSelected = true;
+            }
+            OnPropertyChanged("AlleBoekingen");
         }
 
-        public string Opmerking
+        public ObservableCollection<BoekingViewModel> AlleBoekingen
         {
-            get 
-            {
-                if (_huidigeBoeking == null)
-                {
-                    return string.Empty;
-                }
-                return _huidigeBoeking.Opmerking;
-            }
-            set 
-            { 
-                if (_huidigeBoeking != null)
-                {
-                    if (_huidigeBoeking.Opmerking != value)
-                    {
-                        _huidigeBoeking.Opmerking = value;
-                        OnPropertyChanged("Opmerking");
-                    }
-                }
-            }
+            get { return _boekingenView.SourceCollection as ObservableCollection<BoekingViewModel>; }
         }
 
         public string GewijzigdTooltipText
@@ -50,51 +60,56 @@ namespace Dynamo.Boekingssysteem.ViewModel.Planning
                     return string.Empty;
                 }
 
-                var gewijzigdTooltip = string.Format("Geboekt door {0} op {1}", _huidigeBoeking.AangemaaktDoor, _huidigeBoeking.AangemaaktOp);
+                var gewijzigdTooltip = string.Format(
+                    "Geboekt door {0} op {1}",
+                    _huidigeBoeking.AangemaaktDoor,
+                    _huidigeBoeking.AangemaaktOp);
                 if (!string.IsNullOrEmpty(_huidigeBoeking.GewijzigdDoor))
                 {
-                    gewijzigdTooltip = string.Concat(gewijzigdTooltip, System.Environment.NewLine, string.Format("Gewijzigd door {0} op {1}", _huidigeBoeking.GewijzigdDoor, _huidigeBoeking.GewijzigdOp));
+                    gewijzigdTooltip = string.Concat(
+                        gewijzigdTooltip,
+                        Environment.NewLine,
+                        string.Format(
+                            "Gewijzigd door {0} op {1}",
+                            _huidigeBoeking.GewijzigdDoor,
+                            _huidigeBoeking.GewijzigdOp));
                 }
                 return gewijzigdTooltip;
             }
         }
 
-        public ObservableCollection<BoekingViewModel> AlleBoekingen
+        public string Opmerking
         {
-            get { return _boekingenView.SourceCollection as ObservableCollection<BoekingViewModel>; }
+            get
+            {
+                if (_huidigeBoeking == null)
+                {
+                    return string.Empty;
+                }
+                return _huidigeBoeking.Opmerking;
+            }
+            set
+            {
+                if (_huidigeBoeking != null)
+                {
+                    if (_huidigeBoeking.Opmerking != value)
+                    {
+                        _huidigeBoeking.Opmerking = value;
+                        OnPropertyChanged("Opmerking");
+                    }
+                }
+            }
+        }
+
+        public bool Visible
+        {
+            get { return _entity != null && _entity.Boekingen.Any(boeking => !boeking.Verwijderd); }
         }
 
         void OnCurrentChanged(object sender, EventArgs e)
         {
             _huidigeBoeking = AlleBoekingen.FirstOrDefault(x => x.IsSelected);
             OnPropertyChanged("Opmerking");
-        }
-
-        public LogboekPlanningViewModel(Model.Planning planning)
-            :base(planning )
-        {
-            OnPropertyChanged("Visible");
-            DisplayName = planning == null ? "" : planning.Oefenruimte.Naam;
-
-            ObservableCollection<BoekingViewModel> alleBoekingen = null;
-            if (_entity == null)
-            {
-                alleBoekingen = new ObservableCollection<BoekingViewModel>();
-            }
-            else
-            {
-                List<BoekingViewModel> all =
-                            (from boeking in _entity.Boekingen.Where(boeking => !boeking.Verwijderd)
-                             select new BoekingViewModel(boeking)).ToList();
-                alleBoekingen = new ObservableCollection<BoekingViewModel>(all);
-            }
-            _boekingenView = CollectionViewSource.GetDefaultView(alleBoekingen);
-            _boekingenView.CurrentChanged += new EventHandler(OnCurrentChanged);
-            if (alleBoekingen.Count != 0)
-            {
-                alleBoekingen.Last().IsSelected = true;
-            }
-            OnPropertyChanged("AlleBoekingen");
         }
     }
 }

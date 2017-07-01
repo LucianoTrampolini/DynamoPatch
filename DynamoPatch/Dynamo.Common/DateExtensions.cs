@@ -1,28 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Dynamo.Common.Properties;
 using System.Globalization;
+
+using Dynamo.Common.Properties;
 
 namespace Dynamo.Common
 {
     public static class DateExtensions
     {
-        public static DateTime GetEersteDagVanDeWeek(this DateTime date)
-        {
-            var result = date;
-            while (result.DagVanDeWeek() != 1)
-            {
-                result = result.AddDays(-1);
-            }
-            return result;
-        }
-
         public static int DagVanDeWeek(this DateTime date)
         {
             switch (date.DayOfWeek)
-            { 
+            {
                 case DayOfWeek.Monday:
                     return 1;
                 case DayOfWeek.Tuesday:
@@ -60,8 +48,41 @@ namespace Dynamo.Common
                 case DayOfWeek.Sunday:
                     return StringResources.DagZondag;
             }
-            
+
             throw new ArgumentOutOfRangeException("DagVanDeWeekVoluit");
+        }
+
+        public static string GetDynamoDatum(this DateTime date)
+        {
+            return string.Format("{0}-{1}-{2}", date.Day.ToString("00"), date.Month.ToString("00"), date.Year);
+        }
+
+        public static string GetDynamoDatumTijd(this DateTime date)
+        {
+            return string.Format(
+                "{0}-{1}-{2} {3}:{4}",
+                date.Day.ToString("00"),
+                date.Month.ToString("00"),
+                date.Year,
+                date.Hour,
+                date.Minute.ToString("00"));
+        }
+
+        public static DateTime GetEersteDagVanDeWeek(this DateTime date)
+        {
+            var result = date;
+            while (result.DagVanDeWeek() != 1)
+            {
+                result = result.AddDays(-1);
+            }
+            return result;
+        }
+
+        public static int GetIsoWeekNr(this DateTime date)
+        {
+            CultureInfo ciCurr = CultureInfo.CurrentCulture;
+            int weekNum = ciCurr.Calendar.GetWeekOfYear(date, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
+            return weekNum;
         }
 
         public static string MaandVoluit(this DateTime date)
@@ -95,24 +116,6 @@ namespace Dynamo.Common
             }
 
             throw new ArgumentOutOfRangeException("MaandVoluit");
-            
-        }
-
-        public static int GetIsoWeekNr(this DateTime date)
-        {
-            CultureInfo ciCurr = CultureInfo.CurrentCulture;
-            int weekNum = ciCurr.Calendar.GetWeekOfYear(date, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
-            return weekNum;
-        }
-
-        public static string GetDynamoDatum(this DateTime date)
-        {
-            return string.Format("{0}-{1}-{2}", date.Day.ToString("00"), date.Month.ToString("00"), date.Year.ToString());
-        }
-
-        public static string GetDynamoDatumTijd(this DateTime date)
-        {
-            return string.Format("{0}-{1}-{2} {3}:{4}", date.Day.ToString("00"), date.Month.ToString("00"), date.Year.ToString(), date.Hour, date.Minute.ToString("00"));
         }
     }
 }

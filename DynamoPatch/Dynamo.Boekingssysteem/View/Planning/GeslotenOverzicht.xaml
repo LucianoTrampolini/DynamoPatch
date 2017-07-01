@@ -6,9 +6,7 @@
 
         <CollectionViewSource
           x:Key="Gesloten" 
-          Source="{Binding Path=AlleGesloten}"
-          >
-        </CollectionViewSource>
+          Source="{Binding Path=AlleGesloten}" />
 
     </UserControl.Resources>
 

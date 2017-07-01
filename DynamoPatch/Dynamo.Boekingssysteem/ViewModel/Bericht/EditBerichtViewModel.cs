@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Dynamo.Common.Constants;
 using System.Collections.ObjectModel;
-using Dynamo.Boekingssysteem.ViewModel.Beheerder;
+using System.Linq;
+
 using Dynamo.BL;
-using Dynamo.BoekingsSysteem.Base;
-using Dynamo.Common.Properties;
+using Dynamo.Boekingssysteem.ViewModel.Beheerder;
 using Dynamo.BoekingsSysteem;
+using Dynamo.BoekingsSysteem.Base;
+using Dynamo.Common.Constants;
+using Dynamo.Common.Properties;
+using Dynamo.Model;
 
 namespace Dynamo.Boekingssysteem.ViewModel.Bericht
 {
-    public class EditBerichtViewModel: EditMemoViewModel
+    public class EditBerichtViewModel : EditMemoViewModel
     {
         public EditBerichtViewModel()
             : base(new Model.Bericht())
@@ -22,29 +23,12 @@ namespace Dynamo.Boekingssysteem.ViewModel.Bericht
             using (var repo = new BeheerderRepository())
             {
                 List<BeheerderViewModel> all =
-                                (from cust in repo.Load()
-                                 select new BeheerderViewModel(cust)).ToList();
-                this.Beheerders = new ObservableCollection<BeheerderViewModel>(all);
+                    (from cust in repo.Load()
+                        select new BeheerderViewModel(cust)).ToList();
+                Beheerders = new ObservableCollection<BeheerderViewModel>(all);
             }
         }
 
-        public ObservableCollection<BeheerderViewModel> Beheerders { get; private set; }
-
-        public override bool GeadresseerdenVisible 
-        { 
-            get 
-            {
-                return false;// _entity.IsTransient(); 
-            } 
-        }
-
-        public override bool IsReadOnly
-        {
-            get
-            {
-                return !_entity.IsTransient();
-            }
-        }
         public EditBerichtViewModel(Model.Bericht memo)
             : base(memo)
         {
@@ -54,17 +38,38 @@ namespace Dynamo.Boekingssysteem.ViewModel.Bericht
             }
         }
 
+        public ObservableCollection<BeheerderViewModel> Beheerders { get; }
+
+        public override bool GeadresseerdenVisible
+        {
+            get
+            {
+                return false; // _entity.IsTransient(); 
+            }
+        }
+
+        public override bool IsReadOnly
+        {
+            get { return !_entity.IsTransient(); }
+        }
+
         protected override List<CommandViewModel> CreateCommands()
         {
             return new List<CommandViewModel>
             {
                 new CommandViewModel(
                     StringResources.ButtonOpslaan,
-                    new RelayCommand(param => this.Opslaan(), param=>this.KanOpslaan())),
+                    new RelayCommand(param => Opslaan(), param => KanOpslaan())),
                 new CommandViewModel(
                     StringResources.ButtonAnnuleren,
                     CloseCommand)
             };
+        }
+
+        private bool KanOpslaan()
+        {
+            return string.IsNullOrWhiteSpace(Tekst) == false && string.IsNullOrWhiteSpace(Titel) == false
+                && Beheerders != null; // && Beheerders.Count(b => b.IsSelected) > 0;
         }
 
         private void Opslaan()
@@ -73,20 +78,20 @@ namespace Dynamo.Boekingssysteem.ViewModel.Bericht
             {
                 using (var repo = new BerichtRepository())
                 {
-                    foreach (var item in Beheerders)//.Where(b=>b.IsSelected))
-	                {
-                        GetEntity().BeheerderBerichten.Add(new Model.BeheerderBericht { BeheerderId = item.Id });
-	                }
+                    foreach (var item in Beheerders) //.Where(b=>b.IsSelected))
+                    {
+                        GetEntity()
+                            .BeheerderBerichten.Add(
+                                new BeheerderBericht
+                                {
+                                    BeheerderId = item.Id
+                                });
+                    }
 
                     repo.Save(GetEntity());
                 }
                 CloseCommand.Execute(null);
             }
-        }
-
-        private bool KanOpslaan()
-        {
-            return string.IsNullOrWhiteSpace(Tekst) == false && string.IsNullOrWhiteSpace(Titel) == false && Beheerders!=null;// && Beheerders.Count(b => b.IsSelected) > 0;
         }
     }
 }

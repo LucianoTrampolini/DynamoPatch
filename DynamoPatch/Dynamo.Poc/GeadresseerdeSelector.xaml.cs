@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Collections.ObjectModel;
+
+using Dynamo.BL;
 
 namespace Dynamo.Poc
 {
@@ -20,47 +13,46 @@ namespace Dynamo.Poc
     /// </summary>
     public partial class GeadresseerdeSelector : UserControl
     {
+        #region Member fields
+
+        private string _beheerder = "";
+
+        #endregion
+
         public GeadresseerdeSelector()
         {
             InitializeComponent();
-            using (var repo = new Dynamo.BL.BeheerderRepository())
+            using (var repo = new BeheerderRepository())
             {
-                BeheerdersString = new ObservableCollection<string>(repo.Load().Select(b => b.Naam));
+                BeheerdersString = new ObservableCollection<string>(
+                    repo.Load()
+                        .Select(b => b.Naam));
             }
             DataContext = this;
         }
 
-        private void AutoCompleteBox_KeyDown(object sender, KeyEventArgs e)
+        public string Beheerder
         {
-            if (e.Key == Key.W && GeadresseerdenInput.SelectedItem !=null)
-            {
-                var g = new Geadresseerde();
-                g.Beheerder = GeadresseerdenInput.SelectedItem.ToString(); 
-                Geadresseerden.Children.Add(g);
-            }
+            get { return _beheerder; }
+            set { _beheerder = value; }
         }
 
         public ObservableCollection<string> BeheerdersString { get; private set; }
 
-        private string _beheerder = "";
-        public string Beheerder
-        {
-            get { return _beheerder; }
-            set
-            {
-
-                _beheerder = value;
-
-            }
-        }
-
         public ICommand Confirm
         {
-            get
-            {
-                return new RelayCommand(param => OnDefaultCommand());
-            }
+            get { return new RelayCommand(param => OnDefaultCommand()); }
+        }
 
+        private void AutoCompleteBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.W
+                && GeadresseerdenInput.SelectedItem != null)
+            {
+                var g = new Geadresseerde();
+                g.Beheerder = GeadresseerdenInput.SelectedItem.ToString();
+                Geadresseerden.Children.Add(g);
+            }
         }
 
         private void OnDefaultCommand()
@@ -68,7 +60,6 @@ namespace Dynamo.Poc
             if (Beheerder != null)
             {
                 MessageBox.Show(Beheerder);
-
             }
         }
     }

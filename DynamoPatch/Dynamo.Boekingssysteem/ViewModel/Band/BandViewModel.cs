@@ -1,49 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
+
 using Dynamo.Boekingssysteem.ViewModel.Base;
-using Dynamo.BL;
 
 namespace Dynamo.Boekingssysteem.ViewModel.Band
 {
     public class BandViewModel : EntityViewModel<Model.Band>
     {
-        public string Naam
-        {
-            get { return _entity.Naam; }
-            set
-            {
-                if (value == _entity.Naam)
-                    return;
-
-                _entity.Naam = value;
-
-                base.OnPropertyChanged("Naam");
-            }
-        }
+        public BandViewModel(Model.Band band)
+            : base(band) {}
 
         public string Contactpersoon
-        {
-            get 
-            {
-                if (_entity.ContactPersonen.Count == 0)
-                {
-                    return string.Empty;
-                }
-                return _entity.ContactPersonen.FirstOrDefault().Naam; 
-            }
-        }
-
-        public string Telefoon
         {
             get
             {
                 if (_entity.ContactPersonen.Count == 0)
                 {
-                    return _entity.Telefoon;
+                    return string.Empty;
                 }
-                return _entity.ContactPersonen.FirstOrDefault().Telefoon;
+                return _entity.ContactPersonen.FirstOrDefault()
+                    .Naam;
+            }
+        }
+
+        public bool HeeftVerleden
+        {
+            get { return _entity.HeeftVerleden; }
+            set
+            {
+                if (value == _entity.HeeftVerleden)
+                    return;
+
+                _entity.HeeftVerleden = value;
+                OnPropertyChanged("HeeftVerleden");
             }
         }
 
@@ -57,7 +45,21 @@ namespace Dynamo.Boekingssysteem.ViewModel.Band
 
                 _entity.Kasten = value;
 
-                base.OnPropertyChanged("Kasten");
+                OnPropertyChanged("Kasten");
+            }
+        }
+
+        public string Naam
+        {
+            get { return _entity.Naam; }
+            set
+            {
+                if (value == _entity.Naam)
+                    return;
+
+                _entity.Naam = value;
+
+                OnPropertyChanged("Naam");
             }
         }
 
@@ -70,25 +72,21 @@ namespace Dynamo.Boekingssysteem.ViewModel.Band
                     return;
 
                 _entity.Opmerkingen = value;
-                base.OnPropertyChanged("Opmerkingen");
+                OnPropertyChanged("Opmerkingen");
             }
         }
 
-        public bool HeeftVerleden
+        public string Telefoon
         {
-            get { return _entity.HeeftVerleden; }
-            set 
+            get
             {
-                if (value == _entity.HeeftVerleden)
-                    return;
-
-                _entity.HeeftVerleden = value;
-                base.OnPropertyChanged("HeeftVerleden");
+                if (_entity.ContactPersonen.Count == 0)
+                {
+                    return _entity.Telefoon;
+                }
+                return _entity.ContactPersonen.FirstOrDefault()
+                    .Telefoon;
             }
         }
-        public BandViewModel(Model.Band band)
-            : base(band)
-        { }
-        
     }
 }

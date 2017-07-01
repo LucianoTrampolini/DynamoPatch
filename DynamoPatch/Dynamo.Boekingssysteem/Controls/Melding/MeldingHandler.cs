@@ -1,35 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Xceed.Wpf.Toolkit;
+﻿using System.Windows;
+
 using Dynamo.Common.Properties;
+
+using MessageBox = Xceed.Wpf.Toolkit.MessageBox;
 
 namespace Dynamo.Boekingssysteem.Controls.Melding
 {
-    public class MeldingHandler: IMeldingHandler
+    public class MeldingHandler : IMeldingHandler
     {
-        private System.Windows.Window _owner;
-        public MeldingHandler(System.Windows.Window owner)
+        #region Member fields
+
+        private readonly Window _owner;
+
+        #endregion
+
+        public MeldingHandler(Window owner)
         {
             _owner = owner;
         }
 
+        #region IMeldingHandler Members
+
         public bool ShowMeldingJaNee(string melding)
         {
-            return MessageBox.Show(_owner, melding, StringResources.ApplictatieNaam, System.Windows.MessageBoxButton.YesNo) == System.Windows.MessageBoxResult.Yes;
+            return MessageBox.Show(_owner, melding, StringResources.ApplictatieNaam, MessageBoxButton.YesNo)
+                == MessageBoxResult.Yes;
         }
-
-
-        public bool ShowMeldingOkCancel(string melding)
-        {
-            return MessageBox.Show(_owner, melding, StringResources.ApplictatieNaam, System.Windows.MessageBoxButton.OKCancel) == System.Windows.MessageBoxResult.OK;
-        }
-
 
         public void ShowMeldingOk(string melding)
         {
-            MessageBox.Show(_owner, melding, StringResources.ApplictatieNaam, System.Windows.MessageBoxButton.OK);
+            MessageBox.Show(_owner, melding, StringResources.ApplictatieNaam, MessageBoxButton.OK);
         }
+
+        public bool ShowMeldingOkCancel(string melding)
+        {
+            return MessageBox.Show(_owner, melding, StringResources.ApplictatieNaam, MessageBoxButton.OKCancel)
+                == MessageBoxResult.OK;
+        }
+
+        #endregion
     }
 }

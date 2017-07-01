@@ -1,25 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
+
+using Dynamo.BL.Repository;
+using Dynamo.BoekingsSysteem;
 using Dynamo.BoekingsSysteem.Base;
 using Dynamo.Common.Properties;
-using Dynamo.BoekingsSysteem;
-using Dynamo.BL;
-using Dynamo.Common;
+using Dynamo.Model;
+
 namespace Dynamo.Boekingssysteem.ViewModel.Planning
 {
     public class EditGeslotenViewModel : GeslotenViewModel
     {
         public EditGeslotenViewModel()
-            : base(new Model.Gesloten())
-        { 
-        }
+            : base(new Gesloten()) {}
 
-        public EditGeslotenViewModel(Model.Gesloten gesloten)
-            : base(gesloten)
-        {
-        }
+        public EditGeslotenViewModel(Gesloten gesloten)
+            : base(gesloten) {}
 
         protected override List<CommandViewModel> CreateCommands()
         {
@@ -27,7 +22,7 @@ namespace Dynamo.Boekingssysteem.ViewModel.Planning
             {
                 new CommandViewModel(
                     StringResources.ButtonOpslaan,
-                    new RelayCommand(param => this.Opslaan(), param=>this.KanOpslaan())),
+                    new RelayCommand(param => Opslaan(), param => KanOpslaan())),
                 new CommandViewModel(
                     StringResources.ButtonAnnuleren,
                     CloseCommand)

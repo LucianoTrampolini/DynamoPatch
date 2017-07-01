@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Dynamo.BoekingsSysteem;
-using System.Windows.Input;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
+
+using Dynamo.BoekingsSysteem;
 using Dynamo.BoekingsSysteem.Base;
 using Dynamo.Common.Properties;
+using Dynamo.Model.Base;
 
 namespace Dynamo.Boekingssysteem.ViewModel.Base
 {
@@ -15,14 +14,29 @@ namespace Dynamo.Boekingssysteem.ViewModel.Base
     /// from the UI when its CloseCommand executes.
     /// This class is abstract.
     /// </summary>
-    public abstract class SubItemViewModel<E> : ViewModelBase where E:Model.Base.ModelBase
+    public abstract class SubItemViewModel<E> : ViewModelBase
+        where E : ModelBase
     {
+        #region Member fields
+
         private RelayCommand _closeCommand;
         private ReadOnlyCollection<CommandViewModel> _commands;
 
-        public bool InitialFocus
+        #endregion
+
+        /// <summary>
+        /// Returns the command that, when invoked, attempts
+        /// to remove this workspace from the user interface.
+        /// </summary>
+        public ICommand CloseCommand
         {
-            get { return true; }
+            get
+            {
+                if (_closeCommand == null)
+                    _closeCommand = new RelayCommand(param => OnRequestClose());
+
+                return _closeCommand;
+            }
         }
 
         public ReadOnlyCollection<CommandViewModel> Commands
@@ -31,11 +45,16 @@ namespace Dynamo.Boekingssysteem.ViewModel.Base
             {
                 if (_commands == null)
                 {
-                    List<CommandViewModel> cmds = this.CreateCommands();
+                    List<CommandViewModel> cmds = CreateCommands();
                     _commands = new ReadOnlyCollection<CommandViewModel>(cmds);
                 }
                 return _commands;
             }
+        }
+
+        public bool InitialFocus
+        {
+            get { return true; }
         }
 
         protected virtual List<CommandViewModel> CreateCommands()
@@ -47,21 +66,5 @@ namespace Dynamo.Boekingssysteem.ViewModel.Base
                     CloseCommand)
             };
         }
-        /// <summary>
-        /// Returns the command that, when invoked, attempts
-        /// to remove this workspace from the user interface.
-        /// </summary>
-        public ICommand CloseCommand
-        {
-            get
-            {
-                if (_closeCommand == null)
-                    _closeCommand = new RelayCommand(param => this.OnRequestClose());
-
-                return _closeCommand;
-            }
-        }
-
-        
     }
 }

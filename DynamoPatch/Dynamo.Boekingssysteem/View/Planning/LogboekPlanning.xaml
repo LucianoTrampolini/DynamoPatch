@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="900">
     <UserControl.Resources>
-        <dyn:BooleanVisibilityValueConverter x:Key="BoolToVisible"></dyn:BooleanVisibilityValueConverter>
+        <dyn:BooleanVisibilityValueConverter x:Key="BoolToVisible" />
         <!--<CollectionViewSource
           x:Key="Boekingen" 
           Source="{Binding Path=AlleBoekingen}"

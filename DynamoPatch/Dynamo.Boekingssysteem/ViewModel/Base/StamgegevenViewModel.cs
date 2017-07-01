@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Dynamo.BoekingsSysteem;
+
+using Dynamo.Model.Base;
 
 namespace Dynamo.Boekingssysteem.ViewModel.Base
 {
-    public class StamgegevenViewModel:EntityViewModel<Model.Base.StamgegevenBase>
+    public class StamgegevenViewModel : EntityViewModel<StamgegevenBase>
     {
-         public StamgegevenViewModel(Model.Base.StamgegevenBase stamgegeven):base(stamgegeven)
+        public StamgegevenViewModel(StamgegevenBase stamgegeven) : base(stamgegeven)
         {
             if (stamgegeven == null)
             {

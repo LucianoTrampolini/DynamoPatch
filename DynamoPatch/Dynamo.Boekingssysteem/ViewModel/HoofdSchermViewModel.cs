@@ -6,7 +6,9 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Data;
+
 using Dynamo.BL;
+using Dynamo.BL.Repository;
 using Dynamo.Boekingssysteem;
 using Dynamo.Boekingssysteem.ViewModel.Band;
 using Dynamo.Boekingssysteem.ViewModel.Beheerder;
@@ -16,34 +18,51 @@ using Dynamo.Boekingssysteem.ViewModel.Planning;
 using Dynamo.BoekingsSysteem.Base;
 using Dynamo.Common.Properties;
 using Dynamo.Notifier;
-using Dynamo.Web;
 
 namespace Dynamo.BoekingsSysteem.ViewModel
 {
     public class HoofdSchermViewModel : WorkspaceViewModel
     {
-        private ObservableCollection<WorkspaceViewModel> _workspaces;
+        #region Member fields
+
         private string _beheerder = "";
-        private NotificationPoller _notifier;
-        
+        private readonly NotificationPoller _notifier;
+        private ObservableCollection<WorkspaceViewModel> _workspaces;
+
+        #endregion
+
+        public HoofdSchermViewModel()
+        {
+            Helper.CurrentBeheerder = new BeheerderRepository().CurrentBeheerder;
+            Helper.SetColors();
+            BackgroundWorker bgBijwerkenPlanningEnContracten = new BackgroundWorker();
+            bgBijwerkenPlanningEnContracten.DoWork += bgBijwerkenPlanningEnContracten_DoWork;
+            bgBijwerkenPlanningEnContracten.RunWorkerAsync();
+            OpenPlanning();
+            _notifier = new NotificationPoller();
+            _notifier.OnNotify += NotifierOnNotify;
+        }
+
         public string HuidigeBeheerder
         {
-            get 
-            { 
-                var beheerder = Helper.CurrentBeheerder; 
-                if(beheerder==null)
+            get
+            {
+                var beheerder = Helper.CurrentBeheerder;
+                if (beheerder == null)
                 {
                     return string.Empty;
                 }
 
-                if (_beheerder != beheerder.Naam && _beheerder != "")
+                if (_beheerder != beheerder.Naam
+                    && _beheerder != "")
                 {
                     Helper.SetColors();
-                    OpenLogboek(DateTime.Today,true);
+                    OpenLogboek(DateTime.Today, true);
                     ResetCommands();
 
                     //Berichtviewmodel wegdoen, ieder zn eigen berichten
-                    BerichtOverzichtViewModel vm = _workspaces.FirstOrDefault(w => w is BerichtOverzichtViewModel) as BerichtOverzichtViewModel;
+                    BerichtOverzichtViewModel vm =
+                        _workspaces.FirstOrDefault(w => w is BerichtOverzichtViewModel) as BerichtOverzichtViewModel;
                     if (vm != null)
                     {
                         _workspaces.Remove(vm);
@@ -57,29 +76,99 @@ namespace Dynamo.BoekingsSysteem.ViewModel
             }
         }
 
-        public HoofdSchermViewModel()
+        #region Commands
+
+        protected override List<CommandViewModel> CreateCommands()
         {
-            Helper.CurrentBeheerder = new BeheerderRepository().CurrentBeheerder;
-            Helper.SetColors();
-            BackgroundWorker bgBijwerkenPlanningEnContracten = new BackgroundWorker();
-            bgBijwerkenPlanningEnContracten.DoWork += new DoWorkEventHandler(bgBijwerkenPlanningEnContracten_DoWork);
-            bgBijwerkenPlanningEnContracten.RunWorkerAsync();
-            OpenPlanning();
-            _notifier = new NotificationPoller();
-            _notifier.OnNotify += NotifierOnNotify;
+            if (Helper.CurrentBeheerder.IsAdministrator)
+            {
+                return new List<CommandViewModel>
+                {
+                    new CommandViewModel(
+                        StringResources.ButtonPlanning,
+                        new RelayCommand(param => OpenPlanning())),
+                    new CommandViewModel(
+                        StringResources.ButtonWeekOverzicht,
+                        new RelayCommand(param => OpenWeekOverzicht(false))),
+                    new CommandViewModel(
+                        StringResources.ButtonBands,
+                        new RelayCommand(param => OpenBands())),
+                    new CommandViewModel(
+                        StringResources.ButtonIncidenteleBands,
+                        new RelayCommand(param => OpenIncidenteleBands())),
+                    new CommandViewModel(
+                        StringResources.ButtonBeheerders,
+                        new RelayCommand(param => OpenBeheerders())),
+                    new CommandViewModel(
+                        StringResources.ButtonBerichten,
+                        new RelayCommand(param => OpenBerichten())),
+                    new CommandViewModel(
+                        StringResources.ButtonMemos,
+                        new RelayCommand(param => OpenMemos())),
+                    new CommandViewModel(
+                        StringResources.ButtonSchermkleuren,
+                        new RelayCommand(param => OpenSchermkleuren())),
+                    //new CommandViewModel(
+                    //    StringResources.ButtonChangeLog,
+                    //    new RelayCommand(param => this.OpenChangeLog())),
+                    new CommandViewModel(
+                        StringResources.ButtonGeslotenDagen,
+                        new RelayCommand(param => OpenGeslotenDagen())),
+                    new CommandViewModel(
+                        StringResources.ButtonSysteemInstellingen,
+                        new RelayCommand(param => OpenSysteemInstellingen())),
+                    new CommandViewModel(
+                        StringResources.ButtonSluiten,
+                        CloseCommand)
+                };
+            }
+
+            return new List<CommandViewModel>
+            {
+                new CommandViewModel(
+                    StringResources.ButtonPlanning,
+                    new RelayCommand(param => OpenPlanning())),
+                new CommandViewModel(
+                    StringResources.ButtonWeekOverzicht,
+                    new RelayCommand(param => OpenWeekOverzicht(false))),
+                new CommandViewModel(
+                    StringResources.ButtonBands,
+                    new RelayCommand(param => OpenBands())),
+                new CommandViewModel(
+                    StringResources.ButtonIncidenteleBands,
+                    new RelayCommand(param => OpenIncidenteleBands())),
+                new CommandViewModel(
+                    StringResources.ButtonBeheerders,
+                    new RelayCommand(param => OpenBeheerders())),
+                new CommandViewModel(
+                    StringResources.ButtonBerichten,
+                    new RelayCommand(param => OpenBerichten())),
+                new CommandViewModel(
+                    StringResources.ButtonMemos,
+                    new RelayCommand(param => OpenMemos())),
+                new CommandViewModel(
+                    StringResources.ButtonSchermkleuren,
+                    new RelayCommand(param => OpenSchermkleuren())),
+                new CommandViewModel(
+                    StringResources.ButtonSluiten,
+                    CloseCommand)
+            };
         }
 
-        private void NotifierOnNotify(object sender, NotificationPollerEventArgs args)
+        #endregion // Commands
+
+        #region Dispose
+
+        protected override void OnDispose()
         {
-            if (args.UpdateWebSite)
+            foreach (var item in _workspaces)
             {
-                new WebIntegrationHelper().PushAll();
+                item.Dispose();
             }
-            else
-            {
-                Helper.AddBalloonMessage(args.Message);
-            }
+            _notifier.Dispose();
         }
+
+        #endregion
 
         private void bgBijwerkenPlanningEnContracten_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -95,88 +184,17 @@ namespace Dynamo.BoekingsSysteem.ViewModel
             new WebIntegrationHelper().PushAll();
         }
 
-        #region Commands
-
-        protected override List<CommandViewModel> CreateCommands()
+        private void NotifierOnNotify(object sender, NotificationPollerEventArgs args)
         {
-            if (Helper.CurrentBeheerder.IsAdministrator)
+            if (args.UpdateWebSite)
             {
-
-                return new List<CommandViewModel>
-                {
-                    new CommandViewModel(
-                        StringResources.ButtonPlanning,
-                        new RelayCommand(param => this.OpenPlanning())),
-                    new CommandViewModel(
-                        StringResources.ButtonWeekOverzicht,
-                        new RelayCommand(param => this.OpenWeekOverzicht(false))),
-                    new CommandViewModel(
-                        StringResources.ButtonBands,
-                        new RelayCommand(param => this.OpenBands())),
-                    new CommandViewModel(
-                        StringResources.ButtonIncidenteleBands,
-                        new RelayCommand(param => this.OpenIncidenteleBands())),
-                    new CommandViewModel(
-                        StringResources.ButtonBeheerders,
-                        new RelayCommand(param => this.OpenBeheerders())),
-                    new CommandViewModel(
-                        StringResources.ButtonBerichten,
-                        new RelayCommand(param => this.OpenBerichten())),
-                    new CommandViewModel(
-                        StringResources.ButtonMemos,
-                        new RelayCommand(param => this.OpenMemos())),
-                    new CommandViewModel(
-                        StringResources.ButtonSchermkleuren,
-                        new RelayCommand(param => this.OpenSchermkleuren())),
-                    //new CommandViewModel(
-                    //    StringResources.ButtonChangeLog,
-                    //    new RelayCommand(param => this.OpenChangeLog())),
-                    new CommandViewModel(
-                        StringResources.ButtonGeslotenDagen,
-                        new RelayCommand(param => this.OpenGeslotenDagen())),
-                    new CommandViewModel(
-                        StringResources.ButtonSysteemInstellingen,
-                        new RelayCommand(param => this.OpenSysteemInstellingen())),
-                    new CommandViewModel(
-                        StringResources.ButtonSluiten,
-                        CloseCommand)
-                };
+                new WebIntegrationHelper().PushAll();
             }
-
-            return new List<CommandViewModel>
-                {
-                    new CommandViewModel(
-                        StringResources.ButtonPlanning,
-                        new RelayCommand(param => this.OpenPlanning())),
-                    new CommandViewModel(
-                        StringResources.ButtonWeekOverzicht,
-                        new RelayCommand(param => this.OpenWeekOverzicht(false))),
-                    new CommandViewModel(
-                        StringResources.ButtonBands,
-                        new RelayCommand(param => this.OpenBands())),
-                    new CommandViewModel(
-                        StringResources.ButtonIncidenteleBands,
-                        new RelayCommand(param => this.OpenIncidenteleBands())),
-                    new CommandViewModel(
-                        StringResources.ButtonBeheerders,
-                        new RelayCommand(param => this.OpenBeheerders())),
-                    new CommandViewModel(
-                        StringResources.ButtonBerichten,
-                        new RelayCommand(param => this.OpenBerichten())),
-                    new CommandViewModel(
-                        StringResources.ButtonMemos,
-                        new RelayCommand(param => this.OpenMemos())),
-                    new CommandViewModel(
-                        StringResources.ButtonSchermkleuren,
-                        new RelayCommand(param => this.OpenSchermkleuren())),
-                    new CommandViewModel(
-                        StringResources.ButtonSluiten,
-                        CloseCommand)
-                };
-
+            else
+            {
+                Helper.AddBalloonMessage(args.Message);
+            }
         }
-
-        #endregion // Commands
 
         #region Workspaces
 
@@ -191,12 +209,11 @@ namespace Dynamo.BoekingsSysteem.ViewModel
                 if (_workspaces == null)
                 {
                     _workspaces = new ObservableCollection<WorkspaceViewModel>();
-                    _workspaces.CollectionChanged += this.OnWorkspacesChanged;
+                    _workspaces.CollectionChanged += OnWorkspacesChanged;
                     ICollectionView collectionView = CollectionViewSource.GetDefaultView(_workspaces);
                     if (collectionView != null)
                     {
-                        collectionView.CurrentChanging +=CollectionViewOnCurrentChanging;
-                            
+                        collectionView.CurrentChanging += CollectionViewOnCurrentChanging;
                     }
                 }
                 return _workspaces;
@@ -205,19 +222,21 @@ namespace Dynamo.BoekingsSysteem.ViewModel
 
         private void CollectionViewOnCurrentChanging(object sender, EventArgs eventArgs)
         {
-            var model = ((ICollectionView) sender).CurrentItem as LogboekViewModel;
+            var model = ((ICollectionView)sender).CurrentItem as LogboekViewModel;
             model?.SetPlanningsDag();
         }
 
         void OnWorkspacesChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (e.NewItems != null && e.NewItems.Count != 0)
+            if (e.NewItems != null
+                && e.NewItems.Count != 0)
                 foreach (WorkspaceViewModel workspace in e.NewItems)
-                    workspace.RequestClose += this.OnWorkspaceRequestClose;
+                    workspace.RequestClose += OnWorkspaceRequestClose;
 
-            if (e.OldItems != null && e.OldItems.Count != 0)
+            if (e.OldItems != null
+                && e.OldItems.Count != 0)
                 foreach (WorkspaceViewModel workspace in e.OldItems)
-                    workspace.RequestClose -= this.OnWorkspaceRequestClose;
+                    workspace.RequestClose -= OnWorkspaceRequestClose;
         }
 
         void OnWorkspaceRequestClose(object sender, EventArgs e)
@@ -227,19 +246,19 @@ namespace Dynamo.BoekingsSysteem.ViewModel
             {
                 //Als het planningoverzicht geladen is dan altijd na het sluiten van een tab daar naar toe gaan...
                 LogboekViewModel workspace2 =
-                this.Workspaces.FirstOrDefault(vm => vm is LogboekViewModel)
-                as LogboekViewModel;
+                    Workspaces.FirstOrDefault(vm => vm is LogboekViewModel)
+                        as LogboekViewModel;
 
                 if (workspace2 != null)
                 {
-                    this.SetActiveWorkspace(workspace2);
+                    SetActiveWorkspace(workspace2);
                     workspace.Dispose();
-                    this.Workspaces.Remove(workspace);
+                    Workspaces.Remove(workspace);
                     return;
                 }
             }
             workspace.Dispose();
-            this.Workspaces.Remove(workspace);
+            Workspaces.Remove(workspace);
 
             if (_beheerder != HuidigeBeheerder)
             {
@@ -256,24 +275,24 @@ namespace Dynamo.BoekingsSysteem.ViewModel
 
                 //Als het planningoverzicht geladen is dan altijd na het sluiten van een tab daar naar toe gaan...
                 PlanningOverichtViewModel workspace2 =
-                this.Workspaces.FirstOrDefault(vm => vm is PlanningOverichtViewModel)
-                as PlanningOverichtViewModel;
+                    Workspaces.FirstOrDefault(vm => vm is PlanningOverichtViewModel)
+                        as PlanningOverichtViewModel;
 
                 if (workspace2 != null)
                 {
-                    this.SetActiveWorkspace(workspace2);
+                    SetActiveWorkspace(workspace2);
                 }
             }
         }
 
-        private void OpenScherm<T>() where T : WorkspaceViewModel,new()
+        private void OpenScherm<T>() where T : WorkspaceViewModel, new()
         {
-            T scherm = this.Workspaces.FirstOrDefault(s => s is T) as T;
+            T scherm = Workspaces.FirstOrDefault(s => s is T) as T;
 
             if (scherm == null)
             {
                 scherm = new T();
-                this.Workspaces.Add(scherm);
+                Workspaces.Add(scherm);
             }
 
             SetActiveWorkspace(scherm);
@@ -281,14 +300,13 @@ namespace Dynamo.BoekingsSysteem.ViewModel
 
         private void SetActiveWorkspace(WorkspaceViewModel workspace)
         {
-            Debug.Assert(this.Workspaces.Contains(workspace));
+            Debug.Assert(Workspaces.Contains(workspace));
 
-            ICollectionView collectionView = CollectionViewSource.GetDefaultView(this.Workspaces);
+            ICollectionView collectionView = CollectionViewSource.GetDefaultView(Workspaces);
             if (collectionView != null)
             {
                 collectionView.MoveCurrentTo(workspace);
                 //collectionView.CurrentChanged += delegate(object sender, EventArgs args) { Debug.Print("Hoihoi"); };
-                
             }
         }
 
@@ -314,45 +332,49 @@ namespace Dynamo.BoekingsSysteem.ViewModel
         private void OpenWeekOverzicht(bool dezeWeek)
         {
             LogboekWeekOverzichtViewModel workspace =
-               this.Workspaces.FirstOrDefault(vm => vm is LogboekWeekOverzichtViewModel)
-               as LogboekWeekOverzichtViewModel;
+                Workspaces.FirstOrDefault(vm => vm is LogboekWeekOverzichtViewModel)
+                    as LogboekWeekOverzichtViewModel;
 
             if (workspace == null)
             {
                 workspace = new LogboekWeekOverzichtViewModel();
-                workspace.OnShowLogboek += new EventHandler<ShowLogboekEventArgs>(workspace_OnShowLogboek);
-                this.Workspaces.Add(workspace);
+                workspace.OnShowLogboek += workspace_OnShowLogboek;
+                Workspaces.Add(workspace);
             }
             else if (dezeWeek)
             {
                 workspace.HuidigeDatum = DateTime.Today;
             }
 
-            this.SetActiveWorkspace(workspace);
+            SetActiveWorkspace(workspace);
         }
 
         private void OpenLogboek()
         {
             PlanningOverichtViewModel planning =
-                this.Workspaces.FirstOrDefault(vm => vm is PlanningOverichtViewModel)
-                as PlanningOverichtViewModel;
+                Workspaces.FirstOrDefault(vm => vm is PlanningOverichtViewModel)
+                    as PlanningOverichtViewModel;
 
             LogboekViewModel workspace =
-                this.Workspaces.FirstOrDefault(vm => vm is LogboekViewModel)
-                as LogboekViewModel;
+                Workspaces.FirstOrDefault(vm => vm is LogboekViewModel)
+                    as LogboekViewModel;
 
             if (workspace == null)
             {
-                workspace = new LogboekViewModel(planning == null ? DateTime.Today : planning.HuidigeDatum);
-                this.Workspaces.Add(workspace);
+                workspace = new LogboekViewModel(
+                    planning == null
+                        ? DateTime.Today
+                        : planning.HuidigeDatum);
+                Workspaces.Add(workspace);
             }
             else
             {
-                workspace.HuidigeDatum = planning == null ? DateTime.Today : planning.HuidigeDatum;
+                workspace.HuidigeDatum = planning == null
+                    ? DateTime.Today
+                    : planning.HuidigeDatum;
             }
 
-            this.SetActiveWorkspace(workspace);
-            
+            SetActiveWorkspace(workspace);
         }
 
         private void OpenBeheerders()
@@ -378,43 +400,41 @@ namespace Dynamo.BoekingsSysteem.ViewModel
         private void OpenPlanning()
         {
             PlanningOverichtViewModel workspace =
-                this.Workspaces.FirstOrDefault(vm => vm is PlanningOverichtViewModel)
-                as PlanningOverichtViewModel;
+                Workspaces.FirstOrDefault(vm => vm is PlanningOverichtViewModel)
+                    as PlanningOverichtViewModel;
 
             if (workspace == null)
             {
                 workspace = new PlanningOverichtViewModel();
-                workspace.OnShowLogboek += new EventHandler<ShowLogboekEventArgs>(workspace_OnShowLogboek);
-                this.Workspaces.Add(workspace);
+                workspace.OnShowLogboek += workspace_OnShowLogboek;
+                Workspaces.Add(workspace);
             }
 
-            this.SetActiveWorkspace(workspace);
+            SetActiveWorkspace(workspace);
         }
-
-        
 
         void workspace_OnShowLogboek(object sender, ShowLogboekEventArgs e)
         {
-            OpenLogboek(e.Datum,false);
+            OpenLogboek(e.Datum, false);
         }
 
-        private void OpenLogboek(DateTime datum, bool InitieelInloggen )
+        private void OpenLogboek(DateTime datum, bool InitieelInloggen)
         {
             LogboekViewModel workspace =
-                    this.Workspaces.FirstOrDefault(vm => vm is LogboekViewModel)
+                Workspaces.FirstOrDefault(vm => vm is LogboekViewModel)
                     as LogboekViewModel;
 
             if (workspace == null)
             {
                 workspace = new LogboekViewModel(datum);
-                this.Workspaces.Add(workspace);
+                Workspaces.Add(workspace);
             }
             else
             {
                 workspace.HuidigeDatum = datum;
             }
 
-            this.SetActiveWorkspace(workspace);
+            SetActiveWorkspace(workspace);
 
             if (InitieelInloggen)
             {
@@ -430,20 +450,20 @@ namespace Dynamo.BoekingsSysteem.ViewModel
         public void HomeCommand()
         {
             PlanningOverichtViewModel workspace =
-                this.Workspaces.FirstOrDefault(vm => vm is PlanningOverichtViewModel)
-                as PlanningOverichtViewModel;
+                Workspaces.FirstOrDefault(vm => vm is PlanningOverichtViewModel)
+                    as PlanningOverichtViewModel;
 
             if (workspace == null)
             {
                 workspace = new PlanningOverichtViewModel();
-                this.Workspaces.Add(workspace);
+                Workspaces.Add(workspace);
             }
             else
             {
                 workspace.DezeWeek.Command.Execute(null);
             }
 
-            this.SetActiveWorkspace(workspace);
+            SetActiveWorkspace(workspace);
         }
 
         private void OpenIncidenteleBands()
@@ -452,18 +472,5 @@ namespace Dynamo.BoekingsSysteem.ViewModel
         }
 
         #endregion // Private Helpers
-
-        #region Dispose
-
-        protected override void OnDispose()
-        {
-            foreach (var item in _workspaces)
-            {
-                item.Dispose();
-            }
-            _notifier.Dispose();
-        }
-
-        #endregion
     }
 }

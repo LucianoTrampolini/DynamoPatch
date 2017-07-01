@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
 using System.Windows;
-using Dynamo.BoekingsSysteem.ViewModel;
-using Dynamo.Boekingssysteem.View;
-using System.Globalization;
-using System.Windows.Markup;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Markup;
+
+using Dynamo.Boekingssysteem.Controls.Melding;
+using Dynamo.Boekingssysteem.View;
+using Dynamo.BoekingsSysteem.ViewModel;
 
 namespace Dynamo.Boekingssysteem
 {
@@ -17,7 +15,11 @@ namespace Dynamo.Boekingssysteem
     /// </summary>
     public partial class App : Application
     {
+        #region Member fields
+
         private HoofdSchermViewModel viewModel;
+
+        #endregion
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -26,28 +28,23 @@ namespace Dynamo.Boekingssysteem
                 new FrameworkPropertyMetadata(
                     XmlLanguage.GetLanguage("NL-nl")));
 
-            EventManager.RegisterClassHandler(typeof(TextBox),
+            EventManager.RegisterClassHandler(
+                typeof(TextBox),
                 TextBox.GotFocusEvent,
                 new RoutedEventHandler(TextBox_GotFocus));
 
-            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
             base.OnStartup(e);
 
             HoofdScherm window = new HoofdScherm();
-            Helper.MeldingHandler = new Controls.Melding.MeldingHandler(window);
+            Helper.MeldingHandler = new MeldingHandler(window);
             Helper.TaskbarIcon = window.tbi;
 
-            window.PreviewKeyDown += new System.Windows.Input.KeyEventHandler(window_PreviewKeyDown);
+            window.PreviewKeyDown += window_PreviewKeyDown;
             viewModel = new HoofdSchermViewModel();
 
-            viewModel.RequestClose += delegate
-            {
-                window.Close();
-            };
-            window.Closed += delegate
-            {
-                viewModel.Dispose();
-            };
+            viewModel.RequestClose += delegate { window.Close(); };
+            window.Closed += delegate { viewModel.Dispose(); };
             window.DataContext = viewModel;
             window.Show();
         }
@@ -57,23 +54,24 @@ namespace Dynamo.Boekingssysteem
             Helper.MeldingHandler.ShowMeldingOk(e.ExceptionObject.ToString());
         }
 
-        void window_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
         {
-            if (e.OriginalSource is TextBox || e.OriginalSource is ComboBox)
+            (sender as TextBox).SelectAll();
+        }
+
+        void window_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.OriginalSource is TextBox
+                || e.OriginalSource is ComboBox)
             {
                 return;
             }
 
-            if (e.Key == System.Windows.Input.Key.Home)
+            if (e.Key == Key.Home)
             {
                 viewModel.HomeCommand();
                 e.Handled = true;
             }
-        }
-
-        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
-        {
-            (sender as TextBox).SelectAll();
         }
     }
 }

@@ -1,23 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Dynamo.Model.Base;
-using Dynamo.BoekingsSysteem;
-using Dynamo.BL;
 using System.Windows.Input;
-using Dynamo.Common;
+
+using Dynamo.BoekingsSysteem;
+using Dynamo.Model.Base;
 
 namespace Dynamo.Boekingssysteem.ViewModel.Base
 {
     public abstract class EntityViewModel<T> : SubItemViewModel<T>
         where T : ModelBase
     {
-        private bool _isSelected = false;
-        
+        #region Member fields
+
         private RelayCommand _defaultCommand;
 
+        protected T _entity;
+        private bool _isSelected;
+
         public EventHandler DoubleClicked;
+
+        #endregion
+
+        public EntityViewModel(T entity)
+        {
+            _entity = entity;
+        }
 
         public ICommand DefaultCommand
         {
@@ -30,12 +36,9 @@ namespace Dynamo.Boekingssysteem.ViewModel.Base
             }
         }
 
-        private void OnDefaultCommand()
+        public int Id
         {
-            if (DoubleClicked != null)
-            {
-                DoubleClicked(this, EventArgs.Empty);
-            }
+            get { return _entity.Id; }
         }
 
         public bool IsSelected
@@ -48,16 +51,14 @@ namespace Dynamo.Boekingssysteem.ViewModel.Base
 
                 _isSelected = value;
 
-                base.OnPropertyChanged("IsSelected");
+                OnPropertyChanged("IsSelected");
             }
         }
 
-        
-        protected T _entity;
-
-        public EntityViewModel(T entity)
+        public bool Verwijderd
         {
-            _entity = entity;
+            get { return _entity.Verwijderd; }
+            set { _entity.Verwijderd = value; }
         }
 
         public T GetEntity()
@@ -65,23 +66,12 @@ namespace Dynamo.Boekingssysteem.ViewModel.Base
             return _entity;
         }
 
-        public int Id
+        private void OnDefaultCommand()
         {
-            get { return _entity.Id; }
-        }
-
-        public bool Verwijderd
-        {
-            get 
+            if (DoubleClicked != null)
             {
-                return _entity.Verwijderd;
-            }
-            set
-            {
-                _entity.Verwijderd = value;
+                DoubleClicked(this, EventArgs.Empty);
             }
         }
-
-        
     }
 }

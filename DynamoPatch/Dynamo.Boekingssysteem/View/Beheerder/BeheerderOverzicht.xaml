@@ -9,10 +9,8 @@
         
         <CollectionViewSource
             x:Key="Beheerders" 
-            Source="{Binding Path=AlleBeheerders}"
-            >
-        </CollectionViewSource>
-        
+            Source="{Binding Path=AlleBeheerders}" />
+
     </UserControl.Resources>
 
     <Grid Margin="4">

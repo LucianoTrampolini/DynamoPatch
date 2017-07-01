@@ -1,17 +1,57 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Dynamo.BoekingsSysteem.Base;
+﻿using System.Collections.Generic;
+
 using Dynamo.BL;
-using Dynamo.Common.Properties;
 using Dynamo.BoekingsSysteem;
+using Dynamo.BoekingsSysteem.Base;
+using Dynamo.Common.Properties;
+using Dynamo.Model;
 
 namespace Dynamo.Boekingssysteem.ViewModel.Beheerder
 {
     public class InstellingenViewModel : WorkspaceViewModel
     {
-        public Model.Instelling _instelling;
+        #region Member fields
+
+        public Instelling _instelling;
+
+        #endregion
+
+        public InstellingenViewModel()
+        {
+            DisplayName = StringResources.ButtonSysteemInstellingen;
+            using (var repo = new InstellingRepository())
+            {
+                _instelling = repo.Load(0);
+            }
+        }
+
+        public decimal BedragBandWaarschuwing
+        {
+            get { return _instelling.BedragBandWaarschuwing; }
+            set
+            {
+                if (_instelling.BedragBandWaarschuwing == value)
+                    return;
+
+                _instelling.BedragBandWaarschuwing = value;
+
+                OnPropertyChanged("BedragBandWaarschuwing");
+            }
+        }
+
+        public decimal VergoedingBeheerder
+        {
+            get { return _instelling.VergoedingBeheerder; }
+            set
+            {
+                if (_instelling.VergoedingBeheerder == value)
+                    return;
+
+                _instelling.VergoedingBeheerder = value;
+
+                OnPropertyChanged("VergoedingBeheerder");
+            }
+        }
 
         public int WekenIncidenteleBandsBewaren
         {
@@ -23,7 +63,7 @@ namespace Dynamo.Boekingssysteem.ViewModel.Beheerder
 
                 _instelling.WekenIncidenteleBandsBewaren = value;
 
-                base.OnPropertyChanged("WekenIncidenteleBandsBewaren");
+                OnPropertyChanged("WekenIncidenteleBandsBewaren");
             }
         }
 
@@ -37,50 +77,7 @@ namespace Dynamo.Boekingssysteem.ViewModel.Beheerder
 
                 _instelling.WekenVooruitBoeken = value;
 
-                base.OnPropertyChanged("WekenVooruitBoeken");
-            }
-        }
-
-        public decimal VergoedingBeheerder
-        {
-            get
-            {
-                return _instelling.VergoedingBeheerder;
-            }
-            set
-            {
-                if (_instelling.VergoedingBeheerder == value)
-                    return;
-
-                _instelling.VergoedingBeheerder = value;
-
-                OnPropertyChanged("VergoedingBeheerder");
-            }
-        }
-
-        public decimal BedragBandWaarschuwing
-        {
-            get
-            {
-                return _instelling.BedragBandWaarschuwing;
-            }
-            set
-            {
-                if (_instelling.BedragBandWaarschuwing == value)
-                    return;
-
-                _instelling.BedragBandWaarschuwing = value;
-
-                OnPropertyChanged("BedragBandWaarschuwing");
-            }
-        }
-
-        public InstellingenViewModel()
-        {
-            DisplayName = StringResources.ButtonSysteemInstellingen;
-            using (var repo = new InstellingRepository())
-            {
-                _instelling = repo.Load(0);
+                OnPropertyChanged("WekenVooruitBoeken");
             }
         }
 
@@ -90,7 +87,7 @@ namespace Dynamo.Boekingssysteem.ViewModel.Beheerder
             {
                 new CommandViewModel(
                     StringResources.ButtonOpslaan,
-                    new RelayCommand(param => this.Opslaan())),
+                    new RelayCommand(param => Opslaan())),
                 new CommandViewModel(
                     StringResources.ButtonSluiten,
                     CloseCommand)

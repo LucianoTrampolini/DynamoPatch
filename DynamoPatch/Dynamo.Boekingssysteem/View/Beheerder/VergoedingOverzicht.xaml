@@ -10,8 +10,7 @@
     <UserControl.Resources>
         <CollectionViewSource
           x:Key="Vergoedingen" 
-          Source="{Binding Path=Vergoedingen}">
-        </CollectionViewSource>
+          Source="{Binding Path=Vergoedingen}" />
     </UserControl.Resources>
     
     <Grid Height="Auto" Width="Auto" >

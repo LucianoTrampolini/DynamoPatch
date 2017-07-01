@@ -3,25 +3,72 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
-using Dynamo.Common.Constants;
-using Dynamo.Model;
+
+using Dynamo.BL.Repository;
 using Dynamo.BL.ResultMessages;
 using Dynamo.Common;
+using Dynamo.Common.Constants;
+using Dynamo.Model;
+using Dynamo.Model.Base;
 
 namespace Dynamo.BL
 {
-    public class PlanningRepository : RepositoryBase<Model.Planning>
+    public class PlanningRepository : RepositoryBase<Planning>
     {
-        public PlanningRepository()
-        { }
+        public PlanningRepository() {}
 
         public PlanningRepository(IDynamoContext context)
-            : base(context)
-        { }
+            : base(context) {}
 
-        protected override void HandleComplexPropertyChanges(Model.Base.ModelBase entityBase)
+        public List<BandBoekingOverzichtMessage> GetBandBoekingOverzicht(Band band)
         {
-            var entity = entityBase as Model.Planning;
+            var returnValue = new List<BandBoekingOverzichtMessage>();
+            var list = currentContext.Planning.Where(pl => pl.Boekingen.Any(boeking => boeking.BandId == band.Id))
+                .OrderByDescending(x => x.Datum)
+                .Take(10);
+            foreach (var item in list)
+            {
+                var boeking = item.Boekingen.First(b => b.BandId == band.Id);
+
+                returnValue.Add(
+                    new BandBoekingOverzichtMessage
+                    {
+                        Datum = item.Datum.GetDynamoDatum(),
+                        Opmerking = boeking.Opmerking
+                    });
+            }
+            return returnValue;
+        }
+
+        public List<Band> GetBands()
+        {
+            return new BandRepository(currentContext).Load(x => x.Verwijderd == false)
+                .OrderBy(x => x.Naam)
+                .ToList();
+        }
+
+        public override List<Planning> Load(Expression<Func<Planning, bool>> expression)
+        {
+            return currentContext.Planning.Include(x => x.Boekingen)
+                .Include("Boekingen.Band")
+                .Include("Dagdeel")
+                .Include("Oefenruimte")
+                .Where(expression)
+                .ToList();
+        }
+
+        public List<Gesloten> LoadGesloten(DateTime dateTime)
+        {
+            return
+                new GeslotenRepository(currentContext).Load(
+                    x =>
+                        x.Verwijderd == false && x.DatumVan <= dateTime
+                            && (x.DatumTot.HasValue == false || x.DatumTot.Value >= dateTime));
+        }
+
+        protected override void HandleComplexPropertyChanges(ModelBase entityBase)
+        {
+            var entity = entityBase as Planning;
             if (entity == null)
             {
                 return;
@@ -34,7 +81,10 @@ namespace Dynamo.BL
                 planningsDag = new PlanningsDag
                 {
                     Datum = entity.Datum,
-                    Planningen = new List<Planning> { entity }
+                    Planningen = new List<Planning>
+                    {
+                        entity
+                    }
                 };
                 HandleChanges(planningsDag);
                 currentContext.PlanningsDagen.Add(planningsDag);
@@ -43,8 +93,9 @@ namespace Dynamo.BL
             {
                 planningsDag.Planningen.Add(entity);
             }
-             
-            if (planning != null && entity.Boekingen.Any(b => b.IsTransient()))
+
+            if (planning != null
+                && entity.Boekingen.Any(b => b.IsTransient()))
             {
                 planning.Boekingen.Add(entity.Boekingen.First(b => b.IsTransient()));
             }
@@ -52,39 +103,13 @@ namespace Dynamo.BL
             foreach (var boeking in entity.Boekingen)
             {
                 HandleChanges(boeking);
-                if (boeking.Band !=null && boeking.Band.BandTypeId == BandTypeConsts.Incidenteel && boeking.Band.IsTransient())
+                if (boeking.Band != null
+                    && boeking.Band.BandTypeId == BandTypeConsts.Incidenteel
+                    && boeking.Band.IsTransient())
                 {
                     HandleChanges(boeking.Band);
                 }
             }
-        }
-
-        public override List<Model.Planning> Load(Expression<Func<Model.Planning, bool>> expression)
-        {
-            return currentContext.Planning.Include(x=>x.Boekingen).Include("Boekingen.Band").Include("Dagdeel").Include("Oefenruimte").Where(expression).ToList();
-        }
-
-        public List<Model.Band> GetBands()
-        {
-            return new BandRepository(currentContext).Load(x => x.Verwijderd == false).OrderBy(x => x.Naam).ToList();
-        }
-
-        public List<Model.Gesloten> LoadGesloten(DateTime dateTime)
-        {
-            return new GeslotenRepository(currentContext).Load(x => x.Verwijderd == false && x.DatumVan <= dateTime && (x.DatumTot.HasValue == false || x.DatumTot.Value >= dateTime));
-        }
-
-        public List<BandBoekingOverzichtMessage> GetBandBoekingOverzicht(Model.Band band)
-        {
-            var returnValue = new List<BandBoekingOverzichtMessage>();
-            var list = currentContext.Planning.Where(pl => pl.Boekingen.Any(boeking => boeking.BandId == band.Id)).OrderByDescending(x => x.Datum).Take(10);
-            foreach (var item in list)
-            {
-                var boeking = item.Boekingen.First(b=>b.BandId==band.Id);
-
-                returnValue.Add(new BandBoekingOverzichtMessage { Datum = item.Datum.GetDynamoDatum(), Opmerking = boeking.Opmerking });
-            }
-            return returnValue;
         }
     }
 }

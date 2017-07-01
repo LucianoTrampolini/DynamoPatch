@@ -1,52 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Dynamo.BL.Base;
+using System.Linq.Expressions;
+
 using Dynamo.BL.BusinessRules.Planning;
 using Dynamo.Model;
 
-namespace Dynamo.BL
+namespace Dynamo.BL.Repository
 {
-    public class GeslotenRepository : RepositoryBase<Model.Gesloten>
+    public class GeslotenRepository : RepositoryBase<Gesloten>
     {
-        public GeslotenRepository()
-        { }
+        public GeslotenRepository() {}
 
         public GeslotenRepository(IDynamoContext context)
-            : base(context)
-        { }
-
-        public override void Save(Model.Gesloten entity, bool supressMessage = false)
-        {
-            SaveChanges(entity);
-            using (var br = new BijwerkenPlanningGesloten(currentContext))
-            {
-                br.Execute(entity);
-            }
-        }
-
-        public override List<Model.Gesloten> Load(System.Linq.Expressions.Expression<Func<Model.Gesloten, bool>> expression)
-        {
-            return currentContext.Gesloten.Where(expression).ToList();
-        }
-
-        public override List<Model.Gesloten> Load()
-        {
-            return currentContext.Gesloten.Where(x => x.Verwijderd == false).ToList();
-        }
-
-        public override void Delete(Model.Gesloten entity)
-        {
-            using (var br = new BijwerkenVerwijderGesloten(currentContext))
-            {
-                br.Execute(entity);
-            }
-            base.Delete(entity);
-        }
+            : base(context) {}
 
         public void BijwerkenGeslotenDagenPlanning()
-        { 
+        {
             var list = currentContext.Gesloten.ToList();
 
             foreach (var entity in list)
@@ -55,6 +25,36 @@ namespace Dynamo.BL
                 {
                     br.Execute(entity);
                 }
+            }
+        }
+
+        public override void Delete(Gesloten entity)
+        {
+            using (var br = new BijwerkenVerwijderGesloten(currentContext))
+            {
+                br.Execute(entity);
+            }
+            base.Delete(entity);
+        }
+
+        public override List<Gesloten> Load(Expression<Func<Gesloten, bool>> expression)
+        {
+            return currentContext.Gesloten.Where(expression)
+                .ToList();
+        }
+
+        public override List<Gesloten> Load()
+        {
+            return currentContext.Gesloten.Where(x => x.Verwijderd == false)
+                .ToList();
+        }
+
+        public override void Save(Gesloten entity, bool supressMessage = false)
+        {
+            SaveChanges(entity);
+            using (var br = new BijwerkenPlanningGesloten(currentContext))
+            {
+                br.Execute(entity);
             }
         }
     }

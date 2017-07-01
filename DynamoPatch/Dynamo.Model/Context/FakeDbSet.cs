@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Data.Entity;
-using System.Linq.Expressions;
 using System.Collections.ObjectModel;
+using System.Data.Entity;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace Dynamo.Model.Context
 {
@@ -12,29 +12,57 @@ namespace Dynamo.Model.Context
     /// Om de dbset te simuleren in de unittests
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class FakeDbSet<T> : IDbSet<T> where T : class
+    public class FakeDbSet<T> : IDbSet<T>
+        where T : class
     {
-        private HashSet<T> _data;
+        #region Member fields
+
+        private readonly HashSet<T> _data;
+
+        #endregion
 
         public FakeDbSet()
         {
             _data = new HashSet<T>();
         }
 
-        public virtual T Find(params object[] keyValues)
+        public ObservableCollection<T> Local
         {
-            throw new NotImplementedException();
+            get { return new ObservableCollection<T>(_data); }
         }
+
+        Type IQueryable.ElementType
+        {
+            get
+            {
+                return _data.AsQueryable()
+                    .ElementType;
+            }
+        }
+
+        Expression IQueryable.Expression
+        {
+            get
+            {
+                return _data.AsQueryable()
+                    .Expression;
+            }
+        }
+
+        IQueryProvider IQueryable.Provider
+        {
+            get
+            {
+                return _data.AsQueryable()
+                    .Provider;
+            }
+        }
+
+        #region IDbSet<T> Members
 
         public T Add(T item)
         {
             _data.Add(item);
-            return item;
-        }
-
-        public T Remove(T item)
-        {
-            _data.Remove(item);
             return item;
         }
 
@@ -44,27 +72,28 @@ namespace Dynamo.Model.Context
             return item;
         }
 
-        public void Detach(T item)
+        public T Create()
+        {
+            return Activator.CreateInstance<T>();
+        }
+
+        public TDerivedEntity Create<TDerivedEntity>() where TDerivedEntity : class, T
+        {
+            return Activator.CreateInstance<TDerivedEntity>();
+        }
+
+        public virtual T Find(params object[] keyValues)
+        {
+            throw new NotImplementedException();
+        }
+
+        public T Remove(T item)
         {
             _data.Remove(item);
+            return item;
         }
 
-        Type IQueryable.ElementType
-        {
-            get { return _data.AsQueryable().ElementType; }
-        }
-
-        Expression IQueryable.Expression
-        {
-            get { return _data.AsQueryable().Expression; }
-        }
-
-        IQueryProvider IQueryable.Provider
-        {
-            get { return _data.AsQueryable().Provider; }
-        }
-
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
             return _data.GetEnumerator();
         }
@@ -74,23 +103,11 @@ namespace Dynamo.Model.Context
             return _data.GetEnumerator();
         }
 
-        public T Create()
-        {
-            return Activator.CreateInstance<T>();
-        }
+        #endregion
 
-        public ObservableCollection<T> Local
+        public void Detach(T item)
         {
-            get
-            {
-                return new ObservableCollection<T>(_data);
-            }
-        }
-
-        public TDerivedEntity Create<TDerivedEntity>() where TDerivedEntity : class, T
-        {
-            return Activator.CreateInstance<TDerivedEntity>();
+            _data.Remove(item);
         }
     }
-
 }

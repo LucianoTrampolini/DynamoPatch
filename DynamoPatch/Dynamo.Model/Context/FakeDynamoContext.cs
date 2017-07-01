@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 
 using Dynamo.Common.Constants;
 
@@ -13,43 +11,25 @@ namespace Dynamo.Model.Context
     /// </summary>
     public class FakeDynamoContext : IDynamoContext
     {
-        public IDbSet<OpgetredenFout> OpgetredenFouten { get; set; }
-        public IDbSet<Beheerder> Beheerders { get; set; }
-        public IDbSet<Band> Bands { get; set; }
-        public IDbSet<ContactPersoon> ContactPersoons { get; set; }
-        public IDbSet<BandType> BandTypes { get; set; }
-        public IDbSet<PlanningsDag> PlanningsDagen { get; set; }
-        public IDbSet<Planning> Planning { get; set; }
-        public IDbSet<Boeking> Boekingen { get; set; }
-        public IDbSet<Oefenruimte> Oefenruimtes { get; set; }
-        public IDbSet<Tarief> Tarieven { get; set; }
-        public IDbSet<Dagdeel> Dagdelen { get; set; }
-        public IDbSet<Betaling> Betalingen { get; set; }
-        public IDbSet<Vergoeding> Vergoedingen { get; set; }
-        public IDbSet<Taak> Taken { get; set; }
-        public IDbSet<Gesloten> Gesloten { get; set; }
-        public IDbSet<Contract> Contracten { get; set; }
-        public IDbSet<BerichtType> BerichtTypes { get; set; }
-        public IDbSet<Bericht> Berichten { get; set; }
-        public IDbSet<BeheerderBericht> BeheerderBerichten { get; set; }
-        public IDbSet<ChangeLog> ChangeLog { get; set; }
-        public IDbSet<Instelling> Instellingen { get; set; }
+        #region Static fields and Constants
 
-        public int SaveAangeroepen { get; set; }
+        private static IDynamoContext _currentContext;
+
+        #endregion
 
         public FakeDynamoContext()
         {
             OpgetredenFouten = new FakeDbSet<OpgetredenFout>();
             Beheerders = new FakeDbSet<Beheerder>();
-            Bands= new FakeDbSet<Band>();
+            Bands = new FakeDbSet<Band>();
             ContactPersoons = new FakeDbSet<ContactPersoon>();
             BandTypes = new FakeDbSet<BandType>();
-            PlanningsDagen= new FakeDbSet<PlanningsDag>();
+            PlanningsDagen = new FakeDbSet<PlanningsDag>();
             Planning = new FakeDbSet<Planning>();
             Boekingen = new FakeDbSet<Boeking>();
             Oefenruimtes = new FakeDbSet<Oefenruimte>();
             Tarieven = new FakeDbSet<Tarief>();
-            Dagdelen= new FakeDbSet<Dagdeel>();
+            Dagdelen = new FakeDbSet<Dagdeel>();
             Betalingen = new FakeDbSet<Betaling>();
             Vergoedingen = new FakeDbSet<Vergoeding>();
             Taken = new FakeDbSet<Taak>();
@@ -62,8 +42,35 @@ namespace Dynamo.Model.Context
             Instellingen = new FakeDbSet<Instelling>();
         }
 
+        public IDbSet<Band> Bands { get; set; }
+        public IDbSet<BandType> BandTypes { get; set; }
+        public IDbSet<BeheerderBericht> BeheerderBerichten { get; set; }
+        public IDbSet<Beheerder> Beheerders { get; set; }
+        public IDbSet<Bericht> Berichten { get; set; }
+        public IDbSet<BerichtType> BerichtTypes { get; set; }
+        public IDbSet<Betaling> Betalingen { get; set; }
+        public IDbSet<Boeking> Boekingen { get; set; }
+        public IDbSet<ChangeLog> ChangeLog { get; set; }
+        public IDbSet<ContactPersoon> ContactPersoons { get; set; }
+        public IDbSet<Contract> Contracten { get; set; }
+        public IDbSet<Dagdeel> Dagdelen { get; set; }
+        public IDbSet<Gesloten> Gesloten { get; set; }
+        public IDbSet<Instelling> Instellingen { get; set; }
+        public IDbSet<Oefenruimte> Oefenruimtes { get; set; }
+        public IDbSet<OpgetredenFout> OpgetredenFouten { get; set; }
+        public IDbSet<Planning> Planning { get; set; }
+        public IDbSet<PlanningsDag> PlanningsDagen { get; set; }
 
-        public System.Data.Entity.Infrastructure.DbEntityEntry Entry(object entity)
+        public int SaveAangeroepen { get; set; }
+        public IDbSet<Taak> Taken { get; set; }
+        public IDbSet<Tarief> Tarieven { get; set; }
+        public IDbSet<Vergoeding> Vergoedingen { get; set; }
+
+        #region IDynamoContext Members
+
+        public void Dispose() {}
+
+        public DbEntityEntry Entry(object entity)
         {
             return null;
             //throw new NotImplementedException();
@@ -76,11 +83,7 @@ namespace Dynamo.Model.Context
             return 1;
         }
 
-        public void Dispose()
-        {
-        }
-
-        private static IDynamoContext _currentContext = null;
+        #endregion
 
         public static IDynamoContext GetInstance()
         {
@@ -95,32 +98,114 @@ namespace Dynamo.Model.Context
 
         public static void SetBasisgegevens(IDynamoContext context)
         {
-            context.Oefenruimtes.Add(new Oefenruimte { Id = 1, Naam = "Oefenruimte 1" });
-            context.Oefenruimtes.Add(new Oefenruimte { Id = 2, Naam = "Oefenruimte 2" });
-            context.Oefenruimtes.Add(new Oefenruimte { Id = 3, Naam = "Oefenruimte 3" });
+            context.Oefenruimtes.Add(
+                new Oefenruimte
+                {
+                    Id = 1,
+                    Naam = "Oefenruimte 1"
+                });
+            context.Oefenruimtes.Add(
+                new Oefenruimte
+                {
+                    Id = 2,
+                    Naam = "Oefenruimte 2"
+                });
+            context.Oefenruimtes.Add(
+                new Oefenruimte
+                {
+                    Id = 3,
+                    Naam = "Oefenruimte 3"
+                });
 
-            context.Dagdelen.Add(new Dagdeel { Id = 1, Omschrijving = "Ochtend" });
-            context.Dagdelen.Add(new Dagdeel { Id = 2, Omschrijving = "Middag" });
-            context.Dagdelen.Add(new Dagdeel { Id = 3, Omschrijving = "Avond" });
+            context.Dagdelen.Add(
+                new Dagdeel
+                {
+                    Id = 1,
+                    Omschrijving = "Ochtend"
+                });
+            context.Dagdelen.Add(
+                new Dagdeel
+                {
+                    Id = 2,
+                    Omschrijving = "Middag"
+                });
+            context.Dagdelen.Add(
+                new Dagdeel
+                {
+                    Id = 3,
+                    Omschrijving = "Avond"
+                });
 
-            context.BerichtTypes.Add(new BerichtType { Id = 1, Omschrijving = "Intern" });
-            context.BerichtTypes.Add(new BerichtType { Id = 2, Omschrijving = "Website" });
-            context.BerichtTypes.Add(new BerichtType { Id = 3, Omschrijving = "Memo" });
+            context.BerichtTypes.Add(
+                new BerichtType
+                {
+                    Id = 1,
+                    Omschrijving = "Intern"
+                });
+            context.BerichtTypes.Add(
+                new BerichtType
+                {
+                    Id = 2,
+                    Omschrijving = "Website"
+                });
+            context.BerichtTypes.Add(
+                new BerichtType
+                {
+                    Id = 3,
+                    Omschrijving = "Memo"
+                });
 
-            context.Taken.Add(new Taak { Id = 1, Omschrijving = "Beheer" });
-            context.Taken.Add(new Taak { Id = 2, Omschrijving = "Diversen" });
+            context.Taken.Add(
+                new Taak
+                {
+                    Id = 1,
+                    Omschrijving = "Beheer"
+                });
+            context.Taken.Add(
+                new Taak
+                {
+                    Id = 2,
+                    Omschrijving = "Diversen"
+                });
 
-            context.BandTypes.Add(new BandType { Id = 1, Omschrijving = "Contract" });
-            context.BandTypes.Add(new BandType { Id = 2, Omschrijving = "Incidenteel" });
+            context.BandTypes.Add(
+                new BandType
+                {
+                    Id = 1,
+                    Omschrijving = "Contract"
+                });
+            context.BandTypes.Add(
+                new BandType
+                {
+                    Id = 2,
+                    Omschrijving = "Incidenteel"
+                });
 
-            var beheerder = new Beheerder { Id = 1, Naam = "Herman" };
+            var beheerder = new Beheerder
+            {
+                Id = 1,
+                Naam = "Herman"
+            };
             context.Beheerders.Add(beheerder);
-            context.Vergoedingen.Add(new Vergoeding { Id = 1, BeheerderId = 1, Beheerder = beheerder, TaakId = TaakConsts.Beheer, DagdeelId = 1, Datum = DateTime.Today });
+            context.Vergoedingen.Add(
+                new Vergoeding
+                {
+                    Id = 1,
+                    BeheerderId = 1,
+                    Beheerder = beheerder,
+                    TaakId = TaakConsts.Beheer,
+                    DagdeelId = 1,
+                    Datum = DateTime.Today
+                });
 
-            context.Instellingen.Add(new Instelling { BedragBandWaarschuwing = 100, VergoedingBeheerder = 5, WekenIncidenteleBandsBewaren = 50, WekenVooruitBoeken = 10 });
+            context.Instellingen.Add(
+                new Instelling
+                {
+                    BedragBandWaarschuwing = 100,
+                    VergoedingBeheerder = 5,
+                    WekenIncidenteleBandsBewaren = 50,
+                    WekenVooruitBoeken = 10
+                });
         }
-
-
-        
     }
 }

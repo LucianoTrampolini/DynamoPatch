@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Input;
 
 namespace Dynamo.BoekingsSysteem.Base
@@ -13,8 +10,8 @@ namespace Dynamo.BoekingsSysteem.Base
             if (command == null)
                 throw new ArgumentNullException("command");
 
-            base.DisplayName = displayName;
-            this.Command = command;
+            DisplayName = displayName;
+            Command = command;
         }
 
         public ICommand Command { get; private set; }

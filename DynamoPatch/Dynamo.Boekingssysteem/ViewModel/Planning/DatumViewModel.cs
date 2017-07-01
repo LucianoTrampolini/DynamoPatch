@@ -1,50 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
 using Dynamo.BoekingsSysteem;
-using Dynamo.Common;
 using Dynamo.BoekingsSysteem.Base;
-using System.Windows.Input;
+using Dynamo.Common;
 
 namespace Dynamo.Boekingssysteem.ViewModel.Planning
 {
     public class DatumViewModel : ViewModelBase
     {
+        #region Member fields
+
         private DateTime _datum = DateTime.Today;
         private CommandViewModel _logboek;
-        public event EventHandler<ShowLogboekEventArgs> OnShowLogboek;
+
+        #endregion
+
         public DatumViewModel(DateTime datum)
         {
             _datum = datum;
-        }
-
-        public int DikteRand
-        {
-            get 
-            {
-                return _datum.Date == DateTime.Today ? 2 : 0;
-            }
-        }
-
-        public CommandViewModel Logboek
-        {
-            get
-            {
-                if (_logboek == null)
-                {
-                    _logboek = new CommandViewModel("<", new RelayCommand(param => this.ShowLogboek()));
-                }
-                return _logboek;
-            }
-        }
-
-        private void ShowLogboek()
-        {
-            if (OnShowLogboek != null)
-            {
-                OnShowLogboek(this, new ShowLogboekEventArgs { Datum = _datum});
-            }
         }
 
         public string DagVanDeWeek
@@ -57,21 +30,60 @@ namespace Dynamo.Boekingssysteem.ViewModel.Planning
             get { return _datum.GetDynamoDatum(); }
         }
 
-        
+        public int DikteRand
+        {
+            get
+            {
+                return _datum.Date == DateTime.Today
+                    ? 2
+                    : 0;
+            }
+        }
+
+        public CommandViewModel Logboek
+        {
+            get
+            {
+                if (_logboek == null)
+                {
+                    _logboek = new CommandViewModel("<", new RelayCommand(param => ShowLogboek()));
+                }
+                return _logboek;
+            }
+        }
+
+        public event EventHandler<ShowLogboekEventArgs> OnShowLogboek;
+
+        public void WeekTerug()
+        {
+            _datum.AddDays(-7);
+        }
 
         public void WeekVerder()
         {
             _datum.AddDays(7);
         }
 
-        public void WeekTerug()
+        private void ShowLogboek()
         {
-            _datum.AddDays(-7);
+            if (OnShowLogboek != null)
+            {
+                OnShowLogboek(
+                    this,
+                    new ShowLogboekEventArgs
+                    {
+                        Datum = _datum
+                    });
+            }
         }
     }
 
     public class ShowLogboekEventArgs : EventArgs
     {
+        #region Member fields
+
         public DateTime Datum;
+
+        #endregion
     }
 }

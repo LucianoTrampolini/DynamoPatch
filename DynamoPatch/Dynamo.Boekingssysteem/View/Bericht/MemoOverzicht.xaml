@@ -7,10 +7,8 @@
 
         <CollectionViewSource
           x:Key="Memos" 
-          Source="{Binding Path=AlleBerichten}"
-          >
-        </CollectionViewSource>
-        <dyn:BoolToFontWeightConverter x:Key="fontWeightConverter"></dyn:BoolToFontWeightConverter>
+          Source="{Binding Path=AlleBerichten}" />
+        <dyn:BoolToFontWeightConverter x:Key="fontWeightConverter" />
     </UserControl.Resources>
 
     <Grid Margin="4">

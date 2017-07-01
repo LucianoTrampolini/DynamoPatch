@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows;
 
 namespace Dynamo.Boekingssysteem.Controls
 {
@@ -16,8 +12,7 @@ namespace Dynamo.Boekingssysteem.Controls
             Window wnd = Application.Current.MainWindow;
             if (item is string)
                 return wnd.FindResource("WaitTemplate") as DataTemplate;
-            else
-                return wnd.FindResource("TheItemTemplate") as DataTemplate;
+            return wnd.FindResource("TheItemTemplate") as DataTemplate;
         }
     }
 }

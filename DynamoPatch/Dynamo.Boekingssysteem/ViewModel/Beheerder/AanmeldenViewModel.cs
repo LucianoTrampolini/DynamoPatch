@@ -1,49 +1,71 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Dynamo.BoekingsSysteem.Base;
-using Dynamo.Boekingssysteem.ViewModel.Base;
 using System.Collections.ObjectModel;
-using Dynamo.BL;
-using Dynamo.BoekingsSysteem;
-using Dynamo.BL.Enum;
-using Dynamo.Common.Properties;
-using System.Windows;
+using System.Linq;
 
+using Dynamo.BL;
+using Dynamo.BL.Enum;
 using Dynamo.BL.Repository;
+using Dynamo.Boekingssysteem.ViewModel.Base;
+using Dynamo.BoekingsSysteem;
+using Dynamo.BoekingsSysteem.Base;
+using Dynamo.Common.Properties;
+using Dynamo.Model;
 
 namespace Dynamo.Boekingssysteem.ViewModel.Beheerder
 {
-    public class AanmeldenViewModel : EntityViewModel<Model.Vergoeding>
+    public class AanmeldenViewModel : EntityViewModel<Vergoeding>
     {
-        private BeheerderViewModel _beheerder;
-        
-        public ObservableCollection<StamgegevenViewModel> Dagdelen { get; set; }
-        public ObservableCollection<StamgegevenViewModel> Taken { get; set; }
+        #region Member fields
 
-        public int TaakId 
+        private readonly BeheerderViewModel _beheerder;
+
+        #endregion
+
+        public AanmeldenViewModel(BeheerderViewModel beheerder)
+            : base(new Vergoeding())
         {
-            get 
+            if (beheerder == null)
             {
-                return _entity.TaakId;
+                throw new ArgumentNullException("beheerder");
             }
-            set 
-            {
-                if (_entity.TaakId == value)
-                    return;
 
-                _entity.TaakId = value;
-                OnPropertyChanged("TaakId");
+            _beheerder = beheerder;
+            DisplayName = StringResources.ButtonAanmelden;
+            using (var repo = new BeheerderRepository())
+            {
+                List<StamgegevenViewModel> alleDagdelen =
+                    (from cust in repo.GetStamGegevens(Stamgegevens.Dagdelen)
+                        select new StamgegevenViewModel(cust)).ToList();
+
+                Dagdelen = new ObservableCollection<StamgegevenViewModel>(alleDagdelen);
+
+                List<StamgegevenViewModel> alleTaken =
+                    (from cust in repo.GetStamGegevens(Stamgegevens.Taken)
+                        select new StamgegevenViewModel(cust)).ToList();
+
+                Taken = new ObservableCollection<StamgegevenViewModel>(alleTaken);
             }
+            _entity.Datum = DateTime.Today;
+            TaakId = 1;
+            DagdeelId = DateTime.Now.Hour < 18
+                ? 2
+                : 3;
+            using (var repo = new InstellingRepository())
+            {
+                _entity.Bedrag = repo.Load(0)
+                    .VergoedingBeheerder;
+            }
+        }
+
+        public string BeheerderNaam
+        {
+            get { return _beheerder.Naam; }
         }
 
         public int DagdeelId
         {
-            get
-            {
-                return _entity.DagdeelId;
-            }
+            get { return _entity.DagdeelId; }
             set
             {
                 if (_entity.DagdeelId == value)
@@ -54,44 +76,22 @@ namespace Dynamo.Boekingssysteem.ViewModel.Beheerder
             }
         }
 
-        public string BeheerderNaam 
+        public ObservableCollection<StamgegevenViewModel> Dagdelen { get; set; }
+
+        public int TaakId
         {
-            get { return _beheerder.Naam; }
+            get { return _entity.TaakId; }
+            set
+            {
+                if (_entity.TaakId == value)
+                    return;
+
+                _entity.TaakId = value;
+                OnPropertyChanged("TaakId");
+            }
         }
 
-        public AanmeldenViewModel(BeheerderViewModel beheerder)
-            : base(new Model.Vergoeding())
-        {
-            if (beheerder == null)
-            {
-                throw new ArgumentNullException("beheerder");
-            }
-
-            _beheerder = beheerder;
-            this.DisplayName = StringResources.ButtonAanmelden;
-            using (var repo = new BeheerderRepository())
-            {
-                List<StamgegevenViewModel> alleDagdelen =
-                        (from cust in repo.GetStamGegevens(Stamgegevens.Dagdelen)
-                         select new StamgegevenViewModel(cust)).ToList();
-
-                Dagdelen = new ObservableCollection<StamgegevenViewModel>(alleDagdelen);
-
-                List<StamgegevenViewModel> alleTaken =
-                        (from cust in repo.GetStamGegevens(Stamgegevens.Taken)
-                         select new StamgegevenViewModel(cust)).ToList();
-
-                Taken = new ObservableCollection<StamgegevenViewModel>(alleTaken);
-
-            }
-            _entity.Datum = DateTime.Today;
-            TaakId = 1;
-            DagdeelId = DateTime.Now.Hour < 18 ? 2 : 3;
-            using (var repo = new InstellingRepository())
-            {
-                _entity.Bedrag = repo.Load(0).VergoedingBeheerder;
-            }
-        }
+        public ObservableCollection<StamgegevenViewModel> Taken { get; set; }
 
         protected override List<CommandViewModel> CreateCommands()
         {
@@ -99,16 +99,17 @@ namespace Dynamo.Boekingssysteem.ViewModel.Beheerder
             {
                 new CommandViewModel(
                     StringResources.ButtonOk,
-                    new RelayCommand(param => this.Aanmelden(), param=>this.KanAanmelden())),
+                    new RelayCommand(param => Aanmelden(), param => KanAanmelden())),
                 new CommandViewModel(
                     StringResources.ButtonAnnuleren,
                     CloseCommand)
             };
         }
 
-        private bool KanAanmelden()
+        protected override void OnDispose()
         {
-            return (_entity.TaakId > 0 && _entity.DagdeelId > 0);
+            Taken.Clear();
+            Dagdelen.Clear();
         }
 
         private void Aanmelden()
@@ -117,11 +118,13 @@ namespace Dynamo.Boekingssysteem.ViewModel.Beheerder
             {
                 using (var repo = new VergoedingRepository())
                 {
-                    _entity.Taak = repo.GetStamGegevens(Stamgegevens.Taken).FirstOrDefault(x => x.Id == _entity.TaakId) as Model.Taak;
-                    _entity.Dagdeel = repo.GetStamGegevens(Stamgegevens.Dagdelen).FirstOrDefault(x => x.Id == _entity.DagdeelId) as Model.Dagdeel;
+                    _entity.Taak = repo.GetStamGegevens(Stamgegevens.Taken)
+                        .FirstOrDefault(x => x.Id == _entity.TaakId) as Taak;
+                    _entity.Dagdeel = repo.GetStamGegevens(Stamgegevens.Dagdelen)
+                        .FirstOrDefault(x => x.Id == _entity.DagdeelId) as Dagdeel;
                     _entity.Beheerder = repo.GetBeheerder(_beheerder.Id);
                     repo.Save(_entity);
-                    
+
                     if (repo.HasMelding)
                     {
                         Helper.MeldingHandler.ShowMeldingOk(repo.Melding);
@@ -137,10 +140,9 @@ namespace Dynamo.Boekingssysteem.ViewModel.Beheerder
             }
         }
 
-        protected override void OnDispose()
+        private bool KanAanmelden()
         {
-            Taken.Clear();
-            Dagdelen.Clear();
+            return (_entity.TaakId > 0 && _entity.DagdeelId > 0);
         }
     }
 }

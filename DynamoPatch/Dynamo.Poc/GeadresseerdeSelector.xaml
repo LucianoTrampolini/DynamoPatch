@@ -7,15 +7,11 @@
              mc:Ignorable="d" 
              d:DesignHeight="65" d:DesignWidth="300">
     <StackPanel>
-        <StackPanel x:Name="Geadresseerden" MinHeight="35">
-            
-        </StackPanel>
-        
+        <StackPanel x:Name="Geadresseerden" MinHeight="35" />
+
         <sdk:AutoCompleteBox x:Name="GeadresseerdenInput" ItemsSource="{Binding Path=BeheerdersString}" Width="Auto" SelectedItem="{Binding Path=Beheerder, Mode=TwoWay}"
                                      FilterMode="StartsWith"
                                      MaxDropDownHeight="100"
-                                        Height="30" KeyDown="AutoCompleteBox_KeyDown">
-            
-        </sdk:AutoCompleteBox>
+                                        Height="30" KeyDown="AutoCompleteBox_KeyDown" />
     </StackPanel>
 </UserControl>

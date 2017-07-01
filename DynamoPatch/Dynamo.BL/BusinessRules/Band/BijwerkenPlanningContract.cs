@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+
 using Dynamo.BL.Base;
 using Dynamo.Common;
 using Dynamo.Model;
@@ -10,11 +9,15 @@ namespace Dynamo.BL.BusinessRules.Band
 {
     public class BijwerkenPlanningContract : BusinessRuleBase<Model.Band>
     {
-        private PlanningRepository _planningRepository = null;
-        private InstellingRepository _instellingRepository = null;
+        #region Member fields
+
+        private readonly InstellingRepository _instellingRepository;
+        private readonly PlanningRepository _planningRepository;
+
+        #endregion
 
         public BijwerkenPlanningContract(IDynamoContext context)
-            :base(context) 
+            : base(context)
         {
             _planningRepository = new PlanningRepository(context);
             _planningRepository.AdminModus = true;
@@ -23,85 +26,87 @@ namespace Dynamo.BL.BusinessRules.Band
 
         public override bool Execute(Model.Band entity)
         {
-            var aantalWekenVooruit = _instellingRepository.Load(0).WekenVooruitBoeken;
+            var aantalWekenVooruit = _instellingRepository.Load(0)
+                .WekenVooruitBoeken;
             var returnValue = true;
-            
-            if(entity.Contracten !=null)
-            foreach (var contract in entity.Contracten.Where(c=>c.EindeContract.HasValue==false || c.EindeContract.Value.Date > DateTime.Today))
-            {
-                var datum = GetStartDatum(contract.Oefendag);
-                var datumEinde = datum.AddDays(aantalWekenVooruit * 7);
 
-                //Beginnen aan het einde zodat we niet onnodig veel queries aan het begin moeten doen...
-                while (datumEinde > datum)
+            if (entity.Contracten != null)
+                foreach (
+                    var contract in
+                        entity.Contracten.Where(
+                            c => c.EindeContract.HasValue == false || c.EindeContract.Value.Date > DateTime.Today))
                 {
-                    if (datumEinde < contract.BeginContract || datumEinde > contract.EindeContract)
+                    var datum = GetStartDatum(contract.Oefendag);
+                    var datumEinde = datum.AddDays(aantalWekenVooruit * 7);
+
+                    //Beginnen aan het einde zodat we niet onnodig veel queries aan het begin moeten doen...
+                    while (datumEinde > datum)
                     {
-                        //We zitten buiten de datumrange van het contract, er uit...
-                        break;
-                    }
-                    var planning = _planningRepository.Load(x => x.Datum == datumEinde && x.DagdeelId == contract.DagdeelId && x.OefenruimteId == contract.OefenruimteId).FirstOrDefault();
-                    if (planning == null || planning.Beschikbaar)
-                    {
-                        if (planning == null)
+                        if (datumEinde < contract.BeginContract
+                            || datumEinde > contract.EindeContract)
                         {
-                            planning = new Model.Planning
-                            {
-                                Datum = datumEinde,
-                                DagdeelId = contract.DagdeelId,
-                                OefenruimteId = contract.OefenruimteId,
-                                Beschikbaar = false
-                            };
+                            //We zitten buiten de datumrange van het contract, er uit...
+                            break;
                         }
-                        else
+                        var planning =
+                            _planningRepository.Load(
+                                x =>
+                                    x.Datum == datumEinde && x.DagdeelId == contract.DagdeelId
+                                        && x.OefenruimteId == contract.OefenruimteId)
+                                .FirstOrDefault();
+                        if (planning == null
+                            || planning.Beschikbaar)
                         {
-                            //Als er al eens geboekt is geweest, dan natuurlijk niet nog een keertje...
-                            if (planning.Boekingen.Any(b => b.BandId == entity.Id && !b.Verwijderd))
+                            if (planning == null)
                             {
-                                datumEinde = datumEinde.AddDays(-7);
-                                continue;
+                                planning = new Model.Planning
+                                {
+                                    Datum = datumEinde,
+                                    DagdeelId = contract.DagdeelId,
+                                    OefenruimteId = contract.OefenruimteId,
+                                    Beschikbaar = false
+                                };
                             }
                             else
                             {
+                                //Als er al eens geboekt is geweest, dan natuurlijk niet nog een keertje...
+                                if (planning.Boekingen.Any(b => b.BandId == entity.Id && !b.Verwijderd))
+                                {
+                                    datumEinde = datumEinde.AddDays(-7);
+                                    continue;
+                                }
                                 //We gaan boeken, dus vast reserveren...
                                 planning.Beschikbaar = false;
                             }
-                        }
-                        var boeking = new Model.Boeking
-                        {
-                            BandNaam = entity.Naam,
-                            DatumGeboekt = DateTime.Now,
-                            Opmerking = string.Format("Contract. {0}", GetTelefoonNr(entity))
-                        };
-                        if (entity.IsTransient())
-                        {
-                            boeking.Band = entity;
-                        }
-                        else
-                        {
-                            boeking.BandId = entity.Id;
-                        }
+                            var boeking = new Boeking
+                            {
+                                BandNaam = entity.Naam,
+                                DatumGeboekt = DateTime.Now,
+                                Opmerking = string.Format("Contract. {0}", GetTelefoonNr(entity))
+                            };
+                            if (entity.IsTransient())
+                            {
+                                boeking.Band = entity;
+                            }
+                            else
+                            {
+                                boeking.BandId = entity.Id;
+                            }
 
-                        planning.Boekingen.Add(boeking);
-                        _planningRepository.Save(planning);
+                            planning.Boekingen.Add(boeking);
+                            _planningRepository.Save(planning);
+                        }
+                        datumEinde = datumEinde.AddDays(-7);
                     }
-                    datumEinde = datumEinde.AddDays(-7);
                 }
-            }
 
             return returnValue;
         }
 
-        private string GetTelefoonNr(Model.Band entity)
+        public override void OnDispose()
         {
-            foreach (var item in entity.ContactPersonen)
-            {
-                if (!string.IsNullOrWhiteSpace(item.Telefoon))
-                {
-                    return item.Telefoon;
-                }
-            }
-            return string.Empty;
+            _instellingRepository.Dispose();
+            _planningRepository.Dispose();
         }
 
         private DateTime GetStartDatum(int oefendag)
@@ -114,10 +119,16 @@ namespace Dynamo.BL.BusinessRules.Band
             return datum;
         }
 
-        public override void OnDispose()
+        private string GetTelefoonNr(Model.Band entity)
         {
-            _instellingRepository.Dispose();
-            _planningRepository.Dispose();
+            foreach (var item in entity.ContactPersonen)
+            {
+                if (!string.IsNullOrWhiteSpace(item.Telefoon))
+                {
+                    return item.Telefoon;
+                }
+            }
+            return string.Empty;
         }
     }
 }

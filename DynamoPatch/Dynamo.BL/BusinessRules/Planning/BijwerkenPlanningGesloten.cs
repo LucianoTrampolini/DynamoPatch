@@ -1,36 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+
 using Dynamo.BL.Base;
+using Dynamo.BL.Enum;
 using Dynamo.Common;
 using Dynamo.Model;
 
 namespace Dynamo.BL.BusinessRules.Planning
 {
-    public class BijwerkenPlanningGesloten : BusinessRuleBase<Model.Gesloten>
+    public class BijwerkenPlanningGesloten : BusinessRuleBase<Gesloten>
     {
-        private PlanningRepository _planningRepository = null;
-        private InstellingRepository _instellingRepository = null;
+        #region Member fields
+
+        private Gesloten _entity;
+        private readonly InstellingRepository _instellingRepository;
+        private readonly PlanningRepository _planningRepository;
+
+        #endregion
 
         public BijwerkenPlanningGesloten(IDynamoContext context)
-            :base(context) 
+            : base(context)
         {
             _planningRepository = new PlanningRepository(context);
             _planningRepository.AdminModus = true;
             _instellingRepository = new InstellingRepository(context);
         }
 
-        private Model.Gesloten _entity;
-        public override bool Execute(Model.Gesloten entity)
+        public override bool Execute(Gesloten entity)
         {
             _entity = entity;
-            var aantalWekenVooruit =_instellingRepository.Load(0).WekenVooruitBoeken;
+            var aantalWekenVooruit = _instellingRepository.Load(0)
+                .WekenVooruitBoeken;
             var returnValue = true;
             var datum = DateTime.Today;
             var datumEinde = datum.AddDays(aantalWekenVooruit * 7);
-            
-            if (entity.DatumTot.HasValue && datumEinde > entity.DatumTot)
+
+            if (entity.DatumTot.HasValue
+                && datumEinde > entity.DatumTot)
             {
                 datumEinde = entity.DatumTot.Value;
             }
@@ -84,43 +91,47 @@ namespace Dynamo.BL.BusinessRules.Planning
                 }
                 datumEinde = datumEinde.AddDays(-1);
                 aantalDagenTerugGeteld++;
-                if (aantalDagenTerugGeteld > 7  )
+                if (aantalDagenTerugGeteld > 7)
                 {
                     if (aantalToegevoegd == 0)
                     {
                         break;
                     }
-                    else
-                    {
-                        aantalDagenTerugGeteld = 0;
-                        aantalToegevoegd = 0;
-                    }
+                    aantalDagenTerugGeteld = 0;
+                    aantalToegevoegd = 0;
                 }
             }
             return returnValue;
         }
 
+        public override void OnDispose()
+        {
+            _planningRepository.Dispose();
+            _instellingRepository.Dispose();
+        }
+
         private int GeslotenToegevoegd(DateTime datum, int oefenruimte, int dagdeel)
         {
-            var planning = _planningRepository.Load(x => x.Datum == datum && x.DagdeelId == dagdeel && x.OefenruimteId == oefenruimte).FirstOrDefault();
+            var planning =
+                _planningRepository.Load(
+                    x => x.Datum == datum && x.DagdeelId == dagdeel && x.OefenruimteId == oefenruimte)
+                    .FirstOrDefault();
             if (planning == null)
             {
                 var p = new Model.Planning
                 {
                     Datum = datum,
-                    Dagdeel = _planningRepository.GetStamGegevens(Enum.Stamgegevens.Dagdelen).FirstOrDefault(x => x.Id == dagdeel) as Model.Dagdeel,
-                    Oefenruimte = _planningRepository.GetOefenruimtes().FirstOrDefault(x => x.Id == oefenruimte),
-                    Gesloten = _entity,
-
+                    Dagdeel = _planningRepository.GetStamGegevens(Stamgegevens.Dagdelen)
+                        .FirstOrDefault(x => x.Id == dagdeel) as Dagdeel,
+                    Oefenruimte = _planningRepository.GetOefenruimtes()
+                        .FirstOrDefault(x => x.Id == oefenruimte),
+                    Gesloten = _entity
                 };
                 _planningRepository.Save(p);
                 return 1;
             }
-            else
-            {
-                planning.GeslotenId = _entity.Id;
-                _planningRepository.Save(planning);
-            }
+            planning.GeslotenId = _entity.Id;
+            _planningRepository.Save(planning);
             return 0;
         }
 
@@ -144,12 +155,6 @@ namespace Dynamo.BL.BusinessRules.Planning
                 list.Add(7);
 
             return list;
-        }
-
-        public override void OnDispose()
-        {
-            _planningRepository.Dispose();
-            _instellingRepository.Dispose();
         }
     }
 }

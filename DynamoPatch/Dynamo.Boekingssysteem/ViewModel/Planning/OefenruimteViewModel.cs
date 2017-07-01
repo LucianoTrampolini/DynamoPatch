@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Dynamo.Boekingssysteem.ViewModel.Base;
+﻿using Dynamo.Boekingssysteem.ViewModel.Base;
+using Dynamo.Model;
 
 namespace Dynamo.Boekingssysteem.ViewModel.Planning
 {
-    public class OefenruimteViewModel : EntityViewModel<Model.Oefenruimte>
+    public class OefenruimteViewModel : EntityViewModel<Oefenruimte>
     {
-        public OefenruimteViewModel(Model.Oefenruimte oefenruimte)
-            : base(oefenruimte)
-        { }
+        public OefenruimteViewModel(Oefenruimte oefenruimte)
+            : base(oefenruimte) {}
 
         public string Naam
         {

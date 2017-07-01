@@ -55,13 +55,9 @@
 
         <hc:TaskbarIcon x:Name="tbi"
             IconSource="/Dynamo3.ico"
-            ToolTipText="Dynamo Operating System" 
-          >
-            
+            ToolTipText="Dynamo Operating System" />
 
-        </hc:TaskbarIcon>
-           
-    </Grid>
+        </Grid>
 
 
 

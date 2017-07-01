@@ -1,37 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+
+using Dynamo.BL;
 using Dynamo.Boekingssysteem.ViewModel.Base;
-using System.Collections.ObjectModel;
+using Dynamo.BoekingsSysteem;
 using Dynamo.BoekingsSysteem.Base;
 using Dynamo.Common.Properties;
-using Dynamo.BoekingsSysteem;
-using Dynamo.BL;
+using Dynamo.Model;
 
 namespace Dynamo.Boekingssysteem.ViewModel.Planning
 {
     public class BandAfmeldenViewModel : EntityViewModel<Model.Planning>
     {
+        #region Member fields
+
         private string _opmerkingen = "Afgebeld. ";
 
-        private Model.Boeking CurrentBoeking
+        #endregion
+
+        public BandAfmeldenViewModel(Model.Planning planning)
+            : base(planning)
         {
-            get 
-            {
-                var boeking = _entity.Boekingen.OrderByDescending(x => x.Id).FirstOrDefault();
-                if (boeking == null)
-                {
-                    throw new Exception("Boeking is corrupt!");
-                }
-                return boeking;
-            }
+            DisplayName = string.Format("{0} afmelden?", CurrentBoeking.BandNaam);
         }
 
         public string Opmerkingen
         {
             get { return _opmerkingen; }
-            set 
+            set
             {
                 if (_opmerkingen == value)
                 {
@@ -40,13 +37,20 @@ namespace Dynamo.Boekingssysteem.ViewModel.Planning
                 _opmerkingen = value;
                 OnPropertyChanged("Opmerkingen");
             }
-        
         }
-        
-        public BandAfmeldenViewModel(Model.Planning planning)
-            : base(planning)
+
+        private Boeking CurrentBoeking
         {
-            DisplayName = string.Format("{0} afmelden?", CurrentBoeking.BandNaam);
+            get
+            {
+                var boeking = _entity.Boekingen.OrderByDescending(x => x.Id)
+                    .FirstOrDefault();
+                if (boeking == null)
+                {
+                    throw new Exception("Boeking is corrupt!");
+                }
+                return boeking;
+            }
         }
 
         protected override List<CommandViewModel> CreateCommands()
@@ -55,7 +59,7 @@ namespace Dynamo.Boekingssysteem.ViewModel.Planning
             {
                 new CommandViewModel(
                     StringResources.ButtonOk,
-                    new RelayCommand(param => this.Bandafmelden())),
+                    new RelayCommand(param => Bandafmelden())),
                 new CommandViewModel(
                     StringResources.ButtonAnnuleren,
                     CloseCommand)

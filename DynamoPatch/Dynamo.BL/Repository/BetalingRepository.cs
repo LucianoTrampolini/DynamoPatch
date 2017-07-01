@@ -1,25 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Dynamo.Model;
 using System.Data.Entity;
+using System.Linq;
+using System.Linq.Expressions;
+
+using Dynamo.Model;
 
 namespace Dynamo.BL.Repository
 {
-    public class BetalingRepository:RepositoryBase<Model.Betaling>
+    public class BetalingRepository : RepositoryBase<Betaling>
     {
-        public BetalingRepository()
-            : base()
-        { }
+        public BetalingRepository() {}
 
         public BetalingRepository(IDynamoContext context)
-            : base(context)
-        { }
+            : base(context) {}
 
-        public override List<Model.Betaling> Load(System.Linq.Expressions.Expression<Func<Model.Betaling, bool>> expression)
+        public override List<Betaling> Load(Expression<Func<Betaling, bool>> expression)
         {
-            return currentContext.Betalingen.Include("AangemaaktDoor").Include("GewijzigdDoor").Include("Band").Where(expression).ToList();
+            return currentContext.Betalingen.Include("AangemaaktDoor")
+                .Include("GewijzigdDoor")
+                .Include("Band")
+                .Where(expression)
+                .ToList();
         }
     }
 }

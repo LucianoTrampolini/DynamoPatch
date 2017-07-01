@@ -1,31 +1,60 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Dynamo.BoekingsSysteem;
 using System.Collections.ObjectModel;
-using Dynamo.Common;
-using Dynamo.BoekingsSysteem.Base;
+using System.Linq;
+
 using Dynamo.BL;
-using Dynamo.Boekingssysteem.ViewModel.Base;
-using Dynamo.Boekingssysteem.ViewModel.Beheerder;
+using Dynamo.BL.Enum;
+using Dynamo.BoekingsSysteem;
+using Dynamo.BoekingsSysteem.Base;
+using Dynamo.Common;
 using Dynamo.Common.Properties;
+using Dynamo.Model;
+using Dynamo.Model.Base;
+
 namespace Dynamo.Boekingssysteem.ViewModel.Planning
 {
     public class PlanningOverichtViewModel : WorkspaceViewModel
     {
-        private CommandViewModel _vorigeweek;
-        private CommandViewModel _volgendeweek;
+        #region Member fields
+
+        private List<StamgegevenBase> _dagdelen;
         private CommandViewModel _dezeweek;
         private DateTime _huidigeDatum;
-        private List<Model.Oefenruimte> _oefenruimtes;
-        private List<Model.Base.StamgegevenBase> _dagdelen;
+        private List<Oefenruimte> _oefenruimtes;
+        private CommandViewModel _volgendeweek;
+        private CommandViewModel _vorigeweek;
 
-        public ObservableCollection<DatumViewModel> Dagen { get; private set; }
+        #endregion
+
+        public PlanningOverichtViewModel()
+        {
+            DisplayName = StringResources.ButtonPlanning;
+            SetVandaag();
+        }
+
         public ObservableCollection<DagOefenruimteViewModel> BoekingenOefenruimte1 { get; private set; }
         public ObservableCollection<DagOefenruimteViewModel> BoekingenOefenruimte2 { get; private set; }
         public ObservableCollection<DagOefenruimteViewModel> BoekingenOefenruimte3 { get; private set; }
-        public event EventHandler<ShowLogboekEventArgs> OnShowLogboek;
+
+        public ObservableCollection<DatumViewModel> Dagen { get; private set; }
+
+        public CommandViewModel DezeWeek
+        {
+            get
+            {
+                if (_dezeweek == null)
+                {
+                    _dezeweek = new CommandViewModel("Home", new RelayCommand(param => SetDezeWeek()));
+                }
+                return _dezeweek;
+            }
+        }
+
+        public DateTime HuidigeDatum
+        {
+            get { return _huidigeDatum; }
+        }
 
         public string HuidigeWeek
         {
@@ -37,60 +66,75 @@ namespace Dynamo.Boekingssysteem.ViewModel.Planning
             get { return _huidigeDatum.Year.ToString(); }
         }
 
-        public DateTime HuidigeDatum
-        {
-            get { return _huidigeDatum; }
-        }
-
-        public CommandViewModel VorigeWeek 
-        {
-            get 
-            {
-                if (_vorigeweek == null)
-                {
-                    _vorigeweek = new CommandViewModel("<", new RelayCommand(param => this.SetVorigeWeek()));
-                }
-                return _vorigeweek;
-            }
-        }
-
         public CommandViewModel VolgendeWeek
         {
             get
             {
                 if (_volgendeweek == null)
                 {
-                    _volgendeweek = new CommandViewModel(">",new RelayCommand(param => this.SetVolgendeWeek()));
+                    _volgendeweek = new CommandViewModel(">", new RelayCommand(param => SetVolgendeWeek()));
                 }
                 return _volgendeweek;
             }
         }
 
-        public CommandViewModel DezeWeek
+        public CommandViewModel VorigeWeek
         {
             get
             {
-                if (_dezeweek == null)
+                if (_vorigeweek == null)
                 {
-                    _dezeweek = new CommandViewModel("Home", new RelayCommand(param => this.SetDezeWeek()));
+                    _vorigeweek = new CommandViewModel("<", new RelayCommand(param => SetVorigeWeek()));
                 }
-                return _dezeweek;
+                return _vorigeweek;
             }
         }
 
-        public PlanningOverichtViewModel()
+        public event EventHandler<ShowLogboekEventArgs> OnShowLogboek;
+
+        protected override void OnSubViewModelClosed()
         {
-            DisplayName = StringResources.ButtonPlanning;
-            SetVandaag();
+            LoadPlanning();
         }
 
-        private void SetVandaag()
+        private void ClearPlanning()
         {
-            _huidigeDatum = DateTime.Today.GetEersteDagVanDeWeek();
-            
-            LoadBasisGegevens();
+            if (BoekingenOefenruimte1 == null)
+            {
+                BoekingenOefenruimte1 = GetEmptyDagOefenruimteCollection(_oefenruimtes[0]);
+                BoekingenOefenruimte2 = GetEmptyDagOefenruimteCollection(_oefenruimtes[1]);
+                BoekingenOefenruimte3 = GetEmptyDagOefenruimteCollection(_oefenruimtes[2]);
+            }
+        }
 
-            ShowPlanningForWeek();
+        void datumvm_OnShowLogboek(object sender, ShowLogboekEventArgs e)
+        {
+            if (OnShowLogboek != null)
+            {
+                OnShowLogboek(sender, e);
+            }
+        }
+
+        private ObservableCollection<DagOefenruimteViewModel> GetEmptyDagOefenruimteCollection(Oefenruimte oefenruimte)
+        {
+            var returnValue = new ObservableCollection<DagOefenruimteViewModel>
+            {
+                new DagOefenruimteViewModel(_huidigeDatum, oefenruimte),
+                new DagOefenruimteViewModel(_huidigeDatum.AddDays(1), oefenruimte),
+                new DagOefenruimteViewModel(_huidigeDatum.AddDays(2), oefenruimte),
+                new DagOefenruimteViewModel(_huidigeDatum.AddDays(3), oefenruimte),
+                new DagOefenruimteViewModel(_huidigeDatum.AddDays(4), oefenruimte),
+                new DagOefenruimteViewModel(_huidigeDatum.AddDays(5), oefenruimte),
+                new DagOefenruimteViewModel(_huidigeDatum.AddDays(6), oefenruimte)
+            };
+
+            foreach (var item in returnValue)
+            {
+                item.AvondBoekingChanging = OnAvondBoekingChanging;
+                item.MiddagBoekingChanging = OnMiddagBoekingChanging;
+            }
+
+            return returnValue;
         }
 
         private void LoadBasisGegevens()
@@ -102,25 +146,12 @@ namespace Dynamo.Boekingssysteem.ViewModel.Planning
                 {
                     throw new Exception("Aantal oefenruimtes moet in deze versie exact 3 zijn!");
                 }
-                _dagdelen = repo.GetStamGegevens(BL.Enum.Stamgegevens.Dagdelen);
+                _dagdelen = repo.GetStamGegevens(Stamgegevens.Dagdelen);
                 if (_dagdelen.Count != 3)
                 {
                     throw new Exception("Aantal dagdelen moet in deze versie exact 3 zijn!");
                 }
             }
-        }
-
-        private void ShowPlanningForWeek()
-        {
-            ResetDagen();
-            LoadPlanning();
-
-            OnPropertyChanged("Dagen");
-            OnPropertyChanged("BoekingenOefenruimte1");
-            OnPropertyChanged("BoekingenOefenruimte2");
-            OnPropertyChanged("BoekingenOefenruimte3");
-            OnPropertyChanged("HuidigeWeek");
-            OnPropertyChanged("HuidigJaar");
         }
 
         private void LoadPlanning()
@@ -149,42 +180,10 @@ namespace Dynamo.Boekingssysteem.ViewModel.Planning
                             BoekingenOefenruimte3[item.Datum.DagVanDeWeek() - 1].SetPlanning(item);
                             break;
                         default:
-                            throw new ArgumentOutOfRangeException("Oefenruimte: " + item.OefenruimteId.ToString());
+                            throw new ArgumentOutOfRangeException("Oefenruimte: " + item.OefenruimteId);
                     }
                 }
             }
-        }
-
-        private void ClearPlanning()
-        {
-            if (BoekingenOefenruimte1 == null)
-            {
-                BoekingenOefenruimte1 = GetEmptyDagOefenruimteCollection(_oefenruimtes[0]);
-                BoekingenOefenruimte2 = GetEmptyDagOefenruimteCollection(_oefenruimtes[1]);
-                BoekingenOefenruimte3 = GetEmptyDagOefenruimteCollection(_oefenruimtes[2]);
-            }
-        }
-
-        private ObservableCollection<DagOefenruimteViewModel> GetEmptyDagOefenruimteCollection(Model.Oefenruimte oefenruimte)
-        {
-            var returnValue = new ObservableCollection<DagOefenruimteViewModel>
-            {
-                new DagOefenruimteViewModel(_huidigeDatum,oefenruimte),
-                new DagOefenruimteViewModel(_huidigeDatum.AddDays(1),oefenruimte),
-                new DagOefenruimteViewModel(_huidigeDatum.AddDays(2),oefenruimte),
-                new DagOefenruimteViewModel(_huidigeDatum.AddDays(3),oefenruimte),
-                new DagOefenruimteViewModel(_huidigeDatum.AddDays(4),oefenruimte),
-                new DagOefenruimteViewModel(_huidigeDatum.AddDays(5),oefenruimte),
-                new DagOefenruimteViewModel(_huidigeDatum.AddDays(6),oefenruimte)
-            };
-
-            foreach (var item in returnValue)
-            {
-                item.AvondBoekingChanging = OnAvondBoekingChanging;
-                item.MiddagBoekingChanging = OnMiddagBoekingChanging;
-            }
-
-            return returnValue;
         }
 
         private void OnAvondBoekingChanging(object s, DagOefenruimteChangingEventArgs e)
@@ -195,9 +194,9 @@ namespace Dynamo.Boekingssysteem.ViewModel.Planning
             }
             if (e.IsNieuweBoeking)
             {
-                SwitchViewModel(new BandAanmeldenViewModel(e.Planning, _dagdelen[2] as Model.Dagdeel, e.Datum, e.Oefenruimte));
+                SwitchViewModel(new BandAanmeldenViewModel(e.Planning, _dagdelen[2] as Dagdeel, e.Datum, e.Oefenruimte));
             }
-            else 
+            else
             {
                 SwitchViewModel(new BandAfmeldenViewModel(e.Planning));
             }
@@ -211,17 +210,12 @@ namespace Dynamo.Boekingssysteem.ViewModel.Planning
             }
             if (e.IsNieuweBoeking)
             {
-                SwitchViewModel(new BandAanmeldenViewModel(e.Planning, _dagdelen[1] as Model.Dagdeel, e.Datum, e.Oefenruimte));
+                SwitchViewModel(new BandAanmeldenViewModel(e.Planning, _dagdelen[1] as Dagdeel, e.Datum, e.Oefenruimte));
             }
             else
             {
                 SwitchViewModel(new BandAfmeldenViewModel(e.Planning));
             }
-        }
-
-        protected override void OnSubViewModelClosed()
-        {
-            LoadPlanning();
         }
 
         private void ResetDagen()
@@ -243,24 +237,27 @@ namespace Dynamo.Boekingssysteem.ViewModel.Planning
             };
             foreach (var datumvm in Dagen)
             {
-                datumvm.OnShowLogboek += new EventHandler<ShowLogboekEventArgs>(datumvm_OnShowLogboek);
+                datumvm.OnShowLogboek += datumvm_OnShowLogboek;
             }
         }
 
-        void datumvm_OnShowLogboek(object sender, ShowLogboekEventArgs e)
+        private void SetDezeWeek()
         {
-            if (OnShowLogboek != null)
-            {
-                OnShowLogboek(sender, e);
-            }
+            BoekingenOefenruimte1.ToList()
+                .ForEach(x => x.Reset());
+            BoekingenOefenruimte2.ToList()
+                .ForEach(x => x.Reset());
+            BoekingenOefenruimte3.ToList()
+                .ForEach(x => x.Reset());
+            SetVandaag();
         }
 
-        private void SetVorigeWeek()
+        private void SetVandaag()
         {
-            _huidigeDatum = _huidigeDatum.AddDays(-7);
-            BoekingenOefenruimte1.ToList().ForEach(x => x.WeekTerug());
-            BoekingenOefenruimte2.ToList().ForEach(x => x.WeekTerug());
-            BoekingenOefenruimte3.ToList().ForEach(x => x.WeekTerug());
+            _huidigeDatum = DateTime.Today.GetEersteDagVanDeWeek();
+
+            LoadBasisGegevens();
+
             ShowPlanningForWeek();
         }
 
@@ -268,18 +265,38 @@ namespace Dynamo.Boekingssysteem.ViewModel.Planning
         {
             _huidigeDatum = _huidigeDatum.AddDays(7);
 
-            BoekingenOefenruimte1.ToList().ForEach(x => x.WeekVerder());
-            BoekingenOefenruimte2.ToList().ForEach(x => x.WeekVerder());
-            BoekingenOefenruimte3.ToList().ForEach(x => x.WeekVerder());
+            BoekingenOefenruimte1.ToList()
+                .ForEach(x => x.WeekVerder());
+            BoekingenOefenruimte2.ToList()
+                .ForEach(x => x.WeekVerder());
+            BoekingenOefenruimte3.ToList()
+                .ForEach(x => x.WeekVerder());
             ShowPlanningForWeek();
         }
 
-        private void SetDezeWeek()
+        private void SetVorigeWeek()
         {
-            BoekingenOefenruimte1.ToList().ForEach(x => x.Reset());
-            BoekingenOefenruimte2.ToList().ForEach(x => x.Reset());
-            BoekingenOefenruimte3.ToList().ForEach(x => x.Reset());
-            SetVandaag();
+            _huidigeDatum = _huidigeDatum.AddDays(-7);
+            BoekingenOefenruimte1.ToList()
+                .ForEach(x => x.WeekTerug());
+            BoekingenOefenruimte2.ToList()
+                .ForEach(x => x.WeekTerug());
+            BoekingenOefenruimte3.ToList()
+                .ForEach(x => x.WeekTerug());
+            ShowPlanningForWeek();
+        }
+
+        private void ShowPlanningForWeek()
+        {
+            ResetDagen();
+            LoadPlanning();
+
+            OnPropertyChanged("Dagen");
+            OnPropertyChanged("BoekingenOefenruimte1");
+            OnPropertyChanged("BoekingenOefenruimte2");
+            OnPropertyChanged("BoekingenOefenruimte3");
+            OnPropertyChanged("HuidigeWeek");
+            OnPropertyChanged("HuidigJaar");
         }
     }
 }

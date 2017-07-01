@@ -9,7 +9,7 @@
              d:DesignHeight="300" d:DesignWidth="500">
 
     <UserControl.Resources>
-        <dyn:BooleanVisibilityValueCollapseConverter x:Key="BoolToVisible"></dyn:BooleanVisibilityValueCollapseConverter>
+        <dyn:BooleanVisibilityValueCollapseConverter x:Key="BoolToVisible" />
     </UserControl.Resources>
     
     <Border Style="{StaticResource SubItemBorder}">
@@ -23,18 +23,15 @@
                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                     ItemsSource="{Binding Path=Beheerders, UpdateSourceTrigger=PropertyChanged}"
                     ItemContainerStyle="{StaticResource ListBoxItemStyle}"
-                    SelectionMode="Multiple"
-                    >
-                    
-                </ListBox>
+                    SelectionMode="Multiple" />
             </dyn:AnimatedPanel>
             <dyn:AnimatedPanel Orientation="Horizontal">
-                <Label Style="{StaticResource DescriptionLabel}" Content="Omschrijving"></Label>
-                <TextBox IsReadOnly="{Binding Path=IsReadOnly}" Text="{Binding Path=Titel,UpdateSourceTrigger=PropertyChanged}" dyn:FocusExtension.IsFocused="{Binding Path=InitialFocus}" Width="390"></TextBox>
+                <Label Style="{StaticResource DescriptionLabel}" Content="Omschrijving" />
+                <TextBox IsReadOnly="{Binding Path=IsReadOnly}" Text="{Binding Path=Titel,UpdateSourceTrigger=PropertyChanged}" dyn:FocusExtension.IsFocused="{Binding Path=InitialFocus}" Width="390" />
             </dyn:AnimatedPanel>
             <dyn:AnimatedPanel Orientation="Horizontal">
 
-                <TextBox IsReadOnly="{Binding Path=IsReadOnly}" Text="{Binding Path=Tekst,UpdateSourceTrigger=PropertyChanged}" Width="490" Height="200" AcceptsReturn="True" TextWrapping="Wrap"></TextBox>
+                <TextBox IsReadOnly="{Binding Path=IsReadOnly}" Text="{Binding Path=Tekst,UpdateSourceTrigger=PropertyChanged}" Width="490" Height="200" AcceptsReturn="True" TextWrapping="Wrap" />
             </dyn:AnimatedPanel>
             
             <dyn:AnimatedPanel HorizontalAlignment="Stretch">

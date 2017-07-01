@@ -9,8 +9,8 @@
     <Border Style="{StaticResource SubItemBorder}">
         <dyn:AnimatedPanel Margin="5" MaxWidth="300">
             <dyn:AnimatedPanel Orientation="Horizontal">
-                <Label Style="{StaticResource DescriptionLabel}" Content="Naam"></Label>
-                <TextBox Text="{Binding Path=Naam,UpdateSourceTrigger=PropertyChanged}" dyn:FocusExtension.IsFocused="{Binding Path=InitialFocus}" Width="190"></TextBox>
+                <Label Style="{StaticResource DescriptionLabel}" Content="Naam" />
+                <TextBox Text="{Binding Path=Naam,UpdateSourceTrigger=PropertyChanged}" dyn:FocusExtension.IsFocused="{Binding Path=InitialFocus}" Width="190" />
             </dyn:AnimatedPanel>
             <dyn:AnimatedPanel>
                 <ContentControl 
@@ -18,20 +18,20 @@
                 Content="{Binding Path=CurrentViewModel}" />
             </dyn:AnimatedPanel>
             <dyn:AnimatedPanel Orientation="Horizontal">
-                <Label Style="{StaticResource DescriptionLabel}" Content="Telefoon"></Label>
-                <TextBox Text="{Binding Path=Telefoon}" Width="190"></TextBox>
+                <Label Style="{StaticResource DescriptionLabel}" Content="Telefoon" />
+                <TextBox Text="{Binding Path=Telefoon}" Width="190" />
             </dyn:AnimatedPanel>
             <dyn:AnimatedPanel Orientation="Horizontal">
-                <Label Style="{StaticResource DescriptionLabel}" Content="ID"></Label>
-                <TextBox Text="{Binding Path=BsnNummer}" Width="190"></TextBox>
+                <Label Style="{StaticResource DescriptionLabel}" Content="ID" />
+                <TextBox Text="{Binding Path=BsnNummer}" Width="190" />
             </dyn:AnimatedPanel>
             <dyn:AnimatedPanel Orientation="Horizontal">
-                <Label Style="{StaticResource DescriptionLabel}" Content="Slechte ervaring" Width="110"></Label>
+                <Label Style="{StaticResource DescriptionLabel}" Content="Slechte ervaring" Width="110" />
                 <CheckBox IsChecked="{Binding Path=HeeftVerleden}" />
             </dyn:AnimatedPanel>
             <dyn:AnimatedPanel Orientation="Horizontal">
-                <Label Style="{StaticResource DescriptionLabel}" Content="Opmerkingen"></Label>
-                <TextBox Text="{Binding Path=Opmerkingen}" Width="190" Height="50" AcceptsReturn="True" TextWrapping="Wrap"></TextBox>
+                <Label Style="{StaticResource DescriptionLabel}" Content="Opmerkingen" />
+                <TextBox Text="{Binding Path=Opmerkingen}" Width="190" Height="50" AcceptsReturn="True" TextWrapping="Wrap" />
             </dyn:AnimatedPanel>
             
             <dyn:AnimatedPanel HorizontalAlignment="Stretch">

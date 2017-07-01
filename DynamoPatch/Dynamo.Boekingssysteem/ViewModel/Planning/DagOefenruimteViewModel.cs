@@ -1,18 +1,31 @@
 ﻿using System;
+
 using Dynamo.BoekingsSysteem;
 using Dynamo.Common.Constants;
+using Dynamo.Model;
 
 namespace Dynamo.Boekingssysteem.ViewModel.Planning
 {
     public class DagOefenruimteViewModel : ViewModelBase
     {
+        #region Member fields
+
         private PlanningViewModel _avondBoeking;
-        private PlanningViewModel _middagBoeking;
         private DateTime _date;
-        private DateTime _initieleDatum;
-        private Model.Oefenruimte _oefenruimte;
+        private readonly DateTime _initieleDatum;
+        private PlanningViewModel _middagBoeking;
+        private readonly Oefenruimte _oefenruimte;
         public EventHandler<DagOefenruimteChangingEventArgs> AvondBoekingChanging;
         public EventHandler<DagOefenruimteChangingEventArgs> MiddagBoekingChanging;
+
+        #endregion
+
+        public DagOefenruimteViewModel(DateTime date, Oefenruimte oefenruimte)
+        {
+            _date = date;
+            _initieleDatum = date;
+            _oefenruimte = oefenruimte;
+        }
 
         public PlanningViewModel AvondBoeking
         {
@@ -37,22 +50,6 @@ namespace Dynamo.Boekingssysteem.ViewModel.Planning
                     _avondBoeking.BoekingChanging += AvondChanging;
                 }
                 OnPropertyChanged("AvondBoeking");
-            }
-        }
-
-        private void AvondChanging(object s, BoekingChangingEventArgs e)
-        {
-            if (AvondBoekingChanging != null)
-            {
-                AvondBoekingChanging(s, new DagOefenruimteChangingEventArgs(e) { Datum = _date, Oefenruimte = _oefenruimte });
-            }
-        }
-
-        private void MiddagChanging(object s, BoekingChangingEventArgs e)
-        {
-            if (MiddagBoekingChanging != null)
-            {
-                MiddagBoekingChanging(s, new DagOefenruimteChangingEventArgs(e) { Datum = _date, Oefenruimte = _oefenruimte });
             }
         }
 
@@ -82,32 +79,6 @@ namespace Dynamo.Boekingssysteem.ViewModel.Planning
             }
         }
 
-        private void ClearPlanning()
-        {
-            if (AvondBoeking.GetEntity() != null)
-            {
-                AvondBoeking.Dispose();
-                OnPropertyChanged("AvondBoeking");
-            }
-            if (MiddagBoeking.GetEntity() != null)
-            {
-                MiddagBoeking.Dispose();
-                OnPropertyChanged("MiddagBoeking");
-            }
-        }
-
-        public void WeekVerder()
-        {
-            ClearPlanning();
-            _date = _date.AddDays(7);
-        }
-
-        public void WeekTerug()
-        {
-            ClearPlanning();
-            _date = _date.AddDays(-7);
-        }
-
         public void Reset()
         {
             ClearPlanning();
@@ -126,18 +97,69 @@ namespace Dynamo.Boekingssysteem.ViewModel.Planning
             }
         }
 
-        public DagOefenruimteViewModel(DateTime date, Model.Oefenruimte oefenruimte)
+        public void WeekTerug()
         {
-            _date = date;
-            _initieleDatum = date;
-            _oefenruimte = oefenruimte;
+            ClearPlanning();
+            _date = _date.AddDays(-7);
+        }
+
+        public void WeekVerder()
+        {
+            ClearPlanning();
+            _date = _date.AddDays(7);
+        }
+
+        private void AvondChanging(object s, BoekingChangingEventArgs e)
+        {
+            if (AvondBoekingChanging != null)
+            {
+                AvondBoekingChanging(
+                    s,
+                    new DagOefenruimteChangingEventArgs(e)
+                    {
+                        Datum = _date,
+                        Oefenruimte = _oefenruimte
+                    });
+            }
+        }
+
+        private void ClearPlanning()
+        {
+            if (AvondBoeking.GetEntity() != null)
+            {
+                AvondBoeking.Dispose();
+                OnPropertyChanged("AvondBoeking");
+            }
+            if (MiddagBoeking.GetEntity() != null)
+            {
+                MiddagBoeking.Dispose();
+                OnPropertyChanged("MiddagBoeking");
+            }
+        }
+
+        private void MiddagChanging(object s, BoekingChangingEventArgs e)
+        {
+            if (MiddagBoekingChanging != null)
+            {
+                MiddagBoekingChanging(
+                    s,
+                    new DagOefenruimteChangingEventArgs(e)
+                    {
+                        Datum = _date,
+                        Oefenruimte = _oefenruimte
+                    });
+            }
         }
     }
 
     public class DagOefenruimteChangingEventArgs : BoekingChangingEventArgs
     {
+        #region Member fields
+
         public DateTime Datum;
-        public Model.Oefenruimte Oefenruimte;
+        public Oefenruimte Oefenruimte;
+
+        #endregion
 
         public DagOefenruimteChangingEventArgs(BoekingChangingEventArgs e)
         {

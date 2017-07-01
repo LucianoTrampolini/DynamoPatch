@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 
 namespace Dynamo.Boekingssysteem.Controls
 {
@@ -12,7 +8,8 @@ namespace Dynamo.Boekingssysteem.Controls
         {
             base.OnApplyTemplate();
             var textbox = Template.FindName("Text", this) as TextBox;
-            if (textbox != null) textbox.Focus();
+            if (textbox != null)
+                textbox.Focus();
         }
     }
 }

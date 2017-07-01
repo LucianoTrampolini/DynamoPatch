@@ -1,33 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
+
 using Dynamo.Boekingssysteem.ViewModel.Base;
 using Dynamo.Common;
-using Dynamo.BL;
 
 namespace Dynamo.Boekingssysteem.ViewModel.Bericht
 {
     public class BerichtViewModel : EntityViewModel<Model.Bericht>
     {
         public BerichtViewModel(Model.Bericht bericht)
-            : base(bericht)
-        { }
+            : base(bericht) {}
+
+        public string AangemaaktDoor
+        {
+            get { return _entity.AangemaaktDoor.Naam; }
+        }
 
         public string Datum
         {
             get { return _entity.Datum.GetDynamoDatum(); }
         }
 
-        public string Titel
+        public bool IsBold
         {
-            get { return _entity.Titel; }
-            set { _entity.Titel = value; }
-        }
-
-        public string AangemaaktDoor
-        {
-            get { return _entity.AangemaaktDoor.Naam; }
+            get
+            {
+                return
+                    _entity.BeheerderBerichten.Any(
+                        x => x.BeheerderId == Helper.CurrentBeheerder.Id && x.Gelezen == null);
+            }
         }
 
         public string Tekst
@@ -36,9 +36,10 @@ namespace Dynamo.Boekingssysteem.ViewModel.Bericht
             set { _entity.Tekst = value; }
         }
 
-        public bool IsBold
+        public string Titel
         {
-            get { return _entity.BeheerderBerichten.Any(x => x.BeheerderId == Helper.CurrentBeheerder.Id && x.Gelezen == null); }
+            get { return _entity.Titel; }
+            set { _entity.Titel = value; }
         }
     }
 }

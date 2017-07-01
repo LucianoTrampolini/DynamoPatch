@@ -1,10 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Diagnostics;
-using Dynamo.Boekingssysteem.ViewModel.Base;
 
 namespace Dynamo.BoekingsSysteem
 {
@@ -13,19 +9,10 @@ namespace Dynamo.BoekingsSysteem
     /// It provides support for property change notifications 
     /// and has a DisplayName property.  This class is abstract.
     /// </summary>
-    public abstract class ViewModelBase : INotifyPropertyChanged, IDisposable
+    public abstract class ViewModelBase : INotifyPropertyChanged,
+        IDisposable
     {
-
-        /// <summary>
-        /// Raised when this workspace should be removed from the UI.
-        /// </summary>
-        public event EventHandler RequestClose;
-
         #region Constructor
-
-        protected ViewModelBase()
-        {
-        }
 
         #endregion // Constructor
 
@@ -39,6 +26,71 @@ namespace Dynamo.BoekingsSysteem
         public virtual string DisplayName { get; protected set; }
 
         #endregion // DisplayName
+
+        #region IDisposable Members
+
+        /// <summary>
+        /// Invoked when this object is being removed from the application
+        /// and will be subject to garbage collection.
+        /// </summary>
+        public void Dispose()
+        {
+            OnDispose();
+        }
+
+        #endregion
+
+        #region INotifyPropertyChanged Members
+
+        /// <summary>
+        /// Raised when a property on this object has a new value.
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        #endregion
+
+        /// <summary>
+        /// Raised when this workspace should be removed from the UI.
+        /// </summary>
+        public event EventHandler RequestClose;
+
+        /// <summary>
+        /// Child classes can override this method to perform 
+        /// clean-up logic, such as removing event handlers.
+        /// </summary>
+        protected virtual void OnDispose() {}
+
+        /// <summary>
+        /// Raises this object's PropertyChanged event.
+        /// </summary>
+        /// <param name="propertyName">The property that has a new value.</param>
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            VerifyPropertyName(propertyName);
+
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null)
+            {
+                var e = new PropertyChangedEventArgs(propertyName);
+                handler(this, e);
+            }
+        }
+
+#if DEBUG
+        /// <summary>
+        /// Useful for ensuring that ViewModel objects are properly garbage collected.
+        /// </summary>
+        ~ViewModelBase()
+        {
+            string msg = string.Format(
+                "{0} ({1}) ({2}) Finalized",
+                GetType()
+                    .Name,
+                DisplayName,
+                GetHashCode());
+            Debug.WriteLine(msg);
+        }
+#endif
 
         #region Debugging Aides
 
@@ -57,10 +109,9 @@ namespace Dynamo.BoekingsSysteem
             {
                 string msg = "Invalid property name: " + propertyName;
 
-                if (this.ThrowOnInvalidPropertyName)
+                if (ThrowOnInvalidPropertyName)
                     throw new Exception(msg);
-                else
-                    Debug.Fail(msg);
+                Debug.Fail(msg);
             }
         }
 
@@ -74,66 +125,9 @@ namespace Dynamo.BoekingsSysteem
 
         #endregion // Debugging Aides
 
-        #region INotifyPropertyChanged Members
-
-        /// <summary>
-        /// Raised when a property on this object has a new value.
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        /// Raises this object's PropertyChanged event.
-        /// </summary>
-        /// <param name="propertyName">The property that has a new value.</param>
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            this.VerifyPropertyName(propertyName);
-
-            PropertyChangedEventHandler handler = this.PropertyChanged;
-            if (handler != null)
-            {
-                var e = new PropertyChangedEventArgs(propertyName);
-                handler(this, e);
-            }
-        }
-
-        #endregion // INotifyPropertyChanged Members
-
-        #region IDisposable Members
-
-        /// <summary>
-        /// Invoked when this object is being removed from the application
-        /// and will be subject to garbage collection.
-        /// </summary>
-        public void Dispose()
-        {
-            this.OnDispose();
-        }
-
-        /// <summary>
-        /// Child classes can override this method to perform 
-        /// clean-up logic, such as removing event handlers.
-        /// </summary>
-        protected virtual void OnDispose()
-        {
-        }
-
-#if DEBUG
-        /// <summary>
-        /// Useful for ensuring that ViewModel objects are properly garbage collected.
-        /// </summary>
-        ~ViewModelBase()
-        {
-            string msg = string.Format("{0} ({1}) ({2}) Finalized", this.GetType().Name, this.DisplayName, this.GetHashCode());
-            System.Diagnostics.Debug.WriteLine(msg);
-        }
-#endif
-
-        #endregion // IDisposable Members
-
         #region SubItemViewModel
 
-        private ViewModelBase _currentViewModel = null;
+        private ViewModelBase _currentViewModel;
 
         public ViewModelBase CurrentViewModel
         {
@@ -146,9 +140,10 @@ namespace Dynamo.BoekingsSysteem
             {
                 _currentViewModel = viewModel;
                 _currentViewModel.RequestClose += _currentViewModel_RequestClose;
-                this.OnPropertyChanged("CurrentViewModel");
+                OnPropertyChanged("CurrentViewModel");
             }
         }
+
         public virtual bool CanClose()
         {
             return true;
@@ -156,7 +151,7 @@ namespace Dynamo.BoekingsSysteem
 
         protected void OnRequestClose()
         {
-            EventHandler handler = this.RequestClose;
+            EventHandler handler = RequestClose;
             if (handler != null)
             {
                 handler(this, EventArgs.Empty);
@@ -181,8 +176,7 @@ namespace Dynamo.BoekingsSysteem
             return true;
         }
 
-        protected virtual void OnSubViewModelClosed()
-        { }
+        protected virtual void OnSubViewModelClosed() {}
 
         private void _currentViewModel_RequestClose(object sender, EventArgs e)
         {

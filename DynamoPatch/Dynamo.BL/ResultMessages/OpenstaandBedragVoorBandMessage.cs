@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Dynamo.BL.ResultMessages
+﻿namespace Dynamo.BL.ResultMessages
 {
     public class OpenstaandBedragVoorBandMessage
     {
+        #region Member fields
+
         public string BandNaam = "";
         public decimal Bedrag = 0m;
+
+        #endregion
     }
 }

@@ -1,42 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Dynamo.Boekingssysteem.ViewModel.Base;
+﻿using Dynamo.Boekingssysteem.ViewModel.Base;
+using Dynamo.Model;
 
 namespace Dynamo.Boekingssysteem.ViewModel.Planning
 {
-    public class PlanningsDagViewModel : EntityViewModel<Model.PlanningsDag>
+    public class PlanningsDagViewModel : EntityViewModel<PlanningsDag>
     {
-        public string Opmerking
+        public PlanningsDagViewModel(PlanningsDag planningsDag)
+            : base(planningsDag) {}
+
+        public string AvondOpmerking
         {
-            get { return _entity.DagOpmerking; }
-            set 
-            {
-                _entity.DagOpmerking = value;
-            }
+            get { return _entity.AvondOpmerking; }
+            set { _entity.AvondOpmerking = value; }
         }
 
         public string MiddagOpmerking
         {
             get { return _entity.MiddagOpmerking; }
-            set
-            {
-                _entity.MiddagOpmerking = value;
-            }
+            set { _entity.MiddagOpmerking = value; }
         }
 
-        public string AvondOpmerking
+        public string Opmerking
         {
-            get { return _entity.AvondOpmerking; }
-            set
-            {
-                _entity.AvondOpmerking = value;
-            }
+            get { return _entity.DagOpmerking; }
+            set { _entity.DagOpmerking = value; }
         }
-        public PlanningsDagViewModel(Model.PlanningsDag planningsDag)
-            : base(planningsDag)
-        { }
-
     }
 }

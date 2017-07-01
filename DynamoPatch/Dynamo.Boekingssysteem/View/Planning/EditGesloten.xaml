@@ -9,57 +9,57 @@
     <Border Style="{StaticResource SubItemBorder}">
         <dyn:AnimatedPanel Margin="5" MaxWidth="300">
             <dyn:AnimatedPanel Orientation="Horizontal">
-                <Label Style="{StaticResource DescriptionLabel}" Content="Reden"></Label>
-                <TextBox Text="{Binding Path=Reden}" dyn:FocusExtension.IsFocused="{Binding Path=InitialFocus}" Width="190"></TextBox>
+                <Label Style="{StaticResource DescriptionLabel}" Content="Reden" />
+                <TextBox Text="{Binding Path=Reden}" dyn:FocusExtension.IsFocused="{Binding Path=InitialFocus}" Width="190" />
             </dyn:AnimatedPanel>
             <dyn:AnimatedPanel Orientation="Horizontal">
-                <Label Style="{StaticResource DescriptionLabel}" Content="Datum vanaf"></Label>
-                <TextBox Text="{Binding Path=DatumVan}" Width="190"></TextBox>
+                <Label Style="{StaticResource DescriptionLabel}" Content="Datum vanaf" />
+                <TextBox Text="{Binding Path=DatumVan}" Width="190" />
             </dyn:AnimatedPanel>
             <dyn:AnimatedPanel Orientation="Horizontal">
-                <Label Style="{StaticResource DescriptionLabel}" Content="Datum tot"></Label>
-                <TextBox Text="{Binding Path=DatumTot}" Width="190"></TextBox>
+                <Label Style="{StaticResource DescriptionLabel}" Content="Datum tot" />
+                <TextBox Text="{Binding Path=DatumTot}" Width="190" />
             </dyn:AnimatedPanel>
             <Border Style="{StaticResource SubItemBorder}" Width="292" Margin="2">
                 <dyn:AnimatedPanel Orientation="Horizontal">
-                    <Label Style="{StaticResource DescriptionLabel}" Content="Oefenruimte 1"></Label>
+                    <Label Style="{StaticResource DescriptionLabel}" Content="Oefenruimte 1" />
                     <CheckBox IsChecked="{Binding Path=Oefenruimte1}" />
-                    <Label Style="{StaticResource DescriptionLabel}" Content="   2" Width="30"></Label>
+                    <Label Style="{StaticResource DescriptionLabel}" Content="   2" Width="30" />
                     <CheckBox IsChecked="{Binding Path=Oefenruimte2}" />
-                    <Label Style="{StaticResource DescriptionLabel}" Content="   3" Width="30"></Label>
+                    <Label Style="{StaticResource DescriptionLabel}" Content="   3" Width="30" />
                     <CheckBox IsChecked="{Binding Path=Oefenruimte3}" />
                 </dyn:AnimatedPanel>
             </Border>
             <Border Style="{StaticResource SubItemBorder}" Width="292" Margin="2">
                 <dyn:AnimatedPanel Orientation="Horizontal">
-                    <Label Style="{StaticResource DescriptionLabel}" Content="Middag" ></Label>
+                    <Label Style="{StaticResource DescriptionLabel}" Content="Middag" />
                     <CheckBox IsChecked="{Binding Path=Middag}" />
-                    <Label Style="{StaticResource DescriptionLabel}" Content="Avond" ></Label>
+                    <Label Style="{StaticResource DescriptionLabel}" Content="Avond" />
                     <CheckBox IsChecked="{Binding Path=Avond}" />
                 </dyn:AnimatedPanel>
             </Border>
             <Border Style="{StaticResource SubItemBorder}" Width="292" Margin="2">
                 <dyn:AnimatedPanel>
                     <dyn:AnimatedPanel Orientation="Horizontal">
-                        <Label Style="{StaticResource DescriptionLabel}" Content="Maandag" ></Label>
+                        <Label Style="{StaticResource DescriptionLabel}" Content="Maandag" />
                         <CheckBox IsChecked="{Binding Path=Maandag}" />
-                        <Label Style="{StaticResource DescriptionLabel}" Content="Vrijdag" ></Label>
+                        <Label Style="{StaticResource DescriptionLabel}" Content="Vrijdag" />
                         <CheckBox IsChecked="{Binding Path=Vrijdag}" />
                     </dyn:AnimatedPanel>
                     <dyn:AnimatedPanel Orientation="Horizontal">
-                        <Label Style="{StaticResource DescriptionLabel}" Content="Dinsdag" ></Label>
+                        <Label Style="{StaticResource DescriptionLabel}" Content="Dinsdag" />
                         <CheckBox IsChecked="{Binding Path=Dinsdag}" />
-                        <Label Style="{StaticResource DescriptionLabel}" Content="Zaterdag"></Label>
+                        <Label Style="{StaticResource DescriptionLabel}" Content="Zaterdag" />
                         <CheckBox IsChecked="{Binding Path=Zaterdag}" />
                     </dyn:AnimatedPanel>
                     <dyn:AnimatedPanel Orientation="Horizontal">
-                        <Label Style="{StaticResource DescriptionLabel}" Content="Woensdag" ></Label>
+                        <Label Style="{StaticResource DescriptionLabel}" Content="Woensdag" />
                         <CheckBox IsChecked="{Binding Path=Woensdag}" />
-                        <Label Style="{StaticResource DescriptionLabel}" Content="Zondag" ></Label>
+                        <Label Style="{StaticResource DescriptionLabel}" Content="Zondag" />
                         <CheckBox IsChecked="{Binding Path=Zondag}" />
                     </dyn:AnimatedPanel>
                     <dyn:AnimatedPanel Orientation="Horizontal">
-                        <Label Style="{StaticResource DescriptionLabel}" Content="Donderdag" ></Label>
+                        <Label Style="{StaticResource DescriptionLabel}" Content="Donderdag" />
                         <CheckBox IsChecked="{Binding Path=Donderdag}" />
                     </dyn:AnimatedPanel>
                 </dyn:AnimatedPanel>

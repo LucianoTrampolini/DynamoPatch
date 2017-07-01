@@ -3,40 +3,26 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Windows;
+
+using Dynamo.BL.Enum;
 using Dynamo.Model;
+using Dynamo.Model.Base;
 using Dynamo.Model.Context;
 
 namespace Dynamo.BL
 {
-    public abstract class RepositoryBase<E>:IDisposable where E: Model.Base.ModelBase
+    public abstract class RepositoryBase<E> : IDisposable
+        where E : ModelBase
     {
-        private IDynamoContext _currentContext = null;
-        private BeheerderRepository _beheerderRepository = null;
-        private bool _isParentRepository = false;
-        private BeheerderRepository beheerderRepository
-        {
-            get
-            {
-                if (_beheerderRepository == null)
-                {
-                    _beheerderRepository = new BeheerderRepository(currentContext);
-                }
-                return _beheerderRepository;
-            }
-        }
+        #region Member fields
 
-        public bool AdminModus
-        {
-            get
-            {
-                return beheerderRepository.AdminBeheerder;
-            }
-            set
-            {
-                beheerderRepository.AdminBeheerder = value;
-            }
-        }
+        private BeheerderRepository _beheerderRepository;
+        private IDynamoContext _currentContext;
+        private readonly bool _isParentRepository;
+
+        #endregion
 
         public RepositoryBase()
         {
@@ -49,13 +35,23 @@ namespace Dynamo.BL
             currentContext = context;
         }
 
+        public bool AdminModus
+        {
+            get { return beheerderRepository.AdminBeheerder; }
+            set { beheerderRepository.AdminBeheerder = value; }
+        }
+
+        public bool HasMelding { get; set; }
+
+        public string Melding { get; set; }
+
         protected IDynamoContext currentContext
         {
             get
             {
                 if (_currentContext == null)
                 {
-                    if (System.Windows.Application.Current == null)
+                    if (Application.Current == null)
                     {
                         //Wordt vanuit de unittesten gedraaid
                         _currentContext = FakeDynamoContext.GetInstance();
@@ -67,25 +63,49 @@ namespace Dynamo.BL
                 }
                 return _currentContext;
             }
-            set
+            set { _currentContext = value; }
+        }
+
+        private BeheerderRepository beheerderRepository
+        {
+            get
             {
-                _currentContext = value;
+                if (_beheerderRepository == null)
+                {
+                    _beheerderRepository = new BeheerderRepository(currentContext);
+                }
+                return _beheerderRepository;
             }
         }
 
-        protected void SaveChanges(Model.Base.ModelBase entity)
+        #region IDisposable Members
+
+        public void Dispose()
         {
-            HandleChanges(entity);
-            currentContext.SaveChanges();
+            if (_isParentRepository && _currentContext != null)
+            {
+                _currentContext.Dispose();
+            }
+            if (_beheerderRepository != null)
+            {
+                _beheerderRepository.Dispose();
+            }
+            OnDispose();
         }
 
-        private void DeleteEntity(Model.Base.ModelBase entity)
+        #endregion
+
+        public virtual void Delete(E entity)
         {
-            entity.Verwijderd = true;
-            SaveChanges(entity);
+            DeleteEntity(entity);
         }
 
-        public DbEntityEntry GetOriginalEntry(Model.Base.ModelBase entity)
+        public List<Oefenruimte> GetOefenruimtes()
+        {
+            return currentContext.Oefenruimtes.ToList();
+        }
+
+        public DbEntityEntry GetOriginalEntry(ModelBase entity)
         {
             DbEntityEntry returnValue = null;
 
@@ -94,17 +114,18 @@ namespace Dynamo.BL
                 case "Beheerder":
                     if (entity.IsTransient())
                     {
-                        currentContext.Beheerders.Add((Model.Beheerder)entity);
+                        currentContext.Beheerders.Add((Beheerder)entity);
                     }
                     else
                     {
-                        returnValue = currentContext.Entry(currentContext.Beheerders.FirstOrDefault(x => x.Id == entity.Id));
+                        returnValue =
+                            currentContext.Entry(currentContext.Beheerders.FirstOrDefault(x => x.Id == entity.Id));
                     }
                     break;
                 case "Band":
                     if (entity.IsTransient())
                     {
-                        currentContext.Bands.Add((Model.Band)entity);
+                        currentContext.Bands.Add((Band)entity);
                     }
                     else
                     {
@@ -114,124 +135,153 @@ namespace Dynamo.BL
                 case "Bericht":
                     if (entity.IsTransient())
                     {
-                        currentContext.Berichten.Add((Model.Bericht)entity);
+                        currentContext.Berichten.Add((Bericht)entity);
                     }
                     else
                     {
-                        returnValue = currentContext.Entry(currentContext.Berichten.FirstOrDefault(x => x.Id == entity.Id));
+                        returnValue =
+                            currentContext.Entry(currentContext.Berichten.FirstOrDefault(x => x.Id == entity.Id));
                     }
                     break;
                 case "BeheerderBericht":
                     if (entity.IsTransient())
                     {
-                        currentContext.BeheerderBerichten.Add((Model.BeheerderBericht)entity);
+                        currentContext.BeheerderBerichten.Add((BeheerderBericht)entity);
                     }
                     else
                     {
-                        returnValue = currentContext.Entry(currentContext.BeheerderBerichten.FirstOrDefault(x => x.Id == entity.Id));
+                        returnValue =
+                            currentContext.Entry(
+                                currentContext.BeheerderBerichten.FirstOrDefault(x => x.Id == entity.Id));
                     }
                     break;
                 case "Boeking":
                     if (entity.IsTransient())
                     {
-                        currentContext.Boekingen.Add((Model.Boeking)entity);
+                        currentContext.Boekingen.Add((Boeking)entity);
                     }
                     else
                     {
-                        returnValue = currentContext.Entry(currentContext.Boekingen.FirstOrDefault(x => x.Id == entity.Id));
+                        returnValue =
+                            currentContext.Entry(currentContext.Boekingen.FirstOrDefault(x => x.Id == entity.Id));
                     }
                     break;
                 case "Gesloten":
                     if (entity.IsTransient())
                     {
-                        currentContext.Gesloten.Add((Model.Gesloten)entity);
+                        currentContext.Gesloten.Add((Gesloten)entity);
                     }
                     else
                     {
-                        returnValue = currentContext.Entry(currentContext.Gesloten.FirstOrDefault(x => x.Id == entity.Id));
+                        returnValue =
+                            currentContext.Entry(currentContext.Gesloten.FirstOrDefault(x => x.Id == entity.Id));
                     }
                     break;
                 case "Instelling":
                     if (entity.IsTransient())
                     {
-                        currentContext.Instellingen.Add((Model.Instelling)entity);
+                        currentContext.Instellingen.Add((Instelling)entity);
                     }
                     else
                     {
-                        returnValue = currentContext.Entry(currentContext.Instellingen.FirstOrDefault(x => x.Id == entity.Id));
+                        returnValue =
+                            currentContext.Entry(currentContext.Instellingen.FirstOrDefault(x => x.Id == entity.Id));
                     }
                     break;
                 default:
                 case "Planning":
                     if (entity.IsTransient())
                     {
-                        currentContext.Planning.Add((Model.Planning)entity);
+                        currentContext.Planning.Add((Planning)entity);
                     }
                     else
                     {
-                        returnValue = currentContext.Entry(currentContext.Planning.FirstOrDefault(x => x.Id == entity.Id));
+                        returnValue =
+                            currentContext.Entry(currentContext.Planning.FirstOrDefault(x => x.Id == entity.Id));
                     }
                     break;
                 case "PlanningsDag":
                     if (entity.IsTransient())
                     {
-                        currentContext.PlanningsDagen.Add((Model.PlanningsDag)entity);
+                        currentContext.PlanningsDagen.Add((PlanningsDag)entity);
                     }
                     else
                     {
-                        returnValue = currentContext.Entry(currentContext.PlanningsDagen.FirstOrDefault(x => x.Id == entity.Id));
+                        returnValue =
+                            currentContext.Entry(currentContext.PlanningsDagen.FirstOrDefault(x => x.Id == entity.Id));
                     }
                     break;
                 case "Vergoeding":
                     if (entity.IsTransient())
                     {
-                        currentContext.Vergoedingen.Add((Model.Vergoeding)entity);
+                        currentContext.Vergoedingen.Add((Vergoeding)entity);
                     }
                     else
                     {
-                        returnValue = currentContext.Entry(currentContext.Vergoedingen.FirstOrDefault(x => x.Id == entity.Id));
+                        returnValue =
+                            currentContext.Entry(currentContext.Vergoedingen.FirstOrDefault(x => x.Id == entity.Id));
                     }
                     break;
                 case "ContactPersoon":
                     if (entity.IsTransient())
                     {
-                        currentContext.ContactPersoons.Add((Model.ContactPersoon)entity);
+                        currentContext.ContactPersoons.Add((ContactPersoon)entity);
                     }
                     else
                     {
-                        returnValue = currentContext.Entry(currentContext.ContactPersoons.FirstOrDefault(x => x.Id == entity.Id));
+                        returnValue =
+                            currentContext.Entry(currentContext.ContactPersoons.FirstOrDefault(x => x.Id == entity.Id));
                     }
                     break;
                 case "Contract":
                     if (entity.IsTransient())
                     {
-                        currentContext.Contracten.Add((Model.Contract)entity);
+                        currentContext.Contracten.Add((Contract)entity);
                     }
                     else
                     {
-                        returnValue = currentContext.Entry(currentContext.Contracten.FirstOrDefault(x => x.Id == entity.Id));
+                        returnValue =
+                            currentContext.Entry(currentContext.Contracten.FirstOrDefault(x => x.Id == entity.Id));
                     }
                     break;
                 case "Betaling":
                     if (entity.IsTransient())
                     {
-                        currentContext.Betalingen.Add((Model.Betaling)entity);
+                        currentContext.Betalingen.Add((Betaling)entity);
                     }
                     else
                     {
-                        returnValue = currentContext.Entry(currentContext.Betalingen.FirstOrDefault(x => x.Id == entity.Id));
+                        returnValue =
+                            currentContext.Entry(currentContext.Betalingen.FirstOrDefault(x => x.Id == entity.Id));
                     }
                     break;
-                
             }
 
             return returnValue;
         }
 
-        public void HandleChanges(Model.Base.ModelBase entity)
+        public List<StamgegevenBase> GetStamGegevens(Stamgegevens stamgegevenType)
+        {
+            switch (stamgegevenType)
+            {
+                case Stamgegevens.Dagdelen:
+                    var dagdelen = currentContext.Dagdelen;
+                    return dagdelen.ToList<StamgegevenBase>();
+                case Stamgegevens.Taken:
+                    var taken = currentContext.Taken;
+                    return taken.ToList<StamgegevenBase>();
+                case Stamgegevens.BerichtTypes:
+                    var berichtTypes = currentContext.BerichtTypes;
+                    return berichtTypes.ToList<StamgegevenBase>();
+                default:
+                    return null;
+            }
+        }
+
+        public void HandleChanges(ModelBase entity)
         {
             var currentBeheerder = beheerderRepository.CurrentBeheerder;
-            
+
             bool hasChanged = false;
             var newEntry = currentContext.Entry(entity);
             DbEntityEntry oldEntry = GetOriginalEntry(entity);
@@ -240,7 +290,7 @@ namespace Dynamo.BL
             {
                 if (entity.IsTransient())
                 {
-                    var changeLog = new Model.ChangeLog();
+                    var changeLog = new ChangeLog();
 
                     changeLog.Datum = DateTime.Now;
                     changeLog.Entiteit = GetEntityName(entity);
@@ -261,22 +311,32 @@ namespace Dynamo.BL
                 {
                     var oudeWaarde = oldEntry.OriginalValues.GetValue<object>(name) ?? null;
 
-                    object nieuweWaarde = newEntry.Property(name).CurrentValue ?? null;
-                    if (!MyEquals(oudeWaarde, nieuweWaarde ))
+                    object nieuweWaarde = newEntry.Property(name)
+                        .CurrentValue ?? null;
+                    if (!MyEquals(oudeWaarde, nieuweWaarde))
                     {
-                        if (name.Equals("Gewijzigd") && !MyDatumGroterDan(nieuweWaarde,oudeWaarde))
+                        if (name.Equals("Gewijzigd")
+                            && !MyDatumGroterDan(nieuweWaarde, oudeWaarde))
                         {
-                            throw new InvalidOperationException(string.Format("Er is een gegeven op een ander tabblad aangepast, kan {0} niet updaten!", GetEntityName(entity)));
+                            throw new InvalidOperationException(
+                                string.Format(
+                                    "Er is een gegeven op een ander tabblad aangepast, kan {0} niet updaten!",
+                                    GetEntityName(entity)));
                         }
-                        oldEntry.Property(name).CurrentValue = nieuweWaarde;
-                        var changeLog = new Model.ChangeLog();
+                        oldEntry.Property(name)
+                            .CurrentValue = nieuweWaarde;
+                        var changeLog = new ChangeLog();
 
                         changeLog.Datum = DateTime.Now;
                         changeLog.Entiteit = GetEntityName(entity);
                         changeLog.Omschrijving = entity.GetKorteOmschrijving();
                         changeLog.Eigenschap = name;
-                        changeLog.OudeWaarde = oudeWaarde == null ? null : oudeWaarde.ToString();
-                        changeLog.NieuweWaarde = nieuweWaarde == null ? null : nieuweWaarde.ToString();
+                        changeLog.OudeWaarde = oudeWaarde == null
+                            ? null
+                            : oudeWaarde.ToString();
+                        changeLog.NieuweWaarde = nieuweWaarde == null
+                            ? null
+                            : nieuweWaarde.ToString();
                         changeLog.AangemaaktDoor = currentBeheerder;
                         currentContext.ChangeLog.Add(changeLog);
                         hasChanged = true;
@@ -284,8 +344,10 @@ namespace Dynamo.BL
                 }
                 if (hasChanged)
                 {
-                    oldEntry.Property("GewijzigdDoorId").CurrentValue = currentBeheerder.Id;
-                    oldEntry.Property("Gewijzigd").CurrentValue = DateTime.Now;
+                    oldEntry.Property("GewijzigdDoorId")
+                        .CurrentValue = currentBeheerder.Id;
+                    oldEntry.Property("Gewijzigd")
+                        .CurrentValue = DateTime.Now;
                     hasChanged = false;
                 }
             }
@@ -293,14 +355,119 @@ namespace Dynamo.BL
             HandleComplexPropertyChanges(entity);
         }
 
+        public virtual E Load(int Id)
+        {
+            throw new NotImplementedException("Implementeer in afgeleide!");
+        }
+
+        public virtual List<E> Load(Expression<Func<E, bool>> expression)
+        {
+            throw new NotImplementedException("Implementeer in afgeleide!");
+        }
+
+        public virtual List<E> Load()
+        {
+            throw new NotImplementedException("Implementeer in afgeleide!");
+        }
+
+        public virtual void OnDispose() {}
+
+        public virtual void Save(E entity, bool supressMessage = false)
+        {
+            try
+            {
+                SaveChanges(entity);
+            }
+            catch (InvalidOperationException ex)
+            {
+                if (supressMessage)
+                {
+                    return;
+                }
+
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        public virtual void Undo(E entity)
+        {
+            UndoChanges(entity);
+        }
+
+        protected virtual void HandleComplexPropertyChanges(ModelBase entity) {}
+
+        protected bool HasEntityChanged(ModelBase entity)
+        {
+            if (entity == null)
+            {
+                return false;
+            }
+
+            var band = entity as Band;
+            if (band != null)
+            {
+                var originalEntry = GetOriginalEntry(entity);
+                if (originalEntry != null
+                    && originalEntry.Entity != null)
+                {
+                    var originalBand = originalEntry.Entity as Band;
+                    return (originalBand != null && originalBand.Naam != band.Naam);
+                }
+            }
+
+            var contract = entity as Contract;
+            if (contract != null)
+            {
+                var originalEntry = GetOriginalEntry(entity);
+                if (originalEntry != null
+                    && originalEntry.Entity != null)
+                {
+                    var originalcontract = originalEntry.Entity as Contract;
+                    return (originalcontract != null && (
+                        originalcontract.Oefendag != contract.Oefendag ||
+                            originalcontract.DagdeelId != contract.DagdeelId ||
+                            originalcontract.OefenruimteId != contract.OefenruimteId
+                        ));
+                }
+            }
+
+            return false;
+        }
+
+        protected void SaveChanges(ModelBase entity)
+        {
+            HandleChanges(entity);
+            currentContext.SaveChanges();
+        }
+
+        private void DeleteEntity(ModelBase entity)
+        {
+            entity.Verwijderd = true;
+            SaveChanges(entity);
+        }
+
+        private string GetEntityName(ModelBase entity)
+        {
+            var entityName = entity.GetType()
+                .Name;
+            var pos = entityName.IndexOf("_");
+            if (pos > 0)
+            {
+                entityName = entityName.Substring(0, pos);
+            }
+            return entityName;
+        }
+
         private bool MyDatumGroterDan(object d1, object d2)
         {
-            if (d2 == null && d1 != null)
+            if (d2 == null
+                && d1 != null)
             {
                 return true;
             }
 
-            if (d2 != null && d1 != null)
+            if (d2 != null
+                && d1 != null)
             {
                 if (((DateTime)d1).CompareTo(((DateTime)d2)) > 0)
                 {
@@ -327,17 +494,18 @@ namespace Dynamo.BL
                 return o2.Equals(o1);
             }
             return false;
-        
         }
 
-        private void UndoChanges(Model.Base.ModelBase entity)
+        private void UndoChanges(ModelBase entity)
         {
             var entry = currentContext.Entry(entity);
 
             if (entry.State == EntityState.Modified)
             {
                 var namesOfChangedProperties = entry.CurrentValues.PropertyNames
-                    .Where(p => entry.Property(p).IsModified);
+                    .Where(
+                        p => entry.Property(p)
+                            .IsModified);
 
                 foreach (var name in namesOfChangedProperties)
                 {
@@ -345,145 +513,5 @@ namespace Dynamo.BL
                 }
             }
         }
-
-        protected virtual void HandleComplexPropertyChanges(Model.Base.ModelBase entity)
-        { 
-        
-        }
-
-        protected bool HasEntityChanged(Model.Base.ModelBase entity)
-        {
-            if (entity == null)
-            {
-                return false;
-            }
-
-            var band = entity as Model.Band;
-            if (band != null)
-            {
-                var originalEntry = GetOriginalEntry(entity);    
-                if(originalEntry!=null && originalEntry.Entity !=null)
-                {
-                    var originalBand = originalEntry.Entity as Model.Band;
-                    return (originalBand != null && originalBand.Naam != band.Naam);
-                }
-            }
-
-            var contract = entity as Model.Contract;
-            if (contract != null)
-            {
-                var originalEntry = GetOriginalEntry(entity);
-                if (originalEntry != null && originalEntry.Entity != null)
-                {
-                    var originalcontract = originalEntry.Entity as Model.Contract;
-                    return (originalcontract != null && ( 
-                        originalcontract.Oefendag != contract.Oefendag || 
-                        originalcontract.DagdeelId != contract.DagdeelId ||
-                        originalcontract.OefenruimteId != contract.OefenruimteId
-                        ));
-                }
-            }
-
-
-            return false;
-        }
-
-        private string GetEntityName(Model.Base.ModelBase entity)
-        {
-            var entityName = entity.GetType().Name;
-            var pos = entityName.IndexOf("_");
-            if (pos > 0)
-            {
-                entityName = entityName.Substring(0, pos);
-            }
-            return entityName;
-        }
-
-        public List<Model.Oefenruimte> GetOefenruimtes()
-        {
-            return currentContext.Oefenruimtes.ToList<Model.Oefenruimte>();
-        }
-
-        public List<Model.Base.StamgegevenBase> GetStamGegevens(Enum.Stamgegevens stamgegevenType)
-        {
-
-            switch (stamgegevenType)
-            {
-                case Enum.Stamgegevens.Dagdelen:
-                    var dagdelen = currentContext.Dagdelen;
-                    return dagdelen.ToList<Model.Base.StamgegevenBase>();
-                case Enum.Stamgegevens.Taken:
-                    var taken = currentContext.Taken;
-                    return taken.ToList<Model.Base.StamgegevenBase>();
-                case Enum.Stamgegevens.BerichtTypes:
-                    var berichtTypes = currentContext.BerichtTypes;
-                    return berichtTypes.ToList<Model.Base.StamgegevenBase>();
-                default:
-                    return null;
-            }
-        }
-
-        public virtual void Save(E entity, bool supressMessage = false)
-        {
-            try
-            {
-                SaveChanges(entity);
-            }
-            catch (InvalidOperationException ex)
-            {
-                if (supressMessage)
-                {
-                    return;
-                }
-
-                MessageBox.Show(ex.Message);
-            }
-            
-        }
-
-        public virtual void Undo(E entity)
-        {
-            UndoChanges(entity);
-        }
-
-        public virtual void Delete(E entity)
-        {
-            DeleteEntity(entity);
-        }
-
-        public virtual E Load(int Id)
-        {
-            throw new NotImplementedException("Implementeer in afgeleide!");
-        }
-
-        public virtual List<E> Load(System.Linq.Expressions.Expression<Func<E, bool>> expression)
-        {
-            throw new NotImplementedException("Implementeer in afgeleide!");
-        }
-
-        public virtual List<E> Load()
-        {
-            throw new NotImplementedException("Implementeer in afgeleide!");
-        }
-
-        public bool HasMelding { get; set; }
-
-        public string Melding { get; set; }
-
-        public void Dispose()
-        {
-            if (_isParentRepository && _currentContext != null)
-            {
-                _currentContext.Dispose();
-            }
-            if (_beheerderRepository != null)
-            {
-                _beheerderRepository.Dispose();
-            }
-            OnDispose();
-        }
-
-        public virtual void OnDispose()
-        { }
     }
 }

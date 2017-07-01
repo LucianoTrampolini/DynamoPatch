@@ -1,22 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
+
 using Dynamo.BL.Base;
 using Dynamo.Model;
 
 namespace Dynamo.BL.BusinessRules.Band
 {
-    public class BijwerkenContract: BusinessRuleBase<Model.Band>
+    public class BijwerkenContract : BusinessRuleBase<Model.Band>
     {
         public BijwerkenContract(IDynamoContext context)
-            : base(context)
-        { }
-        
+            : base(context) {}
+
         public override bool Execute(Model.Band entity)
         {
             //Als de band meerdere contracten heeft, even checken of de laatste nieuw is toegevoegd
-            if (entity.Contracten.Count() > 1 && entity.Contracten.Last().IsTransient())
+            if (entity.Contracten.Count() > 1
+                && entity.Contracten.Last()
+                    .IsTransient())
             {
                 //Een nieuw contract togevoegd!
                 var oudContract = entity.Contracten.Last(contract => !contract.IsTransient());

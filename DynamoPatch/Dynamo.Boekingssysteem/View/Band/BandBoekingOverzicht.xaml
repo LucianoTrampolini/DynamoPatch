@@ -9,16 +9,15 @@
     <UserControl.Resources>
         <CollectionViewSource
           x:Key="Boekingen" 
-          Source="{Binding Path=AlleBoekingen}">
-        </CollectionViewSource>
+          Source="{Binding Path=AlleBoekingen}" />
     </UserControl.Resources>
     
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="30" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Label Style="{StaticResource DescriptionLabel}" Width="300" Content="Laatste 10 boekingen"></Label>
+        <Label Style="{StaticResource DescriptionLabel}" Width="300" Content="Laatste 10 boekingen" />
         <ListView 
             Grid.Row="1"
              DataContext="{StaticResource Boekingen}" 

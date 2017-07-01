@@ -10,7 +10,7 @@
     <Border Style="{StaticResource SubItemBorder}">
         <dyn:AnimatedPanel Margin="5" MaxWidth="280">
             <dyn:AnimatedPanel Orientation="Horizontal">
-                <Label Style="{StaticResource DescriptionLabel}" Content="Naam"></Label>
+                <Label Style="{StaticResource DescriptionLabel}" Content="Naam" />
                 <sdk:AutoCompleteBox ItemsSource="{Binding Path=AlleBands}" Width="170" ValueMemberPath="Naam" SelectedItem="{Binding Path=BandNaar,Mode=TwoWay}"
                                      FilterMode="StartsWith"
                                      MaxDropDownHeight="100"

@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Dynamo.Boekingssysteem.ViewModel.Band
+﻿namespace Dynamo.Boekingssysteem.ViewModel.Band
 {
-    public class NieuweRekeningViewModel:NieuweBetalingViewModel
+    public class NieuweRekeningViewModel : NieuweBetalingViewModel
     {
+        public NieuweRekeningViewModel(BandViewModel band)
+            : base(band) {}
+
         public new decimal Betaald
         {
-            get
-            {
-                return _entity.Bedrag;
-            }
+            get { return _entity.Bedrag; }
             set
             {
                 if (_entity.Bedrag == value)
@@ -23,9 +18,5 @@ namespace Dynamo.Boekingssysteem.ViewModel.Band
                 OnPropertyChanged("Betaald");
             }
         }
-
-        public NieuweRekeningViewModel(BandViewModel band)
-            : base(band)
-        {  }
     }
 }
